@@ -1,30 +1,37 @@
 import { mutationField, nonNull } from "nexus";
-import { CreateProfileInput } from "../inputs";
-import { ProfileOutput } from "../outputs";
+import { CreateProfileInput, ProfileWhereUniqueInput } from "../inputs";
+import { ProfileMutationOutput } from "../outputs";
 
 export const createProfile = mutationField("createProfile", {
-  type: ProfileOutput,
+  type: ProfileMutationOutput,
   args: {
     input: nonNull(CreateProfileInput),
   },
   resolve: async (_root, args, ctx) => {
     const { profile_bio, profile_interest } = args.input;
-    const { interest_name } = profile_interest;
     const userId = ctx.req.session.userId;
 
     try {
       const profile = await ctx.prisma.profile.create({
         data: {
           profile_bio,
-          profile_interests: {
-            create: {
-              interest: {
-                create: {
-                  interest_name,
+          profile_interests:
+            profile_interest.length === 0
+              ? undefined
+              : {
+                  create: profile_interest.map((obj) => ({
+                    interest: {
+                      connectOrCreate: {
+                        where: {
+                          interest_name: obj!.interest_name,
+                        },
+                        create: {
+                          interest_name: obj!.interest_name,
+                        },
+                      },
+                    },
+                  })),
                 },
-              },
-            },
-          },
           user: {
             connect: {
               id: userId,
@@ -46,9 +53,54 @@ export const createProfile = mutationField("createProfile", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error ${error}`,
+          message: `Internal server error ${JSON.stringify(error)}`,
         },
       };
     }
+  },
+});
+
+export const updateProfile = mutationField("updateProfile", {
+  type: ProfileMutationOutput,
+  args: {
+    input: nonNull(CreateProfileInput),
+    where: nonNull(ProfileWhereUniqueInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { profile_bio, profile_interest } = args.input;
+    const { profile_id } = args.where;
+
+    const updatedProfile = await ctx.prisma.profile.update({
+      where: {
+        id: profile_id,
+      },
+      data: {
+        profile_bio,
+        profile_interests: {
+          deleteMany: {},
+          create: profile_interest.map((obj) => ({
+            interest: {
+              connectOrCreate: {
+                where: {
+                  interest_name: obj!.interest_name,
+                },
+                create: {
+                  interest_name: obj!.interest_name,
+                },
+              },
+            },
+          })),
+        },
+      },
+    });
+
+    return {
+      IOutput: {
+        code: 200,
+        success: true,
+        message: "Profile updated successfully",
+      },
+      Profile: updatedProfile,
+    };
   },
 });

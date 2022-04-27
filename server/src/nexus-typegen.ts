@@ -14,12 +14,22 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  ChangePasswordInput: { // input type
+    newPassword: string; // String!
+    token: string; // String!
+  }
   CreateInterestInput: { // input type
     interest_name: string; // String!
   }
   CreateProfileInput: { // input type
-    profile_bio: string; // String!
-    profile_interest: NexusGenInputs['CreateInterestInput']; // CreateInterestInput!
+    profile_bio?: string | null; // String
+    profile_interest: Array<NexusGenInputs['CreateInterestInput'] | null>; // [CreateInterestInput]!
+  }
+  ForgotPasswordInput: { // input type
+    email: string; // String!
+  }
+  GetManyProfilesInput: { // input type
+    search_input?: string | null; // String
   }
   LoginInput: { // input type
     email: string; // String!
@@ -32,6 +42,9 @@ export interface NexusGenInputs {
     email: string; // String!
     password: string; // String!
     username: string; // String!
+  }
+  getManyInterestsInput: { // input type
+    search_input?: string | null; // String
   }
 }
 
@@ -56,6 +69,18 @@ export interface NexusGenObjects {
     field: string; // String!
     message: string; // String!
   }
+  GetManyInterestOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Interest?: Array<NexusGenRootTypes['Interest'] | null> | null; // [Interest]
+  }
+  GetManyProfilesOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Profile?: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
+  }
+  GetProfileOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Profile?: NexusGenRootTypes['Profile'] | null; // Profile
+  }
   IOutput: { // root type
     code: number; // Int!
     message: string; // String!
@@ -64,10 +89,6 @@ export interface NexusGenObjects {
   Interest: { // root type
     id: string; // ID!
     interest_name?: string | null; // String
-  }
-  InterestOutput: { // root type
-    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Interest?: NexusGenRootTypes['Interest'] | null; // Interest
   }
   Mutation: {};
   Profile: { // root type
@@ -78,7 +99,7 @@ export interface NexusGenObjects {
     interest_id: string; // ID!
     profile_id: string; // ID!
   }
-  ProfileOutput: { // root type
+  ProfileMutationOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Profile?: NexusGenRootTypes['Profile'] | null; // Profile
   }
@@ -110,6 +131,18 @@ export interface NexusGenFieldTypes {
     field: string; // String!
     message: string; // String!
   }
+  GetManyInterestOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Interest: Array<NexusGenRootTypes['Interest'] | null> | null; // [Interest]
+  }
+  GetManyProfilesOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Profile: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
+  }
+  GetProfileOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Profile: NexusGenRootTypes['Profile'] | null; // Profile
+  }
   IOutput: { // field return type
     code: number; // Int!
     message: string; // String!
@@ -120,21 +153,20 @@ export interface NexusGenFieldTypes {
     interest_name: string | null; // String
     profile_interests: NexusGenRootTypes['ProfileInterest'][]; // [ProfileInterest!]!
   }
-  InterestOutput: { // field return type
-    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Interest: NexusGenRootTypes['Interest'] | null; // Interest
-  }
   Mutation: { // field return type
-    createInterest: NexusGenRootTypes['InterestOutput'] | null; // InterestOutput
-    createProfile: NexusGenRootTypes['ProfileOutput'] | null; // ProfileOutput
+    changePassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
+    createProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    forgotPassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
+    updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
   }
   Profile: { // field return type
     id: string; // ID!
     profile_bio: string | null; // String
-    profile_interests: NexusGenRootTypes['ProfileInterest'][]; // [ProfileInterest!]!
+    profile_interests: Array<NexusGenRootTypes['ProfileInterest'] | null> | null; // [ProfileInterest]
+    user: NexusGenRootTypes['User'] | null; // User
   }
   ProfileInterest: { // field return type
     interest: NexusGenRootTypes['Interest']; // Interest!
@@ -142,12 +174,14 @@ export interface NexusGenFieldTypes {
     profile: NexusGenRootTypes['Profile']; // Profile!
     profile_id: string; // ID!
   }
-  ProfileOutput: { // field return type
+  ProfileMutationOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Profile: NexusGenRootTypes['Profile'] | null; // Profile
   }
   Query: { // field return type
-    getProfile: NexusGenRootTypes['Profile'] | null; // Profile
+    getManyInterests: NexusGenRootTypes['GetManyInterestOutput'] | null; // GetManyInterestOutput
+    getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
+    getProfile: NexusGenRootTypes['GetProfileOutput'] | null; // GetProfileOutput
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   User: { // field return type
@@ -168,6 +202,18 @@ export interface NexusGenFieldTypeNames {
     field: 'String'
     message: 'String'
   }
+  GetManyInterestOutput: { // field return type name
+    IOutput: 'IOutput'
+    Interest: 'Interest'
+  }
+  GetManyProfilesOutput: { // field return type name
+    IOutput: 'IOutput'
+    Profile: 'Profile'
+  }
+  GetProfileOutput: { // field return type name
+    IOutput: 'IOutput'
+    Profile: 'Profile'
+  }
   IOutput: { // field return type name
     code: 'Int'
     message: 'String'
@@ -178,21 +224,20 @@ export interface NexusGenFieldTypeNames {
     interest_name: 'String'
     profile_interests: 'ProfileInterest'
   }
-  InterestOutput: { // field return type name
-    IOutput: 'IOutput'
-    Interest: 'Interest'
-  }
   Mutation: { // field return type name
-    createInterest: 'InterestOutput'
-    createProfile: 'ProfileOutput'
+    changePassword: 'AuthOutput'
+    createProfile: 'ProfileMutationOutput'
+    forgotPassword: 'AuthOutput'
     login: 'AuthOutput'
     logout: 'AuthOutput'
     register: 'AuthOutput'
+    updateProfile: 'ProfileMutationOutput'
   }
   Profile: { // field return type name
     id: 'ID'
     profile_bio: 'String'
     profile_interests: 'ProfileInterest'
+    user: 'User'
   }
   ProfileInterest: { // field return type name
     interest: 'Interest'
@@ -200,12 +245,14 @@ export interface NexusGenFieldTypeNames {
     profile: 'Profile'
     profile_id: 'ID'
   }
-  ProfileOutput: { // field return type name
+  ProfileMutationOutput: { // field return type name
     IOutput: 'IOutput'
     Profile: 'Profile'
   }
   Query: { // field return type name
-    getProfile: 'Profile'
+    getManyInterests: 'GetManyInterestOutput'
+    getManyProfiles: 'GetManyProfilesOutput'
+    getProfile: 'GetProfileOutput'
     getUser: 'User'
   }
   User: { // field return type name
@@ -218,12 +265,14 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createInterest: { // args
-      input: NexusGenInputs['CreateInterestInput']; // CreateInterestInput!
-      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    changePassword: { // args
+      input: NexusGenInputs['ChangePasswordInput']; // ChangePasswordInput!
     }
     createProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
+    }
+    forgotPassword: { // args
+      input: NexusGenInputs['ForgotPasswordInput']; // ForgotPasswordInput!
     }
     login: { // args
       input: NexusGenInputs['LoginInput']; // LoginInput!
@@ -231,8 +280,18 @@ export interface NexusGenArgTypes {
     register: { // args
       input: NexusGenInputs['RegisterInput']; // RegisterInput!
     }
+    updateProfile: { // args
+      input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
   }
   Query: {
+    getManyInterests: { // args
+      where: NexusGenInputs['getManyInterestsInput']; // getManyInterestsInput!
+    }
+    getManyProfiles: { // args
+      where: NexusGenInputs['GetManyProfilesInput']; // GetManyProfilesInput!
+    }
     getProfile: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }

@@ -1,8 +1,10 @@
+import { applyMiddleware } from "graphql-middleware";
 import { makeSchema } from "nexus";
 import { join } from "path";
 import * as types from "./graphql";
+import { middleware } from "./middlewares/permission";
 
-export const schema = makeSchema({
+const schema = makeSchema({
   types,
   outputs: {
     typegen: join(__dirname, "nexus-typegen.ts"),
@@ -14,3 +16,5 @@ export const schema = makeSchema({
     export: "Context",
   },
 });
+
+export const schemaWithMiddleware = applyMiddleware(schema, middleware);

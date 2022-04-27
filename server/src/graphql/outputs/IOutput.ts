@@ -8,3 +8,9 @@ export const IOutput = objectType({
     t.nonNull.string("message");
   },
 });
+
+// type IOutput = {
+//   code: number;
+//   success: boolean;
+//   message: string;
+// };

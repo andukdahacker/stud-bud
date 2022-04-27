@@ -1,7 +1,9 @@
 export const validateLoginInput = (email: string, password: string) => {
-  //email validation (use regex)
+  //username validation (<=3, cannot include @)
 
   let errors = [];
+
+  //email validation (use regex)
 
   let emailPattern: RegExp =
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -21,5 +23,6 @@ export const validateLoginInput = (email: string, password: string) => {
   if (!validPassword) {
     errors.push({ field: "password", message: "Invalid password format" });
   }
+
   return errors;
 };

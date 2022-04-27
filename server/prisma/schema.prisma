@@ -30,7 +30,7 @@ model Profile {
 
 model Interest {
   id                String             @id @default(cuid())
-  interest_name     String             @db.VarChar
+  interest_name     String             @unique @db.VarChar
   profile_interests ProfileInterests[]
 }
 

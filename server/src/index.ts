@@ -7,12 +7,12 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
 import dotenv from "dotenv";
-import { schema } from "./schema";
 import connectRedis from "connect-redis";
-import Redis from "ioredis";
 import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { createContext } from "./context";
+import { schemaWithMiddleware } from "./schema";
+import { redis } from "./redis";
 
 dotenv.config();
 
@@ -34,16 +34,12 @@ const startServer = async () => {
     })
   );
 
-  const redisClient = new Redis({
-    host: "127.0.0.1",
-    port: 6379,
-  });
   const RedisStore = connectRedis(session);
 
   app.use(
     session({
       name: COOKIE_NAME,
-      store: new RedisStore({ client: redisClient, disableTouch: true }),
+      store: new RedisStore({ client: redis, disableTouch: true }),
       secret: process.env.SESSION_SECRET as string,
       resave: false,
       saveUninitialized: false,
@@ -57,7 +53,7 @@ const startServer = async () => {
   );
 
   const apolloServer = new ApolloServer({
-    schema,
+    schema: schemaWithMiddleware,
     context: createContext,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),

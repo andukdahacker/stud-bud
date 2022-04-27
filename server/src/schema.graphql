@@ -8,18 +8,46 @@ type AuthOutput {
   User: User
 }
 
+input ChangePasswordInput {
+  newPassword: String!
+  token: String!
+}
+
 input CreateInterestInput {
   interest_name: String!
 }
 
 input CreateProfileInput {
-  profile_bio: String!
-  profile_interest: CreateInterestInput!
+  profile_bio: String
+  profile_interest: [CreateInterestInput]!
 }
 
 type ErrorFieldOutput {
   field: String!
   message: String!
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+type GetManyInterestOutput {
+  IOutput: IOutput!
+  Interest: [Interest]
+}
+
+input GetManyProfilesInput {
+  search_input: String
+}
+
+type GetManyProfilesOutput {
+  IOutput: IOutput!
+  Profile: [Profile]
+}
+
+type GetProfileOutput {
+  IOutput: IOutput!
+  Profile: Profile
 }
 
 type IOutput {
@@ -34,28 +62,26 @@ type Interest {
   profile_interests: [ProfileInterest!]!
 }
 
-type InterestOutput {
-  IOutput: IOutput!
-  Interest: Interest
-}
-
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Mutation {
-  createInterest(input: CreateInterestInput!, where: ProfileWhereUniqueInput!): InterestOutput
-  createProfile(input: CreateProfileInput!): ProfileOutput
+  changePassword(input: ChangePasswordInput!): AuthOutput
+  createProfile(input: CreateProfileInput!): ProfileMutationOutput
+  forgotPassword(input: ForgotPasswordInput!): AuthOutput
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   register(input: RegisterInput!): AuthOutput!
+  updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
 }
 
 type Profile {
   id: ID!
   profile_bio: String
-  profile_interests: [ProfileInterest!]!
+  profile_interests: [ProfileInterest]
+  user: User
 }
 
 type ProfileInterest {
@@ -65,7 +91,7 @@ type ProfileInterest {
   profile_id: ID!
 }
 
-type ProfileOutput {
+type ProfileMutationOutput {
   IOutput: IOutput!
   Profile: Profile
 }
@@ -75,7 +101,9 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
-  getProfile(where: ProfileWhereUniqueInput!): Profile
+  getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
+  getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getProfile(where: ProfileWhereUniqueInput!): GetProfileOutput
   getUser: User
 }
 
@@ -90,4 +118,8 @@ type User {
   id: ID!
   profile: Profile
   username: String!
+}
+
+input getManyInterestsInput {
+  search_input: String
 }

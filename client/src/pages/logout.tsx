@@ -10,7 +10,7 @@ const LogOut = () => {
   const [logoutMutation, _] = useLogoutMutation();
   const router = useRouter();
   const logout = async () => {
-    const result = await logoutMutation({
+    await logoutMutation({
       update(cache, { data }) {
         if (data?.logout.IOutput.success) {
           cache.writeQuery<GetUserQuery>({

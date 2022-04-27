@@ -1,6 +1,5 @@
 import { objectType } from "nexus";
 import { User } from "../objects";
-import { ErrorFieldOutput } from "./ErrorFieldOutput";
 import { IOutput } from "./IOutput";
 
 export const AuthOutput = objectType({
@@ -15,5 +14,13 @@ export const AuthOutput = objectType({
     t.nullable.list.nonNull.field("ErrorFieldOutput", {
       type: ErrorFieldOutput,
     });
+  },
+});
+
+export const ErrorFieldOutput = objectType({
+  name: "ErrorFieldOutput",
+  definition(t) {
+    t.nonNull.string("field");
+    t.nonNull.string("message");
   },
 });

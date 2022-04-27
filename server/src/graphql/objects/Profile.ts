@@ -1,12 +1,13 @@
 import { objectType } from "nexus";
 import { ProfileInterest } from "./ProfileInterest";
+import { User } from "./User";
 
 export const Profile = objectType({
   name: "Profile",
   definition(t) {
     t.nonNull.id("id");
     t.nullable.string("profile_bio");
-    t.nonNull.list.nonNull.field("profile_interests", {
+    t.nullable.list.nullable.field("profile_interests", {
       type: ProfileInterest,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.profile
@@ -17,6 +18,14 @@ export const Profile = objectType({
             rejectOnNotFound: true,
           })
           .profile_interests();
+      },
+    });
+    t.nullable.field("user", {
+      type: User,
+      resolve: async (root, _args, ctx) => {
+        return await ctx.prisma.profile
+          .findUnique({ where: { id: root.id }, rejectOnNotFound: true })
+          .user();
       },
     });
   },
