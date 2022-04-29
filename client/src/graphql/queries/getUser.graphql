@@ -3,5 +3,8 @@ query getUser {
     id
     username
     email
+    profile {
+      id
+    }
   }
 }

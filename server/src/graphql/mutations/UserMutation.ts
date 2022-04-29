@@ -4,14 +4,26 @@ import {
   ForgotPasswordInput,
   LoginInput,
   RegisterInput,
+  VerifyEmailInput,
 } from "../inputs";
 import { AuthOutput } from "../outputs";
 import argon2 from "argon2";
 import { validateRegisterInput } from "../../utils/validateRegisterInput";
 import { validateLoginInput } from "../../utils/validateLoginInput";
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "../../constants";
-import { v4 } from "uuid";
-import { sendMail } from "../../utils/emailService";
+import {
+  COOKIE_NAME,
+  EMAIL_VERIFICATION_PREFIX,
+  FORGOT_PASSWORD_PREFIX,
+  INTERNAL_SERVER_ERROR,
+  INVALID_INPUT,
+  INVALID_TOKEN,
+  UNVERIFIED,
+} from "../../constants";
+
+import {
+  sendForgotPasswordEmail,
+  sendVerificationEmail,
+} from "../../utils/emailService";
 import { validateChangePasswordInput } from "../../utils/validateChangePasswordInput";
 
 export const RegisterMutation = mutationField("register", {
@@ -34,7 +46,7 @@ export const RegisterMutation = mutationField("register", {
           IOutput: {
             code: 400,
             success: false,
-            message: "Invalid register inputs",
+            message: INVALID_INPUT,
           },
           ErrorFieldOutput: validateRegisterErrors,
         };
@@ -51,8 +63,11 @@ export const RegisterMutation = mutationField("register", {
           IOutput: {
             code: 400,
             success: false,
-            message: "User already existed",
+            message: INVALID_INPUT,
           },
+          ErrorFieldOutput: [
+            { field: "email", message: "User already existed" },
+          ],
         };
 
       //hash password and create new user
@@ -62,8 +77,10 @@ export const RegisterMutation = mutationField("register", {
           username: username,
           email: email,
           password: hashedPassword,
+          isVerified: false,
         },
       });
+      await sendVerificationEmail(ctx, newUser.id, email);
 
       //all good
       return {
@@ -79,7 +96,63 @@ export const RegisterMutation = mutationField("register", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error at RegisterMutation ${error}`,
+          message: INTERNAL_SERVER_ERROR,
+        },
+      };
+    }
+  },
+});
+
+export const VerifyEmail = mutationField("verifyEmail", {
+  type: nonNull(AuthOutput),
+  args: {
+    input: nonNull(VerifyEmailInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { token } = args.input;
+
+    try {
+      const key = EMAIL_VERIFICATION_PREFIX + token;
+
+      const userId = await ctx.redis.get(key);
+
+      if (!userId) {
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: INVALID_TOKEN,
+          },
+        };
+      }
+
+      const verifiedUser = await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isVerified: true,
+        },
+      });
+
+      await ctx.redis.del(key);
+
+      ctx.req.session.userId = userId;
+
+      return {
+        IOutput: {
+          code: 200,
+          success: true,
+          message: "Email verified successfully",
+        },
+        User: verifiedUser,
+      };
+    } catch (error) {
+      return {
+        IOutput: {
+          code: 500,
+          success: false,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -101,7 +174,7 @@ export const LoginMutation = mutationField("login", {
           IOutput: {
             code: 400,
             success: false,
-            message: "Invalid login inputs",
+            message: INVALID_INPUT,
           },
           ErrorFieldOutput: validateLoginInputErrors,
         };
@@ -118,7 +191,7 @@ export const LoginMutation = mutationField("login", {
           IOutput: {
             code: 400,
             success: false,
-            message: "Incorrect email",
+            message: INVALID_INPUT,
           },
           ErrorFieldOutput: [{ field: "email", message: "Incorrect email" }],
         };
@@ -133,12 +206,25 @@ export const LoginMutation = mutationField("login", {
           IOutput: {
             code: 400,
             success: false,
-            message: "Incorrect password",
+            message: INVALID_INPUT,
           },
           ErrorFieldOutput: [
             { field: "password", message: "Incorrect password" },
           ],
         };
+
+      // user is unverified -> resend a verification email
+      if (existingUser.isVerified === false) {
+        await sendVerificationEmail(ctx, existingUser.id, existingUser.email);
+
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: UNVERIFIED,
+          },
+        };
+      }
 
       // all good -> add userId into express-session -> return user
       ctx.req.session.userId = existingUser.id;
@@ -147,7 +233,7 @@ export const LoginMutation = mutationField("login", {
         IOutput: {
           code: 200,
           success: true,
-          message: "User logged in successfully",
+          message: "Logged in successfully",
         },
         User: existingUser,
       };
@@ -156,7 +242,7 @@ export const LoginMutation = mutationField("login", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error at LoginMutation ${error}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -167,16 +253,24 @@ export const LogoutMutation = mutationField("logout", {
   type: nonNull(AuthOutput),
   resolve: async (_root, _args, ctx) => {
     try {
-      await new Promise<void>((resolve) => {
+      const logOutResult = await new Promise<boolean>((resolve) => {
         ctx.req.session.destroy((err) => {
           ctx.res.clearCookie(COOKIE_NAME);
           if (err) {
-            resolve();
-            console.log("Log out error", err);
+            resolve(false);
           }
-          resolve();
+          resolve(true);
         });
       });
+
+      if (!logOutResult)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Failed to log out",
+          },
+        };
 
       return {
         IOutput: {
@@ -190,7 +284,7 @@ export const LogoutMutation = mutationField("logout", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error at LogoutMutation ${error}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -216,35 +310,8 @@ export const forgotPassword = mutationField("forgotPassword", {
             message: "User does not exist",
           },
         };
-      const token = v4();
-      const expiringTime = 1000 * 60 * 60;
-      const key = FORGOT_PASSWORD_PREFIX + token;
+      await sendForgotPasswordEmail(ctx, existingUser.id, email);
 
-      await ctx.redis.set(key, existingUser.id, "EX", expiringTime);
-
-      const changePasswordURL = `http://localhost:3000/changepassword/${token}`;
-
-      const message = `
-    <h1>You have requested a password reset</h1>
-    <p>Click the link below to continue the process</p>
-    <a href=${changePasswordURL} clicktracking=off>${changePasswordURL}</a>
-    `;
-      const sendMailResult = await sendMail(
-        email,
-        "STUDBUD PASSWORD RESET REQUEST",
-        message
-      );
-
-      if (!sendMailResult) {
-        await ctx.redis.del(key);
-        return {
-          IOutput: {
-            code: 400,
-            success: false,
-            message: "Something is wrong. Please try again",
-          },
-        };
-      }
       return {
         IOutput: {
           code: 200,
@@ -257,7 +324,7 @@ export const forgotPassword = mutationField("forgotPassword", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error ${JSON.stringify(error)}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -278,7 +345,7 @@ export const changePassword = mutationField("changePassword", {
         IOutput: {
           code: 400,
           success: false,
-          message: "Invalid password format",
+          message: INVALID_INPUT,
         },
         ErrorFieldOutput: validateChangePasswordInputErrors,
       };
@@ -291,11 +358,8 @@ export const changePassword = mutationField("changePassword", {
           IOutput: {
             code: 400,
             success: false,
-            message: "Invalid token or token expired",
+            message: INVALID_TOKEN,
           },
-          ErrorFieldOutput: [
-            { field: "token", message: "Invalid token or token expired" },
-          ],
         };
       }
 
@@ -340,7 +404,7 @@ export const changePassword = mutationField("changePassword", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error ${JSON.stringify(error)}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }

@@ -9,6 +9,9 @@ mutation login($input: LoginInput!) {
       id
       email
       username
+      profile {
+        id
+      }
     }
     ErrorFieldOutput {
       field

@@ -75,6 +75,7 @@ type Mutation {
   logout: AuthOutput!
   register(input: RegisterInput!): AuthOutput!
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
 
 type Profile {
@@ -116,8 +117,13 @@ input RegisterInput {
 type User {
   email: String!
   id: ID!
+  isVerified: Boolean!
   profile: Profile
   username: String!
+}
+
+input VerifyEmailInput {
+  token: String!
 }
 
 input getManyInterestsInput {

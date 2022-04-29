@@ -10,9 +10,11 @@ import TextError from "../components/TextError";
 import { mapErrorField } from "../utils/mapErrorField";
 import * as Yup from "yup";
 import NavBar from "../components/NavBar";
+import { useState } from "react";
 
 const Login = () => {
-  const [logInMutation, { loading, error }] = useLoginMutation();
+  const [logInMutation, { loading }] = useLoginMutation();
+  const [error, setError] = useState<string>();
   const router = useRouter();
 
   const initialValues: LoginInput = {
@@ -38,10 +40,13 @@ const Login = () => {
         }
       },
     });
-
     if (result.data?.login.ErrorFieldOutput) {
       setErrors(mapErrorField(result.data.login.ErrorFieldOutput));
-    } else if (result.data?.login.IOutput.success) {
+    } else if (!result.data?.login.IOutput.success) {
+      setError(result.data?.login.IOutput.message);
+    } else if (!result.data.login.User?.profile) {
+      router.push("/create-profile");
+    } else {
       router.push("/");
     }
   };
@@ -60,7 +65,7 @@ const Login = () => {
     <>
       <NavBar />
       {loading && <div>Loading...</div>}
-      {error && <div>APOLLO ERROR</div>}
+      {error && <div>{error}</div>}
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}

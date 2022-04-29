@@ -13,10 +13,10 @@ export const User = objectType({
         return ctx.prisma.user
           .findUnique({
             where: { id: root.id },
-            rejectOnNotFound: true,
           })
           .profile();
       },
     });
+    t.nonNull.boolean("isVerified");
   },
 });

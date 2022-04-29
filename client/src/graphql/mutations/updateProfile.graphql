@@ -1,0 +1,20 @@
+mutation updateProfile(
+  $input: CreateProfileInput!
+  $where: ProfileWhereUniqueInput!
+) {
+  updateProfile(input: $input, where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Profile {
+      profile_bio
+      profile_interests {
+        interest {
+          interest_name
+        }
+      }
+    }
+  }
+}

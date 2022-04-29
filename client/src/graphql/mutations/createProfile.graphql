@@ -1,0 +1,19 @@
+mutation createProfile($input: CreateProfileInput!) {
+  createProfile(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Profile {
+      id
+      profile_bio
+      profile_interests {
+        interest {
+          id
+          interest_name
+        }
+      }
+    }
+  }
+}

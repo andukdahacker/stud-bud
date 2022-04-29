@@ -1,0 +1,24 @@
+query getProfile($where: ProfileWhereUniqueInput!) {
+  getProfile(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+
+    Profile {
+      id
+      profile_bio
+      profile_interests {
+        interest {
+          interest_name
+        }
+      }
+      user {
+        id
+        username
+        email
+      }
+    }
+  }
+}

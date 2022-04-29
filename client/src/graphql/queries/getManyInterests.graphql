@@ -1,0 +1,12 @@
+query getManyInterests($where: getManyInterestsInput!) {
+  getManyInterests(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Interest {
+      interest_name
+    }
+  }
+}

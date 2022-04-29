@@ -1,4 +1,5 @@
 import { mutationField, nonNull } from "nexus";
+import { INTERNAL_SERVER_ERROR } from "../../constants";
 import { CreateProfileInput, ProfileWhereUniqueInput } from "../inputs";
 import { ProfileMutationOutput } from "../outputs";
 
@@ -53,7 +54,7 @@ export const createProfile = mutationField("createProfile", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error ${JSON.stringify(error)}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -67,40 +68,59 @@ export const updateProfile = mutationField("updateProfile", {
     where: nonNull(ProfileWhereUniqueInput),
   },
   resolve: async (_root, args, ctx) => {
-    const { profile_bio, profile_interest } = args.input;
-    const { profile_id } = args.where;
+    try {
+      const { profile_bio, profile_interest } = args.input;
+      const { profile_id } = args.where;
 
-    const updatedProfile = await ctx.prisma.profile.update({
-      where: {
-        id: profile_id,
-      },
-      data: {
-        profile_bio,
-        profile_interests: {
-          deleteMany: {},
-          create: profile_interest.map((obj) => ({
-            interest: {
-              connectOrCreate: {
-                where: {
-                  interest_name: obj!.interest_name,
-                },
-                create: {
-                  interest_name: obj!.interest_name,
+      const updatedProfile = await ctx.prisma.profile.update({
+        where: {
+          id: profile_id,
+        },
+        data: {
+          profile_bio,
+          profile_interests: {
+            deleteMany: {},
+            create: profile_interest.map((obj) => ({
+              interest: {
+                connectOrCreate: {
+                  where: {
+                    interest_name: obj!.interest_name,
+                  },
+                  create: {
+                    interest_name: obj!.interest_name,
+                  },
                 },
               },
-            },
-          })),
+            })),
+          },
         },
-      },
-    });
+      });
 
-    return {
-      IOutput: {
-        code: 200,
-        success: true,
-        message: "Profile updated successfully",
-      },
-      Profile: updatedProfile,
-    };
+      if (!updatedProfile)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Profile is not found",
+          },
+        };
+
+      return {
+        IOutput: {
+          code: 200,
+          success: true,
+          message: "Profile updated successfully",
+        },
+        Profile: updatedProfile,
+      };
+    } catch (error) {
+      return {
+        IOutput: {
+          code: 500,
+          success: false,
+          message: INTERNAL_SERVER_ERROR,
+        },
+      };
+    }
   },
 });

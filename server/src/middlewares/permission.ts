@@ -53,5 +53,6 @@ export const middleware = shield({
     updateProfile: rules.isProfileOwner,
     forgotPassword: allow,
     changePassword: allow,
+    verifyEmail: allow,
   },
 });

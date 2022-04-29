@@ -1,4 +1,5 @@
 import { nonNull, queryField } from "nexus";
+import { INTERNAL_SERVER_ERROR } from "../../constants";
 import { GetManyProfilesInput, ProfileWhereUniqueInput } from "../inputs";
 import { GetManyProfilesOutput, GetProfileOutput } from "../outputs";
 
@@ -17,8 +18,16 @@ export const getProfile = queryField("getProfile", {
         include: {
           user: true,
         },
-        rejectOnNotFound: true,
       });
+
+      if (!profile)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Profile is not found",
+          },
+        };
 
       return {
         IOutput: {
@@ -33,7 +42,7 @@ export const getProfile = queryField("getProfile", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server code ${error}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }
@@ -79,7 +88,7 @@ export const getManyProfiles = queryField("getManyProfiles", {
         IOutput: {
           code: 500,
           success: false,
-          message: `Internal server error ${error}`,
+          message: INTERNAL_SERVER_ERROR,
         },
       };
     }

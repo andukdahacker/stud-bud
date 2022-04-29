@@ -43,6 +43,9 @@ export interface NexusGenInputs {
     password: string; // String!
     username: string; // String!
   }
+  VerifyEmailInput: { // input type
+    token: string; // String!
+  }
   getManyInterestsInput: { // input type
     search_input?: string | null; // String
   }
@@ -107,6 +110,7 @@ export interface NexusGenObjects {
   User: { // root type
     email: string; // String!
     id: string; // ID!
+    isVerified: boolean; // Boolean!
     username: string; // String!
   }
 }
@@ -161,6 +165,7 @@ export interface NexusGenFieldTypes {
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
   }
   Profile: { // field return type
     id: string; // ID!
@@ -187,6 +192,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     email: string; // String!
     id: string; // ID!
+    isVerified: boolean; // Boolean!
     profile: NexusGenRootTypes['Profile'] | null; // Profile
     username: string; // String!
   }
@@ -232,6 +238,7 @@ export interface NexusGenFieldTypeNames {
     logout: 'AuthOutput'
     register: 'AuthOutput'
     updateProfile: 'ProfileMutationOutput'
+    verifyEmail: 'AuthOutput'
   }
   Profile: { // field return type name
     id: 'ID'
@@ -258,6 +265,7 @@ export interface NexusGenFieldTypeNames {
   User: { // field return type name
     email: 'String'
     id: 'ID'
+    isVerified: 'Boolean'
     profile: 'Profile'
     username: 'String'
   }
@@ -283,6 +291,9 @@ export interface NexusGenArgTypes {
     updateProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    verifyEmail: { // args
+      input: NexusGenInputs['VerifyEmailInput']; // VerifyEmailInput!
     }
   }
   Query: {

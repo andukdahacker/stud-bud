@@ -6,11 +6,16 @@ export const getUserQuery = queryField("getUser", {
   resolve: async (_root, _args, ctx) => {
     const userId = ctx.req.session.userId;
     if (!userId) return null;
-    return await ctx.prisma.user.findUnique({
+
+    const user = await ctx.prisma.user.findUnique({
       where: {
         id: userId,
       },
-      rejectOnNotFound: true,
+      include: {
+        profile: true,
+      },
     });
+
+    return user;
   },
 });

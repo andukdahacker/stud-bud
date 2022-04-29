@@ -7,7 +7,8 @@ import {
 } from "../generated/graphql";
 
 const LogOut = () => {
-  const [logoutMutation, _] = useLogoutMutation();
+  const [logoutMutation, { loading }] = useLogoutMutation();
+
   const router = useRouter();
   const logout = async () => {
     await logoutMutation({
@@ -18,14 +19,15 @@ const LogOut = () => {
             data: { getUser: null },
           });
         }
+
+        router.push("/login");
       },
     });
-
-    router.push("/login");
   };
   return (
     <div>
       <NavBar />
+      {loading && <div>Loading...</div>}
       <span>Are you sure you want to log out?</span>
       <button onClick={logout}>Yes</button>
       <button onClick={router.back}>No</button>

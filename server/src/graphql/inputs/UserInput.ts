@@ -31,3 +31,10 @@ export const ChangePasswordInput = inputObjectType({
     t.nonNull.string("newPassword");
   },
 });
+
+export const VerifyEmailInput = inputObjectType({
+  name: "VerifyEmailInput",
+  definition(t) {
+    t.nonNull.string("token");
+  },
+});

@@ -15,7 +15,6 @@ export const Profile = objectType({
             where: {
               id: root.id,
             },
-            rejectOnNotFound: true,
           })
           .profile_interests();
       },

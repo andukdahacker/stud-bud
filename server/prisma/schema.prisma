@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @db.VarChar
-  email     String   @unique @db.VarChar
-  password  String   @db.VarChar
-  profile   Profile?
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  id         String   @id @default(cuid())
+  username   String   @db.VarChar
+  email      String   @unique @db.VarChar
+  password   String   @db.VarChar
+  isVerified Boolean
+  profile    Profile?
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @db.Timestamp(6)
 }
 
 model Profile {

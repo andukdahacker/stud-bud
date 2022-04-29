@@ -5,6 +5,8 @@ import { useCheckAuth } from "../utils/useCheckAuth";
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
   const router = useRouter();
+  const profile = authData?.getUser?.profile;
+  const username = authData?.getUser?.username;
 
   return (
     <>
@@ -15,7 +17,10 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div>
-          <span>Hello, {authData.getUser.username}</span>
+          <span>Hello, {username}</span>
+          <Link href={profile ? `/dashboard/${profile.id}` : "/create-profile"}>
+            <a>Profile</a>
+          </Link>
           <Link href="/logout">
             <a>Log out</a>
           </Link>
