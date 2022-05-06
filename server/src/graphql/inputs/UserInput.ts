@@ -28,7 +28,7 @@ export const ChangePasswordInput = inputObjectType({
   name: "ChangePasswordInput",
   definition(t) {
     t.nonNull.string("token");
-    t.nonNull.string("newPassword");
+    t.nonNull.string("password");
   },
 });
 

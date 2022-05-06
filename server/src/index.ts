@@ -9,7 +9,7 @@ import {
 import dotenv from "dotenv";
 import connectRedis from "connect-redis";
 import session from "express-session";
-import { COOKIE_NAME, __prod__ } from "./constants";
+import { BASE_URL, COOKIE_NAME, __prod__ } from "./constants";
 import { createContext } from "./context";
 import { schemaWithMiddleware } from "./schema";
 import { redis } from "./redis";
@@ -29,7 +29,7 @@ const startServer = async () => {
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: BASE_URL,
       credentials: true,
     })
   );
@@ -66,7 +66,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: "http://localhost:3000",
+      origin: BASE_URL,
       credentials: true,
     },
   });

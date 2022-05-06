@@ -20,11 +20,9 @@ import {
   UNVERIFIED,
 } from "../../constants";
 
-import {
-  sendForgotPasswordEmail,
-  sendVerificationEmail,
-} from "../../utils/emailService";
+import { sendIMail } from "../../utils/emailService";
 import { validateChangePasswordInput } from "../../utils/validateChangePasswordInput";
+import { validateForgotPasswordInput } from "../../utils/validateForgotPasswordInput";
 
 export const RegisterMutation = mutationField("register", {
   type: nonNull(AuthOutput),
@@ -80,14 +78,16 @@ export const RegisterMutation = mutationField("register", {
           isVerified: false,
         },
       });
-      await sendVerificationEmail(ctx, newUser.id, email);
+      // await sendVerificationEmail(ctx, newUser.id, email);
+      await sendIMail(ctx, newUser.id, email, "verifyEmail");
 
       //all good
       return {
         IOutput: {
           code: 200,
           success: true,
-          message: "User registered successfully",
+          message:
+            "User registered successfully. Please check your email to verify your account",
         },
         User: newUser,
       };
@@ -215,8 +215,8 @@ export const LoginMutation = mutationField("login", {
 
       // user is unverified -> resend a verification email
       if (existingUser.isVerified === false) {
-        await sendVerificationEmail(ctx, existingUser.id, existingUser.email);
-
+        // await sendVerificationEmail(ctx, existingUser.id, existingUser.email);
+        await sendIMail(ctx, existingUser.id, email, "verifyEmail");
         return {
           IOutput: {
             code: 400,
@@ -297,8 +297,19 @@ export const forgotPassword = mutationField("forgotPassword", {
     input: nonNull(ForgotPasswordInput),
   },
   resolve: async (_root, args, ctx) => {
+    const { email } = args.input;
+    const validateForgotPasswordInputErrors =
+      validateForgotPasswordInput(email);
+    if (validateForgotPasswordInputErrors.length > 0)
+      return {
+        IOutput: {
+          code: 400,
+          success: false,
+          message: INVALID_INPUT,
+        },
+        ErrorFieldOutput: validateForgotPasswordInputErrors,
+      };
     try {
-      const { email } = args.input;
       const existingUser = await ctx.prisma.user.findUnique({
         where: { email },
       });
@@ -307,10 +318,11 @@ export const forgotPassword = mutationField("forgotPassword", {
           IOutput: {
             code: 400,
             success: false,
-            message: "User does not exist",
+            message: "Incorrect email",
           },
         };
-      await sendForgotPasswordEmail(ctx, existingUser.id, email);
+      // await sendForgotPasswordEmail(ctx, existingUser.id, email);
+      await sendIMail(ctx, existingUser.id, email, "forgotPassword");
 
       return {
         IOutput: {
@@ -337,9 +349,9 @@ export const changePassword = mutationField("changePassword", {
     input: nonNull(ChangePasswordInput),
   },
   resolve: async (_root, args, ctx) => {
-    const { newPassword, token } = args.input;
+    const { password, token } = args.input;
     const validateChangePasswordInputErrors =
-      validateChangePasswordInput(newPassword);
+      validateChangePasswordInput(password);
     if (validateChangePasswordInputErrors.length > 0)
       return {
         IOutput: {
@@ -376,7 +388,7 @@ export const changePassword = mutationField("changePassword", {
           },
         };
 
-      const hashNewPassword = await argon2.hash(newPassword);
+      const hashNewPassword = await argon2.hash(password);
 
       const updatedUser = await ctx.prisma.user.update({
         where: {

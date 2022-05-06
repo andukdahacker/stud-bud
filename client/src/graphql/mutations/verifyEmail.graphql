@@ -1,0 +1,14 @@
+mutation verifyEmail($input: VerifyEmailInput!) {
+  verifyEmail(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+    User {
+      id
+      isVerified
+      email
+    }
+  }
+}

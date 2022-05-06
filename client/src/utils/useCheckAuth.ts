@@ -13,7 +13,8 @@ export const useCheckAuth = () => {
         (router.route === "/login" ||
           router.route === "/register" ||
           router.route === "/forgot-password" ||
-          router.route === "/change-password")
+          router.route === "/change-password/[token]" ||
+          router.route === "/verify-email/[token]")
       ) {
         //Already logged in
         router.replace("/");
@@ -22,6 +23,9 @@ export const useCheckAuth = () => {
         router.route !== "/login" &&
         router.route !== "/register" &&
         router.route !== "/forgot-password" &&
+        router.route !== "/change-password/[token]" &&
+        router.route !== "/verify-email/[token]" &&
+        router.route !== "/find-buddy" &&
         router.route !== "/"
       ) {
         router.replace("/login");

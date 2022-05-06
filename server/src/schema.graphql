@@ -9,7 +9,7 @@ type AuthOutput {
 }
 
 input ChangePasswordInput {
-  newPassword: String!
+  password: String!
   token: String!
 }
 

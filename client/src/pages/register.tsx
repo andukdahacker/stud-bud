@@ -6,11 +6,9 @@ import TextError from "../components/TextError";
 import * as Yup from "yup";
 import NavBar from "../components/NavBar";
 import Link from "next/link";
-import { useState } from "react";
 
 const Register = () => {
-  const [registerMutation, { loading }] = useRegisterMutation();
-  const [error, setError] = useState<string>();
+  const [registerMutation, { data, loading }] = useRegisterMutation({});
   const router = useRouter();
 
   const initialValues: RegisterInput = {
@@ -41,14 +39,12 @@ const Register = () => {
       variables: { input: values },
     });
 
-    if (!result.data?.register.IOutput.success) {
-      if (result.data?.register.ErrorFieldOutput) {
-        setErrors(mapErrorField(result.data.register.ErrorFieldOutput));
-      }
-      setError(result.data?.register.IOutput.message);
+    if (result.data?.register.ErrorFieldOutput) {
+      setErrors(mapErrorField(result.data.register.ErrorFieldOutput));
     }
-
-    router.push("/login");
+    if (result.data?.register.IOutput.success) {
+      router.push("/login");
+    }
   };
 
   return (
@@ -77,6 +73,8 @@ const Register = () => {
             <button type="submit" disabled={isSubmitting ? true : false}>
               Submit
             </button>
+
+            <div>{data?.register.IOutput.message}</div>
           </Form>
         )}
       </Formik>

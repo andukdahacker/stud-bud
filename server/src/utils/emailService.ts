@@ -1,11 +1,12 @@
 import nodemailer from "nodemailer";
 import {
+  BASE_URL,
   EMAIL_VERIFICATION_PREFIX,
   EMAIL_VERIFICATION_SUBJECT,
   FORGOT_PASSWORD_EMAIL_SUBJECT,
   FORGOT_PASSWORD_PREFIX,
 } from "../constants";
-import { Context } from "src/context";
+import { Context } from "../context";
 import { v4 } from "uuid";
 
 const sendMail = async (to: string, subject: string, html: string) => {
@@ -27,46 +28,42 @@ const sendMail = async (to: string, subject: string, html: string) => {
   await transporter.sendMail(mailOptions);
 };
 
-export const sendVerificationEmail = async (
+export const sendIMail = async (
   ctx: Context,
   userId: string,
-  email: string
+  email: string,
+  options: string
 ) => {
   const token = v4();
-  const key = EMAIL_VERIFICATION_PREFIX + token;
+  const key =
+    options === "verifyEmail"
+      ? EMAIL_VERIFICATION_PREFIX + token
+      : options === "forgotPassword"
+      ? FORGOT_PASSWORD_PREFIX + token
+      : "";
 
   const expiringTime = 1000 * 60 * 60;
 
   await ctx.redis.set(key, userId, "EX", expiringTime);
 
-  const emailVerificationURL = `http://localhost:3000/email-verify/${token}`;
+  if (options === "verifyEmail") {
+    const emailVerificationURL = `${BASE_URL}/verify-email/${token}`;
 
-  const message = `
+    const message = `
       <h1>Thank you for signing up!</h1>
       <p>Click the link below to confirm your email address</p>
       <a href=${emailVerificationURL} clicktracking=off>${emailVerificationURL}</a>
       `;
 
-  await sendMail(email, EMAIL_VERIFICATION_SUBJECT, message);
-};
+    await sendMail(email, EMAIL_VERIFICATION_SUBJECT, message);
+  } else if (options === "forgotPassword") {
+    const changePasswordURL = `${BASE_URL}/change-password/${token}`;
 
-export const sendForgotPasswordEmail = async (
-  ctx: Context,
-  userId: string,
-  email: string
-) => {
-  const token = v4();
-  const expiringTime = 1000 * 60 * 60;
-  const key = FORGOT_PASSWORD_PREFIX + token;
-
-  await ctx.redis.set(key, userId, "EX", expiringTime);
-
-  const changePasswordURL = `http://localhost:3000/changepassword/${token}`;
-
-  const message = `
+    const message = `
     <h1>You have requested a password reset</h1>
     <p>Click the link below to continue the process</p>
     <a href=${changePasswordURL} clicktracking=off>${changePasswordURL}</a>
     `;
-  await sendMail(email, FORGOT_PASSWORD_EMAIL_SUBJECT, message);
+    await sendMail(email, FORGOT_PASSWORD_EMAIL_SUBJECT, message);
+  }
 };

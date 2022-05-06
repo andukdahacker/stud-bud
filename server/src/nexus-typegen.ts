@@ -15,7 +15,7 @@ declare global {
 
 export interface NexusGenInputs {
   ChangePasswordInput: { // input type
-    newPassword: string; // String!
+    password: string; // String!
     token: string; // String!
   }
   CreateInterestInput: { // input type
