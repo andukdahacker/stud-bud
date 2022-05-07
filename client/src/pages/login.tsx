@@ -10,6 +10,7 @@ import TextError from "../components/TextError";
 import { mapErrorField } from "../utils/mapErrorField";
 import * as Yup from "yup";
 import NavBar from "../components/NavBar";
+import Link from "next/link";
 
 const Login = () => {
   const [logInMutation, { data, loading }] = useLoginMutation();
@@ -83,6 +84,10 @@ const Login = () => {
           </Form>
         )}
       </Formik>
+
+      <Link href="/forgot-password">
+        <a>Forgot password?</a>
+      </Link>
     </>
   );
 };

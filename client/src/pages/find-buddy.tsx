@@ -2,9 +2,12 @@ import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
+import ProfileCard from "../components/ProfileCard";
+import SuggestionCard from "../components/SuggestionCard";
 import {
   GetManyInterestsInput,
   GetManyProfilesInput,
+  ProfileInterest,
   useGetManyInterestsLazyQuery,
   useGetManyProfilesQuery,
 } from "../generated/graphql";
@@ -86,11 +89,11 @@ const FindBuddy = () => {
             <div>{getManyInterestMessage}</div>
           ) : !suggestions || !search ? null : (
             suggestions.map((interest, index) => {
-              //component: Search suggestions
               return (
-                <div key={index}>
-                  <p>{interest?.interest_name}</p>
-                </div>
+                <SuggestionCard
+                  key={index}
+                  interest_name={interest?.interest_name as string}
+                />
               );
             })
           )}
@@ -107,10 +110,15 @@ const FindBuddy = () => {
       ) : (
         profiles!.map((profile, index) => {
           //component: Search profile results
+          const interests = profile?.profile_interests?.map((obj) => {
+            return { interest_name: obj?.interest.interest_name as string };
+          });
           return (
-            <div key={index}>
-              <p>{profile?.user?.username}</p>
-            </div>
+            <ProfileCard
+              key={index}
+              username={profile?.user?.username as string}
+              interests={interests}
+            />
           );
         })
       )}
