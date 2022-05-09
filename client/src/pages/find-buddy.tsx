@@ -7,7 +7,6 @@ import SuggestionCard from "../components/SuggestionCard";
 import {
   GetManyInterestsInput,
   GetManyProfilesInput,
-  ProfileInterest,
   useGetManyInterestsLazyQuery,
   useGetManyProfilesQuery,
 } from "../generated/graphql";

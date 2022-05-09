@@ -109,7 +109,9 @@ const EditProfile = () => {
                           name={`profile_interest[${index}.interest_name]`}
                           placeholder="interest"
                         />
-                        <button onClick={() => remove(index)}>X</button>
+                        <button type="button" onClick={() => remove(index)}>
+                          X
+                        </button>
                       </div>
                     );
                   })}

@@ -5,6 +5,7 @@ import {
   HttpLink,
   InMemoryCache,
 } from "@apollo/client";
+import "../styles/index.css";
 
 function createApolloClient() {
   const link = new HttpLink({

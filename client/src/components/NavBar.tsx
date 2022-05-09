@@ -10,7 +10,9 @@ const NavBar = () => {
 
   return (
     <>
-      <Link href="/">StudBud</Link>
+      <Link href="/">
+        <a>StudBud</a>
+      </Link>
       {authLoading ? (
         <div>Loading</div>
       ) : router.route == "/login" ||
