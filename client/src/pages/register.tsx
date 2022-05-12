@@ -6,6 +6,10 @@ import TextError from "../components/TextError";
 import * as Yup from "yup";
 import NavBar from "../components/NavBar";
 import Link from "next/link";
+import Head from "next/head";
+import Image from "next/image";
+import logo from "../assets/Mark.png";
+import Loading from "../components/Loading";
 
 const Register = () => {
   const [registerMutation, { data, loading }] = useRegisterMutation({});
@@ -49,37 +53,70 @@ const Register = () => {
 
   return (
     <>
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
-      {loading && <div>Loading...</div>}
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validationSchema={registerValidationSchema}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <label htmlFor="username">Username</label>
-            <Field name="username" placeholder="Username" />
-            <ErrorMessage name="username" component={TextError} />
 
-            <label htmlFor="email">Email</label>
-            <Field name="email" placeholder="Email" />
-            <ErrorMessage name="email" component={TextError} />
+      <div className="h-[44rem] bg-gray-50">
+        <Formik
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validationSchema={registerValidationSchema}
+        >
+          {({ isSubmitting }) => (
+            <Form className="flex flex-col items-center justify-center w-full h-full">
+              <Image src={logo} />
+              <h2 className="text-3xl font-extrabold leading-9">
+                Create an account
+              </h2>
 
-            <label htmlFor="password">Password</label>
-            <Field name="password" placeholder="Password" />
-            <ErrorMessage name="password" component={TextError} />
+              <div className="flex flex-col items-center justify-center w-full ">
+                <div className="flex w-1/3 ">
+                  <label htmlFor="username" className="mr-2 font-bold">
+                    Username
+                  </label>
+                  <ErrorMessage name="username" component={TextError} />
+                </div>
+                <Field
+                  name="username"
+                  placeholder="Username"
+                  className="w-1/3 h-10 border border-gray-200 border-solid rounded-t-sm "
+                />
+                <div className="flex w-1/3">
+                  <label htmlFor="email" className="mr-2 font-bold">
+                    Email
+                  </label>
+                  <ErrorMessage name="email" component={TextError} />
+                </div>
+                <Field
+                  name="email"
+                  placeholder="Email"
+                  className="w-1/3 h-10 border border-gray-200 border-solid "
+                />
+                <div className="flex w-1/3">
+                  <label htmlFor="password" className="mr-2 font-bold">
+                    Password
+                  </label>
+                  <ErrorMessage name="password" component={TextError} />
+                </div>
+                <Field
+                  name="password"
+                  placeholder="Password"
+                  className="w-1/3 h-10 border border-gray-200 border-solid rounded-b-sm"
+                />
 
-            <button type="submit" disabled={isSubmitting ? true : false}>
-              Submit
-            </button>
+                <button type="submit" disabled={isSubmitting ? true : false}>
+                  {loading ? <Loading /> : <div>Submit</div>}
+                </button>
 
-            <div>{data?.register.IOutput.message}</div>
-          </Form>
-        )}
-      </Formik>
-      <Link href="/login">Already have an account?</Link>
-      <Link href="/forgot-password">Forgot password?</Link>
+                <Link href="/login">Already have an account?</Link>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </>
   );
 };

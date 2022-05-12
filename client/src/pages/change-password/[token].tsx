@@ -10,6 +10,7 @@ import {
 } from "../../generated/graphql";
 import * as Yup from "yup";
 import { mapErrorField } from "../../utils/mapErrorField";
+import Head from "next/head";
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -69,6 +70,10 @@ const ChangePassword = () => {
     );
   return (
     <>
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
       <Formik
         initialValues={initialValues}

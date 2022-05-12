@@ -78,8 +78,7 @@ export const RegisterMutation = mutationField("register", {
           isVerified: false,
         },
       });
-      // await sendVerificationEmail(ctx, newUser.id, email);
-      await sendIMail(ctx, newUser.id, email, "verifyEmail");
+      // await sendIMail(ctx, newUser.id, email, "verifyEmail");
 
       //all good
       return {

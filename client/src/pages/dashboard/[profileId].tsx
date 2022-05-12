@@ -1,5 +1,7 @@
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { useGetProfileQuery } from "../../generated/graphql";
 import { useCheckAuth } from "../../utils/useCheckAuth";
@@ -30,6 +32,14 @@ const Profile = () => {
   if (checkAuthData?.getUser?.profile?.id !== profile_id)
     return (
       <>
+        <Head>
+          <title>{profileData?.user?.username} | StudBud</title>
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
+        </Head>
+
         <NavBar />
         <div>
           <h1>{profileData?.user?.username}</h1>
@@ -51,6 +61,10 @@ const Profile = () => {
     );
   return (
     <>
+      <Head>
+        <title>{profileData?.user?.username} | StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
       <div>
         <h1>{profileData?.user?.username}</h1>
@@ -71,6 +85,7 @@ const Profile = () => {
       {success ? null : (
         <div>{getProfileData?.getProfile?.IOutput.message}</div>
       )}
+      <Footer />
     </>
   );
 };

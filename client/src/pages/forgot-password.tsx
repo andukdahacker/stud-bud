@@ -7,6 +7,7 @@ import {
 import * as Yup from "yup";
 import { mapErrorField } from "../utils/mapErrorField";
 import TextError from "../components/TextError";
+import Head from "next/head";
 
 const ForgotPassword = () => {
   const [forgotPassword, { data, loading }] = useForgotPasswordMutation();
@@ -46,6 +47,10 @@ const ForgotPassword = () => {
 
   return (
     <>
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
       <Formik
         initialValues={initialValues}

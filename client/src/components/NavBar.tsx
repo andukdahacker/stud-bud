@@ -1,49 +1,79 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCheckAuth } from "../utils/useCheckAuth";
+import logo from "../assets/Mark.jpg";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
   const router = useRouter();
   const profile = authData?.getUser?.profile;
-  const username = authData?.getUser?.username;
 
   return (
-    <>
-      <Link href="/">
-        <a>StudBud</a>
-      </Link>
+    <div className="flex items-center justify-between px-10 py-5 bg-white shadow-md shadow-gray-200 ">
+      <div className="flex items-center">
+        <Link href="/">
+          <a className="flex items-center text-sm font-medium leading-5">
+            <Image src={logo} />
+            <div
+              className={`text-center ml-10 ${
+                router.route == "/" && `text-blue-700`
+              }`}
+            >
+              Home
+            </div>
+          </a>
+        </Link>
+        <Link href="/find-buddy">
+          <a
+            className={` ml-10 text-sm font-medium ${
+              router.route == "/find-buddy"
+                ? `text-blue-700`
+                : `text-gray-800 hover:text-blue-700`
+            }`}
+          >
+            Find Buddy
+          </a>
+        </Link>
+      </div>
       {authLoading ? (
         <div>Loading</div>
       ) : router.route == "/login" ||
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div>
-          <Link href="/find-buddy">
-            <a>Find Buddy</a>
-          </Link>
-          <span>Hello, {username}</span>
           <Link href={profile ? `/dashboard/${profile.id}` : "/create-profile"}>
-            <a>Profile</a>
+            <a
+              className={`text-sm font-medium  ${
+                router.route == "/dashboard/[profileId]"
+                  ? `text-blue-700`
+                  : `text-gray-800 hover:text-blue-700`
+              }`}
+            >
+              Profile
+            </a>
           </Link>
           <Link href="/logout">
-            <a>Log out</a>
+            <a className="ml-10 text-sm font-medium text-gray-800 hover:text-blue-700">
+              Log out
+            </a>
           </Link>
         </div>
       ) : (
         <div>
-          <Link href="/find-buddy">
-            <a>Find Buddy</a>
+          <Link href="/login">
+            <a className="text-sm font-medium text-gray-800 hover:text-blue-700">
+              Sign in
+            </a>
           </Link>
           <Link href="/register">
-            <a>Register</a>
-          </Link>
-          <Link href="/login">
-            <a>Log in</a>
+            <a className="p-3 ml-10 text-sm font-medium leading-6 text-white bg-[#0056FF] shadow-sm shadow-gray-900 rounded ">
+              Sign up
+            </a>
           </Link>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

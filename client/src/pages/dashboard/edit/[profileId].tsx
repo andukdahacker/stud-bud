@@ -1,4 +1,5 @@
 import { Field, FieldArray, Form, Formik } from "formik";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import NavBar from "../../../components/NavBar";
 import {
@@ -84,6 +85,10 @@ const EditProfile = () => {
   }
   return (
     <>
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
       <Formik
         initialValues={initialValues}

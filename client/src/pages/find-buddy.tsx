@@ -1,6 +1,9 @@
 import { Field, Form, Formik } from "formik";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
+import Footer from "../components/Footer";
+import Loading from "../components/Loading";
 import NavBar from "../components/NavBar";
 import ProfileCard from "../components/ProfileCard";
 import SuggestionCard from "../components/SuggestionCard";
@@ -71,57 +74,75 @@ const FindBuddy = () => {
   const profiles = getManyProfilesData?.getManyProfiles?.Profile;
 
   return (
-    <>
+    <div className="flex flex-col ">
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        <Form>
-          <Field
-            placeholder="search"
-            type="search"
-            name="search_input"
-            onKeyUp={handleChange}
-          />
-          <button type="submit">Search</button>
-          {getManyInterestsLoading ? (
-            <div>Loading...</div>
-          ) : !getManyInterestsSuccess ? (
-            <div>{getManyInterestMessage}</div>
-          ) : !suggestions || !search ? null : (
-            suggestions.map((interest, index) => {
-              return (
-                <SuggestionCard
-                  key={index}
-                  interest_name={interest?.interest_name as string}
-                />
-              );
-            })
-          )}
-        </Form>
-      </Formik>
+      <div>
+        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+          <Form className="flex flex-col items-center content-center justify-center w-full bg-center h-50 bg-gradient-to-r from-cyan-500 to-blue-500">
+            <label className="m-6 text-3xl font-bold leading-9 text-white">
+              Find your perfect buddy
+            </label>
+            <div className="mb-3">
+              <Field
+                placeholder="what are you interested in?"
+                type="search"
+                name="search_input"
+                onKeyUp={handleChange}
+                className="p-1 m-1 rounded-md w-96"
+              />
+              {/* <button type="submit" className="bg-green-700">
+                Search
+              </button> */}
+            </div>
+            <div className="flex content-center h-14">
+              {getManyInterestsLoading ? (
+                <Loading />
+              ) : !getManyInterestsSuccess ? (
+                <div>{getManyInterestMessage}</div>
+              ) : !suggestions || !search ? null : (
+                suggestions.map((interest, index) => {
+                  return (
+                    <SuggestionCard
+                      key={index}
+                      interest_name={interest?.interest_name as string}
+                    />
+                  );
+                })
+              )}
+            </div>
+          </Form>
+        </Formik>
+      </div>
 
-      <h2>Profiles</h2>
-      {getManyProfilesLoading ? (
-        <div>Loading...</div>
-      ) : !getManyProfilesSuccess ? (
-        <div>{getManyProfilesMessage}</div>
-      ) : profiles!.length == 0 ? (
-        <div>Sorry, we found no result for your search</div>
-      ) : (
-        profiles!.map((profile, index) => {
-          //component: Search profile results
-          const interests = profile?.profile_interests?.map((obj) => {
-            return { interest_name: obj?.interest.interest_name as string };
-          });
-          return (
-            <ProfileCard
-              key={index}
-              username={profile?.user?.username as string}
-              interests={interests}
-            />
-          );
-        })
-      )}
-    </>
+      <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
+        {getManyProfilesLoading ? (
+          <Loading />
+        ) : !getManyProfilesSuccess ? (
+          <div>{getManyProfilesMessage}</div>
+        ) : profiles!.length == 0 ? (
+          <div>Sorry, we found no result for your search</div>
+        ) : (
+          profiles!.map((profile, index) => {
+            //component: Search profile results
+            const interests = profile?.profile_interests?.map((obj) => {
+              return { interest_name: obj?.interest.interest_name as string };
+            });
+            return (
+              <ProfileCard
+                key={index}
+                username={profile?.user?.username as string}
+                interests={interests}
+              />
+            );
+          })
+        )}
+      </div>
+      <button>Load more</button>
+    </div>
   );
 };
 

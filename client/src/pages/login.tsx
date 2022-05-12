@@ -11,6 +11,7 @@ import { mapErrorField } from "../utils/mapErrorField";
 import * as Yup from "yup";
 import NavBar from "../components/NavBar";
 import Link from "next/link";
+import Head from "next/head";
 
 const Login = () => {
   const [logInMutation, { data, loading }] = useLoginMutation();
@@ -61,6 +62,10 @@ const Login = () => {
 
   return (
     <>
+      <Head>
+        <title>StudBud</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <NavBar />
       {loading && <div>Loading...</div>}
       <Formik
