@@ -12,6 +12,11 @@ import * as Yup from "yup";
 import NavBar from "../components/NavBar";
 import Link from "next/link";
 import Head from "next/head";
+import Loading from "../components/Loading";
+import Image from "next/image";
+import logo from "../assets/Mark.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 const Login = () => {
   const [logInMutation, { data, loading }] = useLoginMutation();
@@ -60,6 +65,12 @@ const Login = () => {
       .required("Required"),
   });
 
+  const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(passwordVisibility ? false : true);
+  };
+
   return (
     <>
       <Head>
@@ -67,32 +78,72 @@ const Login = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <NavBar />
-      {loading && <div>Loading...</div>}
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        validationSchema={logInValidationSchema}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <label htmlFor="email">Email</label>
-            <Field name="email" placeholder="Email" />
-            <ErrorMessage name="email" component={TextError} />
+      <div className="h-[44rem] bg-gray-50">
+        <Formik
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validationSchema={logInValidationSchema}
+        >
+          {({ isSubmitting }) => (
+            <Form className="flex flex-col items-center justify-center w-full h-full">
+              <Image src={logo} />
+              <h2 className="mt-5 text-3xl font-extrabold leading-9">
+                Sign in to your account
+              </h2>
 
-            <label htmlFor="password">Password</label>
-            <Field name="password" placeholder="Password" />
-            <ErrorMessage name="password" component={TextError} />
+              <div className="flex flex-col items-center justify-center w-full mt-5 h-[15rem]">
+                <div className="flex w-1/3">
+                  <label htmlFor="email" className="mr-2 font-bold">
+                    Email
+                  </label>
+                  <ErrorMessage name="email" component={TextError} />
+                </div>
 
-            <button type="submit" disabled={isSubmitting ? true : false}>
-              Submit
-            </button>
-          </Form>
-        )}
-      </Formik>
+                <Field
+                  name="email"
+                  placeholder="Email"
+                  className="w-1/3 h-10 border border-gray-200 border-solid rounded-t-sm "
+                />
 
-      <Link href="/forgot-password">
-        <a>Forgot password?</a>
-      </Link>
+                <div className="flex w-1/3">
+                  <label htmlFor="password" className="mr-2 font-bold">
+                    Password
+                  </label>
+                  <ErrorMessage name="password" component={TextError} />
+                </div>
+
+                <div className="relative w-1/3">
+                  <Field
+                    name="password"
+                    type={passwordVisibility ? "text" : "password"}
+                    placeholder="Password"
+                    className="w-full h-10 border border-gray-200 border-solid rounded-b-sm "
+                  />
+                  <FontAwesomeIcon
+                    icon="eye"
+                    size="lg"
+                    className="absolute bottom-3 right-2 hover:cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting ? true : false}
+                  className="m-3 p-2 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900"
+                >
+                  {loading ? <Loading /> : <div>Submit</div>}
+                </button>
+                <Link href="/forgot-password">
+                  <a className="text-blue-700">Forgot password?</a>
+                </Link>
+                <Link href="/register">
+                  <a className="text-blue-700">Don't have an account?</a>
+                </Link>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </>
   );
 };

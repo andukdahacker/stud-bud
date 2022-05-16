@@ -22,11 +22,13 @@ model User {
 }
 
 model Profile {
-  id                String             @id @default(cuid())
-  profile_bio       String?            @db.VarChar(200)
-  profile_interests ProfileInterests[]
-  user              User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id           String             @unique
+  id                       String             @id @default(cuid())
+  profile_bio              String?            @db.VarChar(200)
+  profile_avatar           String?            @db.VarChar
+  profile_avatar_public_id String?            @db.VarChar
+  profile_interests        ProfileInterests[]
+  user                     User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id                  String             @unique
 }
 
 model Interest {

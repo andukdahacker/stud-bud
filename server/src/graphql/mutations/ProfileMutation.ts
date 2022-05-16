@@ -1,7 +1,9 @@
 import { mutationField, nonNull } from "nexus";
+import { destroyImage, uploadFile } from "../../utils/cloudinary";
 import { INTERNAL_SERVER_ERROR } from "../../constants";
 import { CreateProfileInput, ProfileWhereUniqueInput } from "../inputs";
 import { ProfileMutationOutput } from "../outputs";
+import cloudinary from "cloudinary";
 
 export const createProfile = mutationField("createProfile", {
   type: ProfileMutationOutput,
@@ -9,13 +11,23 @@ export const createProfile = mutationField("createProfile", {
     input: nonNull(CreateProfileInput),
   },
   resolve: async (_root, args, ctx) => {
-    const { profile_bio, profile_interest } = args.input;
+    const { profile_bio, profile_interest, profile_avatar } = args.input;
     const userId = ctx.req.session.userId;
 
     try {
+      let AvtUploadResult: cloudinary.UploadApiResponse | undefined;
+      if (profile_avatar) {
+        const uploadResult = await uploadFile(profile_avatar);
+        AvtUploadResult = uploadResult;
+      }
+      const avt_secure_url = AvtUploadResult?.secure_url;
+      const avt_public_id = AvtUploadResult?.public_id;
+
       const profile = await ctx.prisma.profile.create({
         data: {
           profile_bio,
+          profile_avatar: avt_secure_url ? avt_secure_url : undefined,
+          profile_avatar_public_id: avt_public_id ? avt_public_id : undefined,
           profile_interests:
             profile_interest.length === 0
               ? undefined
@@ -69,8 +81,37 @@ export const updateProfile = mutationField("updateProfile", {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const { profile_bio, profile_interest } = args.input;
+      const { profile_bio, profile_interest, profile_avatar } = args.input;
       const { profile_id } = args.where;
+
+      let AvtUploadResult: cloudinary.UploadApiResponse | undefined;
+
+      if (profile_avatar) {
+        const profile = await ctx.prisma.profile.findUnique({
+          where: {
+            id: profile_id,
+          },
+        });
+
+        if (!profile)
+          return {
+            IOutput: {
+              code: 400,
+              success: false,
+              message: "Profile is not found",
+            },
+          };
+
+        if (profile.profile_avatar_public_id) {
+          await destroyImage(profile.profile_avatar_public_id);
+        }
+        const result = await uploadFile(profile_avatar);
+
+        AvtUploadResult = result;
+      }
+
+      const avt_secure_url = AvtUploadResult?.secure_url;
+      const avt_public_id = AvtUploadResult?.public_id;
 
       const updatedProfile = await ctx.prisma.profile.update({
         where: {
@@ -78,6 +119,8 @@ export const updateProfile = mutationField("updateProfile", {
         },
         data: {
           profile_bio,
+          profile_avatar: avt_secure_url ? avt_secure_url : undefined,
+          profile_avatar_public_id: avt_public_id ? avt_public_id : undefined,
           profile_interests: {
             deleteMany: {},
             create: profile_interest.map((obj) => ({

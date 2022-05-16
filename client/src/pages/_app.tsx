@@ -6,15 +6,22 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import "../styles/index.css";
+import "../utils/fontAwesome";
+import { createUploadLink } from "apollo-upload-client";
 
 function createApolloClient() {
-  const link = new HttpLink({
+  // const httpLink = new HttpLink({
+  //   uri: "http://localhost:4000/graphql",
+  //   credentials: "include",
+  // });
+
+  const uploadLink = createUploadLink({
     uri: "http://localhost:4000/graphql",
     credentials: "include",
   });
 
   return new ApolloClient({
-    link,
+    link: uploadLink,
     cache: new InMemoryCache(),
   });
 }

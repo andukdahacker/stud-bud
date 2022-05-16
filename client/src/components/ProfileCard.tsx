@@ -1,7 +1,7 @@
-import Image from "next/image";
-import defaultAvatar from "../assets/default-avatar.jpg";
+import Avatar from "./Avatar";
 interface ProfileCardProps {
-  username: string;
+  username: string | undefined;
+  avatar: string | undefined;
   interests: { interest_name: string }[] | undefined;
 }
 
@@ -9,13 +9,7 @@ const ProfileCard = (props: ProfileCardProps) => {
   return (
     <div className="flex flex-col w-full p-4 transition duration-300 ease-in-out delay-150 bg-white shadow-xl rounded-xl h-60 hover:bg-blue-800 hover:text-white">
       <div className="flex flex-col items-center h-30">
-        <Image
-          src={defaultAvatar}
-          className="rounded-full "
-          layout="fixed"
-          height={50}
-          width={50}
-        />
+        <Avatar img_url={props.avatar} />
         <div className="self-center mx-2 text-xl ">{props.username}</div>
       </div>
       <div className="flex flex-col items-center h-1/3">

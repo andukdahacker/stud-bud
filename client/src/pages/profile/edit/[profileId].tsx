@@ -9,11 +9,14 @@ import {
   useUpdateProfileMutation,
 } from "../../../generated/graphql";
 import { useCheckAuth } from "../../../utils/useCheckAuth";
+import Avatar from "../../../components/Avatar";
+import { useRef } from "react";
 
 const EditProfile = () => {
   const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
   const router = useRouter();
   const profile_id = router.query.profileId as string;
+  const fileInput = useRef<null | HTMLInputElement>(null);
 
   const { data: getProfileData, loading: getProfileLoading } =
     useGetProfileQuery({
@@ -32,17 +35,21 @@ const EditProfile = () => {
   const getProfileSuccess = getProfileData?.getProfile?.IOutput.success;
   const updateProfileSuccess =
     updateProfileData?.updateProfile?.IOutput.success;
+
   const profileData = getProfileData?.getProfile?.Profile;
   const profile_interest = profileData?.profile_interests
     ? profileData.profile_interests.map((obj) => {
         return { interest_name: obj?.interest.interest_name as string };
       })
     : [{ interest_name: "" }];
-
   const profile_bio = profileData?.profile_bio ? profileData.profile_bio : "";
+  const profile_avatar = profileData?.profile_avatar
+    ? profileData.profile_avatar
+    : undefined;
 
   const initialValues: CreateProfileInput & ProfileWhereUniqueInput = {
     profile_bio,
+    profile_avatar: undefined,
     profile_interest,
     profile_id,
   };
@@ -50,6 +57,7 @@ const EditProfile = () => {
   const onSubmit = async ({
     profile_id,
     profile_bio,
+    profile_avatar,
     profile_interest,
   }: CreateProfileInput & ProfileWhereUniqueInput) => {
     const result = await updateProfile({
@@ -57,13 +65,14 @@ const EditProfile = () => {
         where: { profile_id },
         input: {
           profile_bio,
+          profile_avatar,
           profile_interest,
         },
       },
     });
 
     if (result.data?.updateProfile?.IOutput.success) {
-      router.push(`/dashboard/${profile_id}`);
+      router.push(`/profile/${profile_id}`);
     }
   };
 
@@ -75,7 +84,6 @@ const EditProfile = () => {
       </>
     );
   if (checkAuthData?.getUser?.profile?.id !== profile_id) {
-    router.back();
     return (
       <>
         <NavBar />
@@ -95,8 +103,20 @@ const EditProfile = () => {
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting, values, setFieldValue }) => (
           <Form>
+            <button type="button" onClick={() => fileInput.current!.click()}>
+              <Avatar img_url={profile_avatar} />
+            </button>
+            <input
+              type="file"
+              onChange={(event) => {
+                if (event.target.files)
+                  setFieldValue("profile_avatar", event.target.files[0]);
+              }}
+              className="hidden"
+              ref={fileInput}
+            />
             <label htmlFor="profile_bio">Bio</label>
             <Field
               name="profile_bio"

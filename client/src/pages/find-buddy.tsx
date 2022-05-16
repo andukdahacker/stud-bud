@@ -127,14 +127,16 @@ const FindBuddy = () => {
           <div>Sorry, we found no result for your search</div>
         ) : (
           profiles!.map((profile, index) => {
-            //component: Search profile results
             const interests = profile?.profile_interests?.map((obj) => {
               return { interest_name: obj?.interest.interest_name as string };
             });
             return (
               <ProfileCard
                 key={index}
-                username={profile?.user?.username as string}
+                username={profile?.user?.username}
+                avatar={
+                  profile?.profile_avatar ? profile.profile_avatar : undefined
+                }
                 interests={interests}
               />
             );

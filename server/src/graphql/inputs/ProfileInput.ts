@@ -5,6 +5,7 @@ export const CreateProfileInput = inputObjectType({
   name: "CreateProfileInput",
   definition(t) {
     t.nullable.string("profile_bio");
+    t.nullable.upload("profile_avatar");
     t.nonNull.list.nullable.field("profile_interest", {
       type: CreateInterestInput,
     });

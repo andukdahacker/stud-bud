@@ -42,10 +42,10 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div>
-          <Link href={profile ? `/dashboard/${profile.id}` : "/create-profile"}>
+          <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
               className={`text-sm font-medium  ${
-                router.route == "/dashboard/[profileId]"
+                router.route == "/profile/[profileId]"
                   ? `text-blue-700`
                   : `text-gray-800 hover:text-blue-700`
               }`}

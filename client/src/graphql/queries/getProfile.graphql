@@ -9,6 +9,7 @@ query getProfile($where: ProfileWhereUniqueInput!) {
     Profile {
       id
       profile_bio
+      profile_avatar
       profile_interests {
         interest {
           interest_name

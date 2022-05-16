@@ -5,8 +5,23 @@
 
 
 import type { Context as Context } from "./context"
-
-
+import type { core } from "nexus"
+declare global {
+  interface NexusGenCustomInputMethods<TypeName extends string> {
+    /**
+     * The `Upload` scalar type represents a file upload.
+     */
+    upload<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "Upload";
+  }
+}
+declare global {
+  interface NexusGenCustomOutputMethods<TypeName extends string> {
+    /**
+     * The `Upload` scalar type represents a file upload.
+     */
+    upload<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Upload";
+  }
+}
 
 
 declare global {
@@ -22,6 +37,7 @@ export interface NexusGenInputs {
     interest_name: string; // String!
   }
   CreateProfileInput: { // input type
+    profile_avatar?: NexusGenScalars['Upload'] | null; // Upload
     profile_bio?: string | null; // String
     profile_interest: Array<NexusGenInputs['CreateInterestInput'] | null>; // [CreateInterestInput]!
   }
@@ -60,6 +76,7 @@ export interface NexusGenScalars {
   Float: number
   Boolean: boolean
   ID: string
+  Upload: any
 }
 
 export interface NexusGenObjects {
@@ -96,6 +113,7 @@ export interface NexusGenObjects {
   Mutation: {};
   Profile: { // root type
     id: string; // ID!
+    profile_avatar?: string | null; // String
     profile_bio?: string | null; // String
   }
   ProfileInterest: { // root type
@@ -169,6 +187,7 @@ export interface NexusGenFieldTypes {
   }
   Profile: { // field return type
     id: string; // ID!
+    profile_avatar: string | null; // String
     profile_bio: string | null; // String
     profile_interests: Array<NexusGenRootTypes['ProfileInterest'] | null> | null; // [ProfileInterest]
     user: NexusGenRootTypes['User'] | null; // User
@@ -242,6 +261,7 @@ export interface NexusGenFieldTypeNames {
   }
   Profile: { // field return type name
     id: 'ID'
+    profile_avatar: 'String'
     profile_bio: 'String'
     profile_interests: 'ProfileInterest'
     user: 'User'

@@ -10,9 +10,11 @@ import Head from "next/head";
 import Image from "next/image";
 import logo from "../assets/Mark.png";
 import Loading from "../components/Loading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 const Register = () => {
-  const [registerMutation, { data, loading }] = useRegisterMutation({});
+  const [registerMutation, { loading }] = useRegisterMutation({});
   const router = useRouter();
 
   const initialValues: RegisterInput = {
@@ -51,6 +53,12 @@ const Register = () => {
     }
   };
 
+  const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(passwordVisibility ? false : true);
+  };
+
   return (
     <>
       <Head>
@@ -68,11 +76,11 @@ const Register = () => {
           {({ isSubmitting }) => (
             <Form className="flex flex-col items-center justify-center w-full h-full">
               <Image src={logo} />
-              <h2 className="text-3xl font-extrabold leading-9">
+              <h2 className="mt-5 text-3xl font-extrabold leading-9">
                 Create an account
               </h2>
 
-              <div className="flex flex-col items-center justify-center w-full ">
+              <div className="flex flex-col items-center justify-center w-full mt-10 h-[20rem]">
                 <div className="flex w-1/3 ">
                   <label htmlFor="username" className="mr-2 font-bold">
                     Username
@@ -101,17 +109,31 @@ const Register = () => {
                   </label>
                   <ErrorMessage name="password" component={TextError} />
                 </div>
-                <Field
-                  name="password"
-                  placeholder="Password"
-                  className="w-1/3 h-10 border border-gray-200 border-solid rounded-b-sm"
-                />
-
-                <button type="submit" disabled={isSubmitting ? true : false}>
+                <div className="relative w-1/3">
+                  <Field
+                    name="password"
+                    type={passwordVisibility ? "text" : "password"}
+                    placeholder="Password"
+                    className="w-full h-10 border border-gray-200 border-solid rounded-b-sm "
+                  />
+                  <FontAwesomeIcon
+                    icon="eye"
+                    size="lg"
+                    className="absolute bottom-3 right-2 hover:cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting ? true : false}
+                  className="m-3 p-2 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900"
+                >
                   {loading ? <Loading /> : <div>Submit</div>}
                 </button>
 
-                <Link href="/login">Already have an account?</Link>
+                <Link href="/login">
+                  <a className="text-blue-700">Already have an account?</a>
+                </Link>
               </div>
             </Form>
           )}

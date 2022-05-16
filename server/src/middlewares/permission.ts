@@ -15,7 +15,7 @@ const rules = {
       }
     }
   ),
-  isProfileOwner: rule({ cache: "strict" })(
+  isProfileOwner: rule()(
     async (_parent, args, ctx: Context): Promise<IRuleResult> => {
       const userId = ctx.req.session.userId;
 
@@ -31,6 +31,7 @@ const rules = {
       if (profile?.id === args.where.profile_id) {
         return true;
       }
+
       return new Error(UNAUTHORISED);
     }
   ),

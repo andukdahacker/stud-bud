@@ -8,6 +8,7 @@ mutation createProfile($input: CreateProfileInput!) {
     Profile {
       id
       profile_bio
+      profile_avatar
       profile_interests {
         interest {
           id

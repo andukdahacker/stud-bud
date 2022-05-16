@@ -13,6 +13,7 @@ import { BASE_URL, COOKIE_NAME, __prod__ } from "./constants";
 import { createContext } from "./context";
 import { schemaWithMiddleware } from "./schema";
 import { redis } from "./redis";
+import { graphqlUploadExpress } from "graphql-upload";
 
 dotenv.config();
 
@@ -62,6 +63,8 @@ const startServer = async () => {
   });
 
   await apolloServer.start();
+
+  app.use(graphqlUploadExpress());
 
   apolloServer.applyMiddleware({
     app,

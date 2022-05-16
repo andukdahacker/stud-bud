@@ -18,16 +18,20 @@ const CreateProfile = () => {
 
   const initialValues: CreateProfileInput = {
     profile_bio: "",
+    profile_avatar: undefined,
     profile_interest: [{ interest_name: "" }],
   };
   const onSubmit = async ({
     profile_bio,
+    profile_avatar,
     profile_interest,
   }: CreateProfileInput) => {
+    console.log(profile_avatar);
     const result = await createProfile({
       variables: {
         input: {
           profile_bio,
+          profile_avatar,
           profile_interest,
         },
       },
@@ -36,7 +40,7 @@ const CreateProfile = () => {
     if (!result.data?.createProfile?.IOutput.success) {
       setError(result.data?.createProfile?.IOutput.message);
     } else if (result.data.createProfile.IOutput.success) {
-      router.push(`/dashboard/${result.data?.createProfile?.Profile?.id}`);
+      router.push(`/profile/${result.data?.createProfile?.Profile?.id}`);
     } //fix me
   };
 
@@ -55,13 +59,20 @@ const CreateProfile = () => {
       </Head>
       <NavBar />
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting, values, setFieldValue }) => (
           <Form>
             <label htmlFor="profile_bio">Bio</label>
             <Field
               name="profile_bio"
               placeholder="Write about yourself"
               as="textarea"
+            />
+            <input
+              type="file"
+              onChange={(event) => {
+                if (event.target.files)
+                  setFieldValue("profile_avatar", event.target.files[0]);
+              }}
             />
             <label htmlFor="profile_interest">Interests</label>
             <FieldArray name="profile_interest">

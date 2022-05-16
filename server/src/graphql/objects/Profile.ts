@@ -7,6 +7,7 @@ export const Profile = objectType({
   definition(t) {
     t.nonNull.id("id");
     t.nullable.string("profile_bio");
+    t.nullable.string("profile_avatar");
     t.nullable.list.nullable.field("profile_interests", {
       type: ProfileInterest,
       resolve: async (root, _args, ctx) => {
