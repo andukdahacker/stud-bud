@@ -98,6 +98,7 @@ export type Mutation = {
   login: AuthOutput;
   logout: AuthOutput;
   register: AuthOutput;
+  removeAvatar?: Maybe<ProfileMutationOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
 };
@@ -125,6 +126,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input: RegisterInput;
+};
+
+
+export type MutationRemoveAvatarArgs = {
+  where: ProfileWhereUniqueInput;
 };
 
 
@@ -250,6 +256,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, username: string, email: string } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
+
+export type RemoveAvatarMutationVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -559,6 +572,52 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RemoveAvatarDocument = gql`
+    mutation removeAvatar($where: ProfileWhereUniqueInput!) {
+  removeAvatar(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Profile {
+      profile_bio
+      profile_avatar
+      profile_interests {
+        interest {
+          interest_name
+        }
+      }
+    }
+  }
+}
+    `;
+export type RemoveAvatarMutationFn = Apollo.MutationFunction<RemoveAvatarMutation, RemoveAvatarMutationVariables>;
+
+/**
+ * __useRemoveAvatarMutation__
+ *
+ * To run a mutation, you first call `useRemoveAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAvatarMutation, { data, loading, error }] = useRemoveAvatarMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useRemoveAvatarMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAvatarMutation, RemoveAvatarMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveAvatarMutation, RemoveAvatarMutationVariables>(RemoveAvatarDocument, options);
+      }
+export type RemoveAvatarMutationHookResult = ReturnType<typeof useRemoveAvatarMutation>;
+export type RemoveAvatarMutationResult = Apollo.MutationResult<RemoveAvatarMutation>;
+export type RemoveAvatarMutationOptions = Apollo.BaseMutationOptions<RemoveAvatarMutation, RemoveAvatarMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: CreateProfileInput!, $where: ProfileWhereUniqueInput!) {
   updateProfile(input: $input, where: $where) {

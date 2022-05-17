@@ -167,3 +167,50 @@ export const updateProfile = mutationField("updateProfile", {
     }
   },
 });
+
+export const removeAvatar = mutationField("removeAvatar", {
+  type: ProfileMutationOutput,
+  args: {
+    where: nonNull(ProfileWhereUniqueInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { profile_id } = args.where;
+    try {
+      const updatedProfile = await ctx.prisma.profile.update({
+        where: {
+          id: profile_id,
+        },
+        data: {
+          profile_avatar: null,
+          profile_avatar_public_id: null,
+        },
+      });
+
+      if (!updateProfile)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Profile is not found",
+          },
+        };
+
+      return {
+        IOutput: {
+          code: 200,
+          success: true,
+          message: "Remove avatar successfully",
+        },
+        Profile: updatedProfile,
+      };
+    } catch (error) {
+      return {
+        IOutput: {
+          code: 500,
+          success: false,
+          message: INTERNAL_SERVER_ERROR,
+        },
+      };
+    }
+  },
+});

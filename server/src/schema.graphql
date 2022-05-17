@@ -75,6 +75,7 @@ type Mutation {
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   register(input: RegisterInput!): AuthOutput!
+  removeAvatar(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }

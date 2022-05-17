@@ -1,0 +1,18 @@
+mutation removeAvatar($where: ProfileWhereUniqueInput!) {
+  removeAvatar(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Profile {
+      profile_bio
+      profile_avatar
+      profile_interests {
+        interest {
+          interest_name
+        }
+      }
+    }
+  }
+}

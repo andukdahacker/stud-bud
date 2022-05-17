@@ -182,6 +182,7 @@ export interface NexusGenFieldTypes {
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
+    removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
   }
@@ -256,6 +257,7 @@ export interface NexusGenFieldTypeNames {
     login: 'AuthOutput'
     logout: 'AuthOutput'
     register: 'AuthOutput'
+    removeAvatar: 'ProfileMutationOutput'
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
   }
@@ -307,6 +309,9 @@ export interface NexusGenArgTypes {
     }
     register: { // args
       input: NexusGenInputs['RegisterInput']; // RegisterInput!
+    }
+    removeAvatar: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
     updateProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!

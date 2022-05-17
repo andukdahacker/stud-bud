@@ -12,8 +12,8 @@ const Avatar = (props: AvatarProps) => {
         src={props.img_url ? props.img_url : defaultAvatar}
         className="rounded-full "
         layout="fixed"
-        height={50}
-        width={50}
+        height={70}
+        width={70}
       />
     </div>
   );

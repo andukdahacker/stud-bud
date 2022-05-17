@@ -6,11 +6,13 @@ import {
   CreateProfileInput,
   ProfileWhereUniqueInput,
   useGetProfileQuery,
+  useRemoveAvatarMutation,
   useUpdateProfileMutation,
 } from "../../../generated/graphql";
 import { useCheckAuth } from "../../../utils/useCheckAuth";
 import Avatar from "../../../components/Avatar";
 import { useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const EditProfile = () => {
   const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
@@ -60,6 +62,7 @@ const EditProfile = () => {
     profile_avatar,
     profile_interest,
   }: CreateProfileInput & ProfileWhereUniqueInput) => {
+    console.log(profile_avatar);
     const result = await updateProfile({
       variables: {
         where: { profile_id },
@@ -76,7 +79,32 @@ const EditProfile = () => {
     }
   };
 
-  if (getProfileLoading || updateProfileLoading || checkAuthLoading)
+  const [
+    removeAvatar,
+    { data: removeAvatarData, loading: removeAvatarLoading },
+  ] = useRemoveAvatarMutation();
+  const onRemoveAvatar = async () => {
+    const result = await removeAvatar({
+      variables: {
+        where: {
+          profile_id,
+        },
+      },
+    });
+
+    if (result.data?.removeAvatar?.IOutput.success) {
+      router.reload();
+    }
+  };
+
+  const removeAvatarSuccess = removeAvatarData?.removeAvatar?.IOutput.success;
+
+  if (
+    getProfileLoading ||
+    updateProfileLoading ||
+    checkAuthLoading ||
+    removeAvatarLoading
+  )
     return (
       <>
         <NavBar />
@@ -107,6 +135,9 @@ const EditProfile = () => {
           <Form>
             <button type="button" onClick={() => fileInput.current!.click()}>
               <Avatar img_url={profile_avatar} />
+            </button>
+            <button type="button" onClick={onRemoveAvatar}>
+              <FontAwesomeIcon icon="trash-can" size="lg" />
             </button>
             <input
               type="file"
@@ -159,6 +190,10 @@ const EditProfile = () => {
 
             {updateProfileSuccess ? null : (
               <div>{updateProfileData?.updateProfile?.IOutput.message}</div>
+            )}
+
+            {removeAvatarSuccess ? null : (
+              <div>{removeAvatarData?.removeAvatar?.IOutput.message}</div>
             )}
           </Form>
         )}
