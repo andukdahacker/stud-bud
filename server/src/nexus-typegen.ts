@@ -12,6 +12,10 @@ declare global {
      * The `Upload` scalar type represents a file upload.
      */
     upload<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "Upload";
+    /**
+     * Date custom scalar type
+     */
+    date<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "Date";
   }
 }
 declare global {
@@ -20,6 +24,10 @@ declare global {
      * The `Upload` scalar type represents a file upload.
      */
     upload<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Upload";
+    /**
+     * Date custom scalar type
+     */
+    date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "Date";
   }
 }
 
@@ -45,7 +53,9 @@ export interface NexusGenInputs {
     email: string; // String!
   }
   GetManyProfilesInput: { // input type
+    cursor?: NexusGenScalars['Date'] | null; // Date
     search_input?: string | null; // String
+    take: number; // Int!
   }
   LoginInput: { // input type
     email: string; // String!
@@ -76,6 +86,7 @@ export interface NexusGenScalars {
   Float: number
   Boolean: boolean
   ID: string
+  Date: any
   Upload: any
 }
 
@@ -95,6 +106,7 @@ export interface NexusGenObjects {
   }
   GetManyProfilesOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    PageInfo?: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     Profile?: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
   GetProfileOutput: { // root type
@@ -111,7 +123,12 @@ export interface NexusGenObjects {
     interest_name?: string | null; // String
   }
   Mutation: {};
+  PageInfo: { // root type
+    endCursor?: NexusGenScalars['Date'] | null; // Date
+    hasNextPage?: boolean | null; // Boolean
+  }
   Profile: { // root type
+    createdAt?: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar?: string | null; // String
     profile_bio?: string | null; // String
@@ -159,6 +176,7 @@ export interface NexusGenFieldTypes {
   }
   GetManyProfilesOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    PageInfo: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     Profile: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
   GetProfileOutput: { // field return type
@@ -186,7 +204,12 @@ export interface NexusGenFieldTypes {
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
   }
+  PageInfo: { // field return type
+    endCursor: NexusGenScalars['Date'] | null; // Date
+    hasNextPage: boolean | null; // Boolean
+  }
   Profile: { // field return type
+    createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar: string | null; // String
     profile_bio: string | null; // String
@@ -234,6 +257,7 @@ export interface NexusGenFieldTypeNames {
   }
   GetManyProfilesOutput: { // field return type name
     IOutput: 'IOutput'
+    PageInfo: 'PageInfo'
     Profile: 'Profile'
   }
   GetProfileOutput: { // field return type name
@@ -261,7 +285,12 @@ export interface NexusGenFieldTypeNames {
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
   }
+  PageInfo: { // field return type name
+    endCursor: 'Date'
+    hasNextPage: 'Boolean'
+  }
   Profile: { // field return type name
+    createdAt: 'Date'
     id: 'ID'
     profile_avatar: 'String'
     profile_bio: 'String'

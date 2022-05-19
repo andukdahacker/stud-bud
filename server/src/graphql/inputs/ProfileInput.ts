@@ -23,6 +23,8 @@ export const GetManyProfilesInput = inputObjectType({
   name: "GetManyProfilesInput",
   definition(t) {
     t.nullable.string("search_input");
+    t.nonNull.int("take");
+    t.nullable.date("cursor");
   },
 });
 

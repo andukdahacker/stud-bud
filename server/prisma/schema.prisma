@@ -17,24 +17,30 @@ model User {
   password   String   @db.VarChar
   isVerified Boolean
   profile    Profile?
-  createdAt  DateTime @default(now()) @db.Timestamp(6)
-  updatedAt  DateTime @default(now()) @db.Timestamp(6)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Profile {
-  id                       String             @id @default(cuid())
-  profile_bio              String?            @db.VarChar(200)
-  profile_avatar           String?            @db.VarChar
-  profile_avatar_public_id String?            @db.VarChar
-  profile_interests        ProfileInterests[]
-  user                     User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id                  String             @unique
+  id                          String             @id @default(cuid())
+  profile_bio                 String?            @db.VarChar(200)
+  profile_avatar              String?            @db.VarChar
+  profile_avatar_public_id    String?            @db.VarChar
+  profile_wallpaper           String?            @db.VarChar
+  profile_wallpaper_public_id String?            @db.VarChar
+  profile_interests           ProfileInterests[]
+  user                        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id                     String             @unique
+  createdAt                   DateTime           @unique @default(now())
+  updatedAt                   DateTime           @updatedAt
 }
 
 model Interest {
   id                String             @id @default(cuid())
   interest_name     String             @unique @db.VarChar
   profile_interests ProfileInterests[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model ProfileInterests {
@@ -42,6 +48,8 @@ model ProfileInterests {
   profile_id  String
   interest    Interest @relation(fields: [interest_id], references: [id], onDelete: Cascade)
   interest_id String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@id([profile_id, interest_id])
 }

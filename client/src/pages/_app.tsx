@@ -1,13 +1,10 @@
 import type { AppProps } from "next/app";
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import "../styles/index.css";
 import "../utils/fontAwesome";
 import { createUploadLink } from "apollo-upload-client";
+import { GetManyProfilesOutput } from "../generated/graphql";
+import merge from "deepmerge";
 
 function createApolloClient() {
   // const httpLink = new HttpLink({
@@ -22,7 +19,31 @@ function createApolloClient() {
 
   return new ApolloClient({
     link: uploadLink,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            getManyProfiles: {
+              keyArgs: [],
+              merge: (
+                existing: GetManyProfilesOutput,
+                incoming: GetManyProfilesOutput
+              ) => {
+                if (existing) {
+                  if (!incoming.IOutput.success) {
+                    return incoming;
+                  }
+                  const merged = merge(existing, incoming);
+                  return merged;
+                }
+
+                return incoming;
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 }
 

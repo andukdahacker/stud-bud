@@ -14,11 +14,16 @@ query getManyProfiles($where: GetManyProfilesInput!) {
           interest_name
         }
       }
+      createdAt
       user {
         id
         username
         email
       }
+    }
+    PageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }

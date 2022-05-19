@@ -1,5 +1,5 @@
 import { objectType } from "nexus";
-import { Profile } from "../objects";
+import { PageInfo, Profile } from "../objects";
 import { IOutput } from "./IOutput";
 
 export const ProfileMutationOutput = objectType({
@@ -34,6 +34,9 @@ export const GetManyProfilesOutput = objectType({
     });
     t.nullable.list.nullable.field("Profile", {
       type: Profile,
+    });
+    t.nullable.field("PageInfo", {
+      type: PageInfo,
     });
   },
 });

@@ -23,6 +23,9 @@ input CreateProfileInput {
   profile_interest: [CreateInterestInput]!
 }
 
+"""Date custom scalar type"""
+scalar Date
+
 type ErrorFieldOutput {
   field: String!
   message: String!
@@ -38,11 +41,14 @@ type GetManyInterestOutput {
 }
 
 input GetManyProfilesInput {
+  cursor: Date
   search_input: String
+  take: Int!
 }
 
 type GetManyProfilesOutput {
   IOutput: IOutput!
+  PageInfo: PageInfo
   Profile: [Profile]
 }
 
@@ -80,7 +86,13 @@ type Mutation {
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
 
+type PageInfo {
+  endCursor: Date
+  hasNextPage: Boolean
+}
+
 type Profile {
+  createdAt: Date
   id: ID!
   profile_avatar: String
   profile_bio: String

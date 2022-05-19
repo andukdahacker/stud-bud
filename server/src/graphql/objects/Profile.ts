@@ -20,6 +20,7 @@ export const Profile = objectType({
           .profile_interests();
       },
     });
+    t.nullable.date("createdAt");
     t.nullable.field("user", {
       type: User,
       resolve: async (root, _args, ctx) => {
@@ -28,5 +29,13 @@ export const Profile = objectType({
           .user();
       },
     });
+  },
+});
+
+export const PageInfo = objectType({
+  name: "PageInfo",
+  definition(t) {
+    t.date("endCursor");
+    t.boolean("hasNextPage");
   },
 });

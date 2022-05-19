@@ -47,8 +47,11 @@ const FindBuddy = () => {
 
   const router = useRouter();
 
+  const PROFILES_TAKE_LIMIT = 1;
+
   const initialValues: GetManyInterestsInput & GetManyProfilesInput = {
     search_input: "",
+    take: PROFILES_TAKE_LIMIT,
   };
 
   const onSubmit = (values: GetManyProfilesInput) => {
@@ -57,21 +60,42 @@ const FindBuddy = () => {
     });
   };
 
-  const { data: getManyProfilesData, loading: getManyProfilesLoading } =
-    useGetManyProfilesQuery({
+  const {
+    data: getManyProfilesData,
+    loading: getManyProfilesLoading,
+    fetchMore,
+  } = useGetManyProfilesQuery({
+    variables: {
+      where: {
+        search_input: router.query ? (router.query.search_input as string) : "",
+        take: PROFILES_TAKE_LIMIT,
+      },
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+  const getManyProfilesSuccess =
+    getManyProfilesData?.getManyProfiles?.IOutput.success;
+
+  const getManyProfilesMessage =
+    getManyProfilesData?.getManyProfiles?.IOutput.message;
+  const profiles = getManyProfilesData?.getManyProfiles?.Profile;
+
+  const getManyProfilesPageInfo =
+    getManyProfilesData?.getManyProfiles?.PageInfo;
+
+  const loadMore = () => {
+    fetchMore({
       variables: {
         where: {
           search_input: router.query
             ? (router.query.search_input as string)
             : "",
+          take: PROFILES_TAKE_LIMIT,
+          cursor: profiles![profiles!.length - 1]?.createdAt,
         },
       },
     });
-  const getManyProfilesSuccess =
-    getManyProfilesData?.getManyProfiles?.IOutput.success;
-  const getManyProfilesMessage =
-    getManyProfilesData?.getManyProfiles?.IOutput.message;
-  const profiles = getManyProfilesData?.getManyProfiles?.Profile;
+  };
 
   return (
     <div className="flex flex-col ">
@@ -143,7 +167,13 @@ const FindBuddy = () => {
           })
         )}
       </div>
-      <button>Load more</button>
+      {getManyProfilesPageInfo?.hasNextPage ? (
+        <button onClick={loadMore} type="button">
+          Load more
+        </button>
+      ) : (
+        <div>End of list</div>
+      )}
     </div>
   );
 };

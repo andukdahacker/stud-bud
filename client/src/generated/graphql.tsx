@@ -13,6 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Date custom scalar type */
+  Date: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
@@ -56,12 +58,15 @@ export type GetManyInterestOutput = {
 };
 
 export type GetManyProfilesInput = {
+  cursor?: InputMaybe<Scalars['Date']>;
   search_input?: InputMaybe<Scalars['String']>;
+  take: Scalars['Int'];
 };
 
 export type GetManyProfilesOutput = {
   __typename?: 'GetManyProfilesOutput';
   IOutput: IOutput;
+  PageInfo?: Maybe<PageInfo>;
   Profile?: Maybe<Array<Maybe<Profile>>>;
 };
 
@@ -144,8 +149,15 @@ export type MutationVerifyEmailArgs = {
   input: VerifyEmailInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['Date']>;
+  hasNextPage?: Maybe<Scalars['Boolean']>;
+};
+
 export type Profile = {
   __typename?: 'Profile';
+  createdAt?: Maybe<Scalars['Date']>;
   id: Scalars['ID'];
   profile_avatar?: Maybe<Scalars['String']>;
   profile_bio?: Maybe<Scalars['String']>;
@@ -291,7 +303,7 @@ export type GetManyProfilesQueryVariables = Exact<{
 }>;
 
 
-export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null> | null } | null };
+export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null> | null, PageInfo?: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage?: boolean | null } | null } | null };
 
 export type GetProfileQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -766,11 +778,16 @@ export const GetManyProfilesDocument = gql`
           interest_name
         }
       }
+      createdAt
       user {
         id
         username
         email
       }
+    }
+    PageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }
