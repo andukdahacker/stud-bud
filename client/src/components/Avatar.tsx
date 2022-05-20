@@ -2,7 +2,7 @@ import Image from "next/image";
 import defaultAvatar from "../assets/default-avatar.jpg";
 
 interface AvatarProps {
-  img_url?: string;
+  img_url: string | null | undefined;
 }
 
 const Avatar = (props: AvatarProps) => {

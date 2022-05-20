@@ -6,6 +6,7 @@ import NavBar from "../../components/NavBar";
 import { useGetProfileQuery } from "../../generated/graphql";
 import { useCheckAuth } from "../../utils/useCheckAuth";
 import Avatar from "../../components/Avatar";
+import Wallpaper from "../../components/Wallpaper";
 
 const Profile = () => {
   const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
@@ -24,9 +25,9 @@ const Profile = () => {
   const success = getProfileData?.getProfile?.IOutput.success;
   const profileData = getProfileData?.getProfile?.Profile;
   const username = getProfileData?.getProfile?.Profile?.user?.username;
-  const profile_avatar = getProfileData?.getProfile?.Profile?.profile_avatar
-    ? getProfileData.getProfile.Profile.profile_avatar
-    : undefined;
+  const profile_avatar = getProfileData?.getProfile?.Profile?.profile_avatar;
+  const profile_wallpaper =
+    getProfileData?.getProfile?.Profile?.profile_wallpaper;
   const profile_bio = getProfileData?.getProfile?.Profile?.profile_bio;
 
   if (getProfileLoading || checkAuthLoading)
@@ -49,6 +50,7 @@ const Profile = () => {
 
         <NavBar />
         <div>
+          <Wallpaper img_url={profile_wallpaper} />
           <Avatar img_url={profile_avatar} />
           <h1>{username}</h1>
           <h2>Bio: {profile_bio}</h2>
@@ -76,6 +78,7 @@ const Profile = () => {
       </Head>
       <NavBar />
       <div>
+        <Wallpaper img_url={profile_wallpaper} />
         <Avatar img_url={profile_avatar} />
         <h1>{username}</h1>
         <Link href={`/profile/edit/${profile_id}`}>
