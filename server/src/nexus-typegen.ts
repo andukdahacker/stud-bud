@@ -48,6 +48,10 @@ export interface NexusGenInputs {
     profile_avatar?: NexusGenScalars['Upload'] | null; // Upload
     profile_bio?: string | null; // String
     profile_interest: Array<NexusGenInputs['CreateInterestInput'] | null>; // [CreateInterestInput]!
+    profile_wallpaper?: NexusGenScalars['Upload'] | null; // Upload
+  }
+  DestroyImageInput: { // input type
+    img_public_id: string; // String!
   }
   ForgotPasswordInput: { // input type
     email: string; // String!
@@ -131,7 +135,10 @@ export interface NexusGenObjects {
     createdAt?: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar?: string | null; // String
+    profile_avatar_public_id?: string | null; // String
     profile_bio?: string | null; // String
+    profile_wallpaper?: string | null; // String
+    profile_wallpaper_public_id?: string | null; // String
   }
   ProfileInterest: { // root type
     interest_id: string; // ID!
@@ -142,6 +149,7 @@ export interface NexusGenObjects {
     Profile?: NexusGenRootTypes['Profile'] | null; // Profile
   }
   Query: {};
+  Subscription: {};
   User: { // root type
     email: string; // String!
     id: string; // ID!
@@ -201,6 +209,7 @@ export interface NexusGenFieldTypes {
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    removeWallpaper: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
   }
@@ -212,8 +221,11 @@ export interface NexusGenFieldTypes {
     createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar: string | null; // String
+    profile_avatar_public_id: string | null; // String
     profile_bio: string | null; // String
     profile_interests: Array<NexusGenRootTypes['ProfileInterest'] | null> | null; // [ProfileInterest]
+    profile_wallpaper: string | null; // String
+    profile_wallpaper_public_id: string | null; // String
     user: NexusGenRootTypes['User'] | null; // User
   }
   ProfileInterest: { // field return type
@@ -231,6 +243,9 @@ export interface NexusGenFieldTypes {
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
     getProfile: NexusGenRootTypes['GetProfileOutput'] | null; // GetProfileOutput
     getUser: NexusGenRootTypes['User'] | null; // User
+  }
+  Subscription: { // field return type
+    truths: boolean | null; // Boolean
   }
   User: { // field return type
     email: string; // String!
@@ -282,6 +297,7 @@ export interface NexusGenFieldTypeNames {
     logout: 'AuthOutput'
     register: 'AuthOutput'
     removeAvatar: 'ProfileMutationOutput'
+    removeWallpaper: 'ProfileMutationOutput'
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
   }
@@ -293,8 +309,11 @@ export interface NexusGenFieldTypeNames {
     createdAt: 'Date'
     id: 'ID'
     profile_avatar: 'String'
+    profile_avatar_public_id: 'String'
     profile_bio: 'String'
     profile_interests: 'ProfileInterest'
+    profile_wallpaper: 'String'
+    profile_wallpaper_public_id: 'String'
     user: 'User'
   }
   ProfileInterest: { // field return type name
@@ -312,6 +331,9 @@ export interface NexusGenFieldTypeNames {
     getManyProfiles: 'GetManyProfilesOutput'
     getProfile: 'GetProfileOutput'
     getUser: 'User'
+  }
+  Subscription: { // field return type name
+    truths: 'Boolean'
   }
   User: { // field return type name
     email: 'String'
@@ -340,6 +362,11 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['RegisterInput']; // RegisterInput!
     }
     removeAvatar: { // args
+      input: NexusGenInputs['DestroyImageInput']; // DestroyImageInput!
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    removeWallpaper: { // args
+      input: NexusGenInputs['DestroyImageInput']; // DestroyImageInput!
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
     updateProfile: { // args

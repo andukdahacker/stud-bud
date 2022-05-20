@@ -5,8 +5,6 @@ import Footer from "../../components/Footer";
 import NavBar from "../../components/NavBar";
 import { useGetProfileQuery } from "../../generated/graphql";
 import { useCheckAuth } from "../../utils/useCheckAuth";
-import Image from "next/image";
-import defaultAvatar from "../../assets/default-avatar.jpg";
 import Avatar from "../../components/Avatar";
 
 const Profile = () => {

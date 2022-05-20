@@ -1,8 +1,8 @@
-mutation removeAvatar(
+mutation removeWallpaper(
   $where: ProfileWhereUniqueInput!
   $input: DestroyImageInput!
 ) {
-  removeAvatar(where: $where, input: $input) {
+  removeWallpaper(where: $where, input: $input) {
     IOutput {
       code
       success

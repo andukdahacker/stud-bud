@@ -6,7 +6,7 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET as string,
 });
 
-export const uploadFile = async (file: any) => {
+export const uploadImage = async (file: any) => {
   // The Upload scalar return a a promise
   const { createReadStream } = await file;
   const fileStream = createReadStream();

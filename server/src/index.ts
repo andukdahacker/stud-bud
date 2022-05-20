@@ -14,6 +14,8 @@ import { createContext } from "./context";
 import { schemaWithMiddleware } from "./schema";
 import { redis } from "./redis";
 import { graphqlUploadExpress } from "graphql-upload";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 
 dotenv.config();
 
@@ -53,11 +55,27 @@ const startServer = async () => {
     })
   );
 
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
+  });
+
+  const serverCleanup = useServer({ schema: schemaWithMiddleware }, wsServer);
+
   const apolloServer = new ApolloServer({
     schema: schemaWithMiddleware,
     context: createContext,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
       ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
   });

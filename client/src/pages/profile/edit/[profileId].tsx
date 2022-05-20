@@ -7,18 +7,21 @@ import {
   ProfileWhereUniqueInput,
   useGetProfileQuery,
   useRemoveAvatarMutation,
+  useRemoveWallpaperMutation,
   useUpdateProfileMutation,
 } from "../../../generated/graphql";
 import { useCheckAuth } from "../../../utils/useCheckAuth";
 import Avatar from "../../../components/Avatar";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Wallpaper from "../../../components/Wallpaper";
 
 const EditProfile = () => {
   const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
   const router = useRouter();
   const profile_id = router.query.profileId as string;
-  const fileInput = useRef<null | HTMLInputElement>(null);
+  const profileAvatarInput = useRef<null | HTMLInputElement>(null);
+  const profileWallpaperInput = useRef<null | HTMLInputElement>(null);
 
   const { data: getProfileData, loading: getProfileLoading } =
     useGetProfileQuery({
@@ -48,10 +51,16 @@ const EditProfile = () => {
   const profile_avatar = profileData?.profile_avatar
     ? profileData.profile_avatar
     : undefined;
+  const profile_avatar_public_id = profileData?.profile_avatar_public_id;
+  const profile_wallpaper = profileData?.profile_wallpaper
+    ? profileData.profile_wallpaper
+    : undefined;
+  const profile_wallpaper_public_id = profileData?.profile_wallpaper_public_id;
 
   const initialValues: CreateProfileInput & ProfileWhereUniqueInput = {
     profile_bio,
     profile_avatar: undefined,
+    profile_wallpaper: undefined,
     profile_interest,
     profile_id,
   };
@@ -60,15 +69,16 @@ const EditProfile = () => {
     profile_id,
     profile_bio,
     profile_avatar,
+    profile_wallpaper,
     profile_interest,
   }: CreateProfileInput & ProfileWhereUniqueInput) => {
-    console.log(profile_avatar);
     const result = await updateProfile({
       variables: {
         where: { profile_id },
         input: {
           profile_bio,
           profile_avatar,
+          profile_wallpaper,
           profile_interest,
         },
       },
@@ -83,11 +93,14 @@ const EditProfile = () => {
     removeAvatar,
     { data: removeAvatarData, loading: removeAvatarLoading },
   ] = useRemoveAvatarMutation();
-  const onRemoveAvatar = async () => {
+  const onRemoveAvatar = async (public_id: string) => {
     const result = await removeAvatar({
       variables: {
         where: {
           profile_id,
+        },
+        input: {
+          img_public_id: public_id,
         },
       },
     });
@@ -99,11 +112,35 @@ const EditProfile = () => {
 
   const removeAvatarSuccess = removeAvatarData?.removeAvatar?.IOutput.success;
 
+  const [
+    removeWallpaper,
+    { data: removeWallpaperData, loading: removeWallpaperLoading },
+  ] = useRemoveWallpaperMutation();
+  const onRemoveWallpaper = async (public_id: string) => {
+    const result = await removeWallpaper({
+      variables: {
+        where: {
+          profile_id,
+        },
+        input: {
+          img_public_id: public_id,
+        },
+      },
+    });
+
+    if (result.data?.removeWallpaper?.IOutput.success) {
+      router.reload();
+    }
+  };
+
+  const removeWallpaperSuccess =
+    removeWallpaperData?.removeWallpaper?.IOutput.success;
   if (
     getProfileLoading ||
     updateProfileLoading ||
     checkAuthLoading ||
-    removeAvatarLoading
+    removeAvatarLoading ||
+    removeWallpaperLoading
   )
     return (
       <>
@@ -111,6 +148,7 @@ const EditProfile = () => {
         <div>Loading...</div>
       </>
     );
+
   if (checkAuthData?.getUser?.profile?.id !== profile_id) {
     return (
       <>
@@ -133,12 +171,47 @@ const EditProfile = () => {
       >
         {({ isSubmitting, values, setFieldValue }) => (
           <Form>
-            <button type="button" onClick={() => fileInput.current!.click()}>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => profileWallpaperInput.current!.click()}
+              >
+                <Wallpaper img_url={profile_wallpaper} />
+              </button>
+              {profile_wallpaper_public_id && (
+                <button
+                  className="absolute bottom-3 right-2"
+                  onClick={() => onRemoveWallpaper(profile_wallpaper_public_id)}
+                >
+                  <FontAwesomeIcon icon="trash" color="white" />
+                </button>
+              )}
+              <input
+                type="file"
+                onChange={(event) => {
+                  if (event.target.files)
+                    setFieldValue("profile_wallpaper", event.target.files[0]);
+                }}
+                className="hidden"
+                ref={profileWallpaperInput}
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => profileAvatarInput.current!.click()}
+            >
               <Avatar img_url={profile_avatar} />
             </button>
-            <button type="button" onClick={onRemoveAvatar}>
-              <FontAwesomeIcon icon="trash-can" size="lg" />
-            </button>
+            {profile_avatar_public_id && (
+              <button
+                type="button"
+                onClick={() => onRemoveAvatar(profile_avatar_public_id)}
+              >
+                <FontAwesomeIcon icon="trash-can" size="lg" />
+              </button>
+            )}
+
             <input
               type="file"
               onChange={(event) => {
@@ -146,7 +219,7 @@ const EditProfile = () => {
                   setFieldValue("profile_avatar", event.target.files[0]);
               }}
               className="hidden"
-              ref={fileInput}
+              ref={profileAvatarInput}
             />
             <label htmlFor="profile_bio">Bio</label>
             <Field
@@ -194,6 +267,12 @@ const EditProfile = () => {
 
             {removeAvatarSuccess ? null : (
               <div>{removeAvatarData?.removeAvatar?.IOutput.message}</div>
+            )}
+            {removeAvatarSuccess ? null : (
+              <div>{removeAvatarData?.removeAvatar?.IOutput.message}</div>
+            )}
+            {removeWallpaperSuccess ? null : (
+              <div>{removeWallpaperData?.removeWallpaper?.IOutput.message}</div>
             )}
           </Form>
         )}

@@ -8,6 +8,9 @@ export const Profile = objectType({
     t.nonNull.id("id");
     t.nullable.string("profile_bio");
     t.nullable.string("profile_avatar");
+    t.nullable.string("profile_avatar_public_id");
+    t.nullable.string("profile_wallpaper");
+    t.nullable.string("profile_wallpaper_public_id");
     t.nullable.list.nullable.field("profile_interests", {
       type: ProfileInterest,
       resolve: async (root, _args, ctx) => {

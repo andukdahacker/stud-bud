@@ -118,9 +118,6 @@ const FindBuddy = () => {
                 onKeyUp={handleChange}
                 className="p-1 m-1 rounded-md w-96"
               />
-              {/* <button type="submit" className="bg-green-700">
-                Search
-              </button> */}
             </div>
             <div className="flex content-center h-14">
               {getManyInterestsLoading ? (

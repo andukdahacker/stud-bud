@@ -39,6 +39,11 @@ export type CreateProfileInput = {
   profile_avatar?: InputMaybe<Scalars['Upload']>;
   profile_bio?: InputMaybe<Scalars['String']>;
   profile_interest: Array<InputMaybe<CreateInterestInput>>;
+  profile_wallpaper?: InputMaybe<Scalars['Upload']>;
+};
+
+export type DestroyImageInput = {
+  img_public_id: Scalars['String'];
 };
 
 export type ErrorFieldOutput = {
@@ -104,6 +109,7 @@ export type Mutation = {
   logout: AuthOutput;
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
+  removeWallpaper?: Maybe<ProfileMutationOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
 };
@@ -135,6 +141,13 @@ export type MutationRegisterArgs = {
 
 
 export type MutationRemoveAvatarArgs = {
+  input: DestroyImageInput;
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type MutationRemoveWallpaperArgs = {
+  input: DestroyImageInput;
   where: ProfileWhereUniqueInput;
 };
 
@@ -160,8 +173,11 @@ export type Profile = {
   createdAt?: Maybe<Scalars['Date']>;
   id: Scalars['ID'];
   profile_avatar?: Maybe<Scalars['String']>;
+  profile_avatar_public_id?: Maybe<Scalars['String']>;
   profile_bio?: Maybe<Scalars['String']>;
   profile_interests?: Maybe<Array<Maybe<ProfileInterest>>>;
+  profile_wallpaper?: Maybe<Scalars['String']>;
+  profile_wallpaper_public_id?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
 };
 
@@ -212,6 +228,11 @@ export type RegisterInput = {
   username: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  truths?: Maybe<Scalars['Boolean']>;
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
@@ -241,7 +262,7 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null } | null } | null };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null } | null } | null };
 
 export type ForgotPasswordMutationVariables = Exact<{
   input: ForgotPasswordInput;
@@ -271,10 +292,19 @@ export type RegisterMutation = { __typename?: 'Mutation', register: { __typename
 
 export type RemoveAvatarMutationVariables = Exact<{
   where: ProfileWhereUniqueInput;
+  input: DestroyImageInput;
 }>;
 
 
 export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+
+export type RemoveWallpaperMutationVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+  input: DestroyImageInput;
+}>;
+
+
+export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -282,7 +312,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
 
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
@@ -310,7 +340,7 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'GetProfileOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'GetProfileOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -376,6 +406,7 @@ export const CreateProfileDocument = gql`
       id
       profile_bio
       profile_avatar
+      profile_wallpaper
       profile_interests {
         interest {
           id
@@ -585,8 +616,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const RemoveAvatarDocument = gql`
-    mutation removeAvatar($where: ProfileWhereUniqueInput!) {
-  removeAvatar(where: $where) {
+    mutation removeAvatar($where: ProfileWhereUniqueInput!, $input: DestroyImageInput!) {
+  removeAvatar(where: $where, input: $input) {
     IOutput {
       code
       success
@@ -620,6 +651,7 @@ export type RemoveAvatarMutationFn = Apollo.MutationFunction<RemoveAvatarMutatio
  * const [removeAvatarMutation, { data, loading, error }] = useRemoveAvatarMutation({
  *   variables: {
  *      where: // value for 'where'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -630,6 +662,53 @@ export function useRemoveAvatarMutation(baseOptions?: Apollo.MutationHookOptions
 export type RemoveAvatarMutationHookResult = ReturnType<typeof useRemoveAvatarMutation>;
 export type RemoveAvatarMutationResult = Apollo.MutationResult<RemoveAvatarMutation>;
 export type RemoveAvatarMutationOptions = Apollo.BaseMutationOptions<RemoveAvatarMutation, RemoveAvatarMutationVariables>;
+export const RemoveWallpaperDocument = gql`
+    mutation removeWallpaper($where: ProfileWhereUniqueInput!, $input: DestroyImageInput!) {
+  removeWallpaper(where: $where, input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Profile {
+      profile_bio
+      profile_avatar
+      profile_interests {
+        interest {
+          interest_name
+        }
+      }
+    }
+  }
+}
+    `;
+export type RemoveWallpaperMutationFn = Apollo.MutationFunction<RemoveWallpaperMutation, RemoveWallpaperMutationVariables>;
+
+/**
+ * __useRemoveWallpaperMutation__
+ *
+ * To run a mutation, you first call `useRemoveWallpaperMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveWallpaperMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeWallpaperMutation, { data, loading, error }] = useRemoveWallpaperMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveWallpaperMutation(baseOptions?: Apollo.MutationHookOptions<RemoveWallpaperMutation, RemoveWallpaperMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveWallpaperMutation, RemoveWallpaperMutationVariables>(RemoveWallpaperDocument, options);
+      }
+export type RemoveWallpaperMutationHookResult = ReturnType<typeof useRemoveWallpaperMutation>;
+export type RemoveWallpaperMutationResult = Apollo.MutationResult<RemoveWallpaperMutation>;
+export type RemoveWallpaperMutationOptions = Apollo.BaseMutationOptions<RemoveWallpaperMutation, RemoveWallpaperMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: CreateProfileInput!, $where: ProfileWhereUniqueInput!) {
   updateProfile(input: $input, where: $where) {
@@ -641,6 +720,7 @@ export const UpdateProfileDocument = gql`
     Profile {
       profile_bio
       profile_avatar
+      profile_wallpaper
       profile_interests {
         interest {
           interest_name
@@ -832,6 +912,9 @@ export const GetProfileDocument = gql`
       id
       profile_bio
       profile_avatar
+      profile_avatar_public_id
+      profile_wallpaper_public_id
+      profile_wallpaper
       profile_interests {
         interest {
           interest_name

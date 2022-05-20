@@ -6,6 +6,7 @@ export const CreateProfileInput = inputObjectType({
   definition(t) {
     t.nullable.string("profile_bio");
     t.nullable.upload("profile_avatar");
+    t.nullable.upload("profile_wallpaper");
     t.nonNull.list.nullable.field("profile_interest", {
       type: CreateInterestInput,
     });
@@ -28,12 +29,9 @@ export const GetManyProfilesInput = inputObjectType({
   },
 });
 
-// export const UpdateProfileInput = inputObjectType({
-//   name: "UpdateProfileInput",
-//   definition(t) {
-//     t.nullable.string("profile_bio");
-//     t.nonNull.list.nullable.field("profile_interest", {
-//       type: CreateInterestInput,
-//     });
-//   },
-// });
+export const DestroyImageInput = inputObjectType({
+  name: "DestroyImageInput",
+  definition(t) {
+    t.nonNull.string("img_public_id");
+  },
+});

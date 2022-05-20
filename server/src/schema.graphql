@@ -21,10 +21,15 @@ input CreateProfileInput {
   profile_avatar: Upload
   profile_bio: String
   profile_interest: [CreateInterestInput]!
+  profile_wallpaper: Upload
 }
 
 """Date custom scalar type"""
 scalar Date
+
+input DestroyImageInput {
+  img_public_id: String!
+}
 
 type ErrorFieldOutput {
   field: String!
@@ -81,7 +86,8 @@ type Mutation {
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   register(input: RegisterInput!): AuthOutput!
-  removeAvatar(where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  removeAvatar(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
@@ -95,8 +101,11 @@ type Profile {
   createdAt: Date
   id: ID!
   profile_avatar: String
+  profile_avatar_public_id: String
   profile_bio: String
   profile_interests: [ProfileInterest]
+  profile_wallpaper: String
+  profile_wallpaper_public_id: String
   user: User
 }
 
@@ -127,6 +136,10 @@ input RegisterInput {
   email: String!
   password: String!
   username: String!
+}
+
+type Subscription {
+  truths: Boolean
 }
 
 """The `Upload` scalar type represents a file upload."""
