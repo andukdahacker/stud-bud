@@ -9,6 +9,7 @@ mutation updateProfile(
       message
     }
     Profile {
+      id
       profile_bio
       profile_avatar
       profile_wallpaper
@@ -16,6 +17,11 @@ mutation updateProfile(
         interest {
           interest_name
         }
+      }
+      user {
+        id
+        username
+        email
       }
     }
   }

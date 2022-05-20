@@ -77,7 +77,7 @@ export type GetManyProfilesOutput = {
 
 export type GetProfileOutput = {
   __typename?: 'GetProfileOutput';
-  IOutput: IOutput;
+  IOutput?: Maybe<IOutput>;
   Profile?: Maybe<Profile>;
 };
 
@@ -203,7 +203,7 @@ export type Query = {
   __typename?: 'Query';
   getManyInterests?: Maybe<GetManyInterestOutput>;
   getManyProfiles?: Maybe<GetManyProfilesOutput>;
-  getProfile?: Maybe<GetProfileOutput>;
+  getProfile?: Maybe<ProfileMutationOutput>;
   getUser?: Maybe<User>;
 };
 
@@ -312,7 +312,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
@@ -340,7 +340,7 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'GetProfileOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -718,6 +718,7 @@ export const UpdateProfileDocument = gql`
       message
     }
     Profile {
+      id
       profile_bio
       profile_avatar
       profile_wallpaper
@@ -725,6 +726,11 @@ export const UpdateProfileDocument = gql`
         interest {
           interest_name
         }
+      }
+      user {
+        id
+        username
+        email
       }
     }
   }

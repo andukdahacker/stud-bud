@@ -22,7 +22,7 @@ const Profile = () => {
       },
     });
 
-  const success = getProfileData?.getProfile?.IOutput.success;
+  const success = getProfileData?.getProfile?.IOutput?.success;
   const profileData = getProfileData?.getProfile?.Profile;
   const username = getProfileData?.getProfile?.Profile?.user?.username;
   const profile_avatar = getProfileData?.getProfile?.Profile?.profile_avatar;
@@ -65,7 +65,7 @@ const Profile = () => {
             })}
         </div>
         {success ? null : (
-          <div>{getProfileData?.getProfile?.IOutput.message}</div>
+          <div>{getProfileData?.getProfile?.IOutput?.message}</div>
         )}
       </>
     );
@@ -96,7 +96,7 @@ const Profile = () => {
           })}
       </div>
       {success ? null : (
-        <div>{getProfileData?.getProfile?.IOutput.message}</div>
+        <div>{getProfileData?.getProfile?.IOutput?.message}</div>
       )}
       <Footer />
     </>

@@ -2,10 +2,10 @@ import { Profile } from "@prisma/client";
 import { nonNull, queryField } from "nexus";
 import { INTERNAL_SERVER_ERROR } from "../../constants";
 import { GetManyProfilesInput, ProfileWhereUniqueInput } from "../inputs";
-import { GetManyProfilesOutput, GetProfileOutput } from "../outputs";
+import { GetManyProfilesOutput, ProfileMutationOutput } from "../outputs";
 
 export const getProfile = queryField("getProfile", {
-  type: GetProfileOutput,
+  type: ProfileMutationOutput,
   args: {
     where: nonNull(ProfileWhereUniqueInput),
   },
@@ -34,7 +34,7 @@ export const getProfile = queryField("getProfile", {
         IOutput: {
           code: 200,
           success: true,
-          message: "Query is done",
+          message: "Success",
         },
         Profile: profile,
       };

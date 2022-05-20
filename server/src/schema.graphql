@@ -57,11 +57,6 @@ type GetManyProfilesOutput {
   Profile: [Profile]
 }
 
-type GetProfileOutput {
-  IOutput: IOutput!
-  Profile: Profile
-}
-
 type IOutput {
   code: Int!
   message: String!
@@ -128,7 +123,7 @@ input ProfileWhereUniqueInput {
 type Query {
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
-  getProfile(where: ProfileWhereUniqueInput!): GetProfileOutput
+  getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getUser: User
 }
 

@@ -14,17 +14,17 @@ export const ProfileMutationOutput = objectType({
   },
 });
 
-export const GetProfileOutput = objectType({
-  name: "GetProfileOutput",
-  definition(t) {
-    t.nonNull.field("IOutput", {
-      type: IOutput,
-    });
-    t.nullable.field("Profile", {
-      type: Profile,
-    });
-  },
-});
+// export const GetProfileOutput = objectType({
+//   name: "GetProfileOutput",
+//   definition(t) {
+//     t.nullable.field("IOutput", {
+//       type: IOutput,
+//     });
+//     t.nullable.field("Profile", {
+//       type: Profile,
+//     });
+//   },
+// });
 
 export const GetManyProfilesOutput = objectType({
   name: "GetManyProfilesOutput",

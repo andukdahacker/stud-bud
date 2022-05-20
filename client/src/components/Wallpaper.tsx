@@ -7,12 +7,11 @@ interface WallpaperProps {
 
 const Wallpaper = (props: WallpaperProps) => {
   return (
-    <div>
+    <div className="relative w-full h-96">
       <Image
         src={props.img_url ? props.img_url : defaultWallpaper}
-        layout="fixed"
-        height={400}
-        width={1450}
+        layout="fill"
+        priority
       />
     </div>
   );

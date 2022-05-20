@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import NavBar from "../../../components/NavBar";
 import {
   CreateProfileInput,
+  GetProfileDocument,
+  GetProfileOutput,
+  GetProfileQuery,
   ProfileWhereUniqueInput,
   useGetProfileQuery,
   useRemoveAvatarMutation,
@@ -37,7 +40,6 @@ const EditProfile = () => {
     { data: updateProfileData, loading: updateProfileLoading },
   ] = useUpdateProfileMutation();
 
-  const getProfileSuccess = getProfileData?.getProfile?.IOutput.success;
   const updateProfileSuccess =
     updateProfileData?.updateProfile?.IOutput.success;
 
@@ -81,6 +83,17 @@ const EditProfile = () => {
           profile_wallpaper,
           profile_interest,
         },
+      },
+      update(cache, { data }) {
+        if (data?.updateProfile?.IOutput.success) {
+          cache.writeQuery<GetProfileQuery>({
+            query: GetProfileDocument,
+            data: {
+              __typename: "Query",
+              getProfile: data.updateProfile,
+            },
+          });
+        }
       },
     });
 
@@ -171,19 +184,20 @@ const EditProfile = () => {
       >
         {({ isSubmitting, values, setFieldValue }) => (
           <Form>
-            <div className="relative">
+            <div className=" bg-red-50">
               <button
                 type="button"
+                className="w-full h-full "
                 onClick={() => profileWallpaperInput.current!.click()}
               >
                 <Wallpaper img_url={profile_wallpaper} />
               </button>
               {profile_wallpaper_public_id && (
                 <button
-                  className="absolute bottom-3 right-2"
+                  className=""
                   onClick={() => onRemoveWallpaper(profile_wallpaper_public_id)}
                 >
-                  <FontAwesomeIcon icon="trash" color="white" />
+                  Delete
                 </button>
               )}
               <input
@@ -196,31 +210,32 @@ const EditProfile = () => {
                 ref={profileWallpaperInput}
               />
             </div>
-
-            <button
-              type="button"
-              onClick={() => profileAvatarInput.current!.click()}
-            >
-              <Avatar img_url={profile_avatar} />
-            </button>
-            {profile_avatar_public_id && (
+            <div>
               <button
                 type="button"
-                onClick={() => onRemoveAvatar(profile_avatar_public_id)}
+                onClick={() => profileAvatarInput.current!.click()}
               >
-                <FontAwesomeIcon icon="trash-can" size="lg" />
+                <Avatar img_url={profile_avatar} />
               </button>
-            )}
+              {profile_avatar_public_id && (
+                <button
+                  type="button"
+                  onClick={() => onRemoveAvatar(profile_avatar_public_id)}
+                >
+                  Delete
+                </button>
+              )}
 
-            <input
-              type="file"
-              onChange={(event) => {
-                if (event.target.files)
-                  setFieldValue("profile_avatar", event.target.files[0]);
-              }}
-              className="hidden"
-              ref={profileAvatarInput}
-            />
+              <input
+                type="file"
+                onChange={(event) => {
+                  if (event.target.files)
+                    setFieldValue("profile_avatar", event.target.files[0]);
+                }}
+                className="hidden"
+                ref={profileAvatarInput}
+              />
+            </div>
             <label htmlFor="profile_bio">Bio</label>
             <Field
               name="profile_bio"
@@ -257,9 +272,6 @@ const EditProfile = () => {
             <button type="submit" disabled={isSubmitting ? true : false}>
               Save
             </button>
-            {getProfileSuccess ? null : (
-              <div>{getProfileData?.getProfile?.IOutput.message}</div>
-            )}
 
             {updateProfileSuccess ? null : (
               <div>{updateProfileData?.updateProfile?.IOutput.message}</div>

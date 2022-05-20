@@ -113,10 +113,6 @@ export interface NexusGenObjects {
     PageInfo?: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     Profile?: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
-  GetProfileOutput: { // root type
-    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Profile?: NexusGenRootTypes['Profile'] | null; // Profile
-  }
   IOutput: { // root type
     code: number; // Int!
     message: string; // String!
@@ -187,10 +183,6 @@ export interface NexusGenFieldTypes {
     PageInfo: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     Profile: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
-  GetProfileOutput: { // field return type
-    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Profile: NexusGenRootTypes['Profile'] | null; // Profile
-  }
   IOutput: { // field return type
     code: number; // Int!
     message: string; // String!
@@ -241,7 +233,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     getManyInterests: NexusGenRootTypes['GetManyInterestOutput'] | null; // GetManyInterestOutput
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
-    getProfile: NexusGenRootTypes['GetProfileOutput'] | null; // GetProfileOutput
+    getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   Subscription: { // field return type
@@ -273,10 +265,6 @@ export interface NexusGenFieldTypeNames {
   GetManyProfilesOutput: { // field return type name
     IOutput: 'IOutput'
     PageInfo: 'PageInfo'
-    Profile: 'Profile'
-  }
-  GetProfileOutput: { // field return type name
-    IOutput: 'IOutput'
     Profile: 'Profile'
   }
   IOutput: { // field return type name
@@ -329,7 +317,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     getManyInterests: 'GetManyInterestOutput'
     getManyProfiles: 'GetManyProfilesOutput'
-    getProfile: 'GetProfileOutput'
+    getProfile: 'ProfileMutationOutput'
     getUser: 'User'
   }
   Subscription: { // field return type name

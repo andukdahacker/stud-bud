@@ -7,13 +7,12 @@ interface AvatarProps {
 
 const Avatar = (props: AvatarProps) => {
   return (
-    <div>
+    <div className="relative w-20 h-20">
       <Image
         src={props.img_url ? props.img_url : defaultAvatar}
-        className="rounded-full "
-        layout="fixed"
-        height={70}
-        width={70}
+        className="rounded-full"
+        layout="fill"
+        priority
       />
     </div>
   );
