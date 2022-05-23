@@ -5,7 +5,6 @@ import NavBar from "../../../components/NavBar";
 import {
   CreateProfileInput,
   GetProfileDocument,
-  GetProfileOutput,
   GetProfileQuery,
   ProfileWhereUniqueInput,
   useGetProfileQuery,
@@ -16,7 +15,6 @@ import {
 import { useCheckAuth } from "../../../utils/useCheckAuth";
 import Avatar from "../../../components/Avatar";
 import { useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Wallpaper from "../../../components/Wallpaper";
 
 const EditProfile = () => {
@@ -116,6 +114,7 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
+      update(cache, { data }) {},
     });
 
     if (result.data?.removeAvatar?.IOutput.success) {
@@ -170,6 +169,8 @@ const EditProfile = () => {
       </>
     );
   }
+
+  console.log(profile_avatar_public_id);
   return (
     <>
       <Head>

@@ -1,3 +1,4 @@
+import { NetworkStatus } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -13,6 +14,7 @@ import {
   useGetManyInterestsLazyQuery,
   useGetManyProfilesQuery,
 } from "../generated/graphql";
+import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import useDebounce from "../utils/useDebounce";
 
 const FindBuddy = () => {
@@ -47,16 +49,18 @@ const FindBuddy = () => {
 
   const router = useRouter();
 
-  const PROFILES_TAKE_LIMIT = 1;
-
   const initialValues: GetManyInterestsInput & GetManyProfilesInput = {
     search_input: "",
     take: PROFILES_TAKE_LIMIT,
   };
 
   const onSubmit = (values: GetManyProfilesInput) => {
-    router.push(`/find-buddy?search_input=${values.search_input}`, undefined, {
-      shallow: true,
+    router.push(`/find-buddy?search_input=${values.search_input}`);
+    refetch({
+      where: {
+        search_input: values.search_input,
+        take: PROFILES_TAKE_LIMIT,
+      },
     });
   };
 
@@ -64,6 +68,8 @@ const FindBuddy = () => {
     data: getManyProfilesData,
     loading: getManyProfilesLoading,
     fetchMore,
+    refetch,
+    networkStatus,
   } = useGetManyProfilesQuery({
     variables: {
       where: {
@@ -130,6 +136,7 @@ const FindBuddy = () => {
                     <SuggestionCard
                       key={index}
                       interest_name={interest?.interest_name as string}
+                      refetch={refetch}
                     />
                   );
                 })
@@ -140,7 +147,7 @@ const FindBuddy = () => {
       </div>
 
       <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
-        {getManyProfilesLoading ? (
+        {getManyProfilesLoading || networkStatus == NetworkStatus.refetch ? (
           <Loading />
         ) : !getManyProfilesSuccess ? (
           <div>{getManyProfilesMessage}</div>

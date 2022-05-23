@@ -75,12 +75,6 @@ export type GetManyProfilesOutput = {
   Profile?: Maybe<Array<Maybe<Profile>>>;
 };
 
-export type GetProfileOutput = {
-  __typename?: 'GetProfileOutput';
-  IOutput?: Maybe<IOutput>;
-  Profile?: Maybe<Profile>;
-};
-
 export type IOutput = {
   __typename?: 'IOutput';
   code: Scalars['Int'];
@@ -312,7 +306,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
@@ -721,7 +715,9 @@ export const UpdateProfileDocument = gql`
       id
       profile_bio
       profile_avatar
+      profile_avatar_public_id
       profile_wallpaper
+      profile_wallpaper_public_id
       profile_interests {
         interest {
           interest_name
