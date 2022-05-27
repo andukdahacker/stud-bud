@@ -1,5 +1,7 @@
 import { objectType } from "nexus";
 import { ProfileInterest } from "./ProfileInterest";
+import { Relationship } from "./Relationship";
+
 import { User } from "./User";
 
 export const Profile = objectType({
@@ -21,6 +23,46 @@ export const Profile = objectType({
             },
           })
           .profile_interests();
+      },
+    });
+    t.nullable.list.field("buddies", {
+      type: Relationship,
+      resolve: async (root, _args, ctx) => {
+        return await ctx.prisma.relationship.findMany({
+          where: {
+            OR: [
+              {
+                requester_id: root.id,
+              },
+              {
+                addressee_id: root.id,
+              },
+            ],
+            status: "ACCEPTED",
+          },
+        });
+      },
+    });
+    t.nullable.list.field("buddyRequests", {
+      type: Relationship,
+      resolve: async (root, _args, ctx) => {
+        return await ctx.prisma.relationship.findMany({
+          where: {
+            addressee_id: root.id,
+            status: "REQUESTED",
+          },
+        });
+      },
+    });
+    t.nullable.list.field("buddyPendings", {
+      type: Relationship,
+      resolve: async (root, _args, ctx) => {
+        return await ctx.prisma.relationship.findMany({
+          where: {
+            requester_id: root.id,
+            status: "REQUESTED",
+          },
+        });
       },
     });
     t.nullable.date("createdAt");

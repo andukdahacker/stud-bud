@@ -29,10 +29,14 @@ model Profile {
   profile_wallpaper           String?            @db.VarChar
   profile_wallpaper_public_id String?            @db.VarChar
   profile_interests           ProfileInterests[]
+  requester                   Relationship[]     @relation("requester")
+  addressee                   Relationship[]     @relation("addressee")
+  specifier                   Relationship[]     @relation("specifier")
   user                        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id                     String             @unique
   createdAt                   DateTime           @unique @default(now())
   updatedAt                   DateTime           @updatedAt
+
 }
 
 model Interest {
@@ -52,4 +56,24 @@ model ProfileInterests {
   updatedAt   DateTime @updatedAt
 
   @@id([profile_id, interest_id])
+}
+
+model Relationship {
+  requester    Profile                @relation("requester", fields: [requester_id], references: [id], onDelete: Cascade)
+  requester_id String
+  addressee    Profile                @relation("addressee", fields: [addressee_id], references: [id], onDelete: Cascade)
+  addressee_id String
+  specifier    Profile                @relation("specifier", fields: [specifier_id], references: [id], onDelete: Cascade)
+  specifier_id String
+  status       RelationshipStatusCode
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  @@id([requester_id, addressee_id])
+}
+
+enum RelationshipStatusCode {
+  REQUESTED
+  ACCEPTED
+  DECLINED
 }

@@ -73,6 +73,12 @@ export interface NexusGenInputs {
     password: string; // String!
     username: string; // String!
   }
+  RelationshipInput: { // input type
+    addressee_id: string; // String!
+    requester_id: string; // String!
+    specifier_id: string; // String!
+    status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
+  }
   VerifyEmailInput: { // input type
     token: string; // String!
   }
@@ -82,6 +88,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  RelationshipStatusCode: "ACCEPTED" | "DECLINED" | "REQUESTED"
 }
 
 export interface NexusGenScalars {
@@ -145,6 +152,18 @@ export interface NexusGenObjects {
     Profile?: NexusGenRootTypes['Profile'] | null; // Profile
   }
   Query: {};
+  Relationship: { // root type
+    addressee_id: string; // String!
+    createdAt: NexusGenScalars['Date']; // Date!
+    requester_id: string; // String!
+    specifier_id: string; // String!
+    status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
+    updatedAt: NexusGenScalars['Date']; // Date!
+  }
+  RelationshipOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Relationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
+  }
   Subscription: {};
   User: { // root type
     email: string; // String!
@@ -162,7 +181,7 @@ export interface NexusGenUnions {
 
 export type NexusGenRootTypes = NexusGenObjects
 
-export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
   AuthOutput: { // field return type
@@ -195,6 +214,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     changePassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
+    connectBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     createProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     forgotPassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
@@ -202,6 +222,7 @@ export interface NexusGenFieldTypes {
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     removeWallpaper: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    respondBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
   }
@@ -210,6 +231,9 @@ export interface NexusGenFieldTypes {
     hasNextPage: boolean | null; // Boolean
   }
   Profile: { // field return type
+    buddies: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
+    buddyPendings: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
+    buddyRequests: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
     createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar: string | null; // String
@@ -235,6 +259,18 @@ export interface NexusGenFieldTypes {
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
     getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     getUser: NexusGenRootTypes['User'] | null; // User
+  }
+  Relationship: { // field return type
+    addressee_id: string; // String!
+    createdAt: NexusGenScalars['Date']; // Date!
+    requester_id: string; // String!
+    specifier_id: string; // String!
+    status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
+    updatedAt: NexusGenScalars['Date']; // Date!
+  }
+  RelationshipOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Relationship: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
   Subscription: { // field return type
     truths: boolean | null; // Boolean
@@ -279,6 +315,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     changePassword: 'AuthOutput'
+    connectBuddy: 'RelationshipOutput'
     createProfile: 'ProfileMutationOutput'
     forgotPassword: 'AuthOutput'
     login: 'AuthOutput'
@@ -286,6 +323,7 @@ export interface NexusGenFieldTypeNames {
     register: 'AuthOutput'
     removeAvatar: 'ProfileMutationOutput'
     removeWallpaper: 'ProfileMutationOutput'
+    respondBuddy: 'RelationshipOutput'
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
   }
@@ -294,6 +332,9 @@ export interface NexusGenFieldTypeNames {
     hasNextPage: 'Boolean'
   }
   Profile: { // field return type name
+    buddies: 'Relationship'
+    buddyPendings: 'Relationship'
+    buddyRequests: 'Relationship'
     createdAt: 'Date'
     id: 'ID'
     profile_avatar: 'String'
@@ -320,6 +361,18 @@ export interface NexusGenFieldTypeNames {
     getProfile: 'ProfileMutationOutput'
     getUser: 'User'
   }
+  Relationship: { // field return type name
+    addressee_id: 'String'
+    createdAt: 'Date'
+    requester_id: 'String'
+    specifier_id: 'String'
+    status: 'RelationshipStatusCode'
+    updatedAt: 'Date'
+  }
+  RelationshipOutput: { // field return type name
+    IOutput: 'IOutput'
+    Relationship: 'Relationship'
+  }
   Subscription: { // field return type name
     truths: 'Boolean'
   }
@@ -336,6 +389,9 @@ export interface NexusGenArgTypes {
   Mutation: {
     changePassword: { // args
       input: NexusGenInputs['ChangePasswordInput']; // ChangePasswordInput!
+    }
+    connectBuddy: { // args
+      input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
     }
     createProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
@@ -356,6 +412,9 @@ export interface NexusGenArgTypes {
     removeWallpaper: { // args
       input: NexusGenInputs['DestroyImageInput']; // DestroyImageInput!
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    respondBuddy: { // args
+      input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
     }
     updateProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
@@ -388,7 +447,7 @@ export type NexusGenObjectNames = keyof NexusGenObjects;
 
 export type NexusGenInputNames = keyof NexusGenInputs;
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = keyof NexusGenEnums;
 
 export type NexusGenInterfaceNames = never;
 

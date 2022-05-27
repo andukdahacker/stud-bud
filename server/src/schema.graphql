@@ -76,6 +76,7 @@ input LoginInput {
 
 type Mutation {
   changePassword(input: ChangePasswordInput!): AuthOutput
+  connectBuddy(input: RelationshipInput!): RelationshipOutput
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
   forgotPassword(input: ForgotPasswordInput!): AuthOutput
   login(input: LoginInput!): AuthOutput!
@@ -83,6 +84,7 @@ type Mutation {
   register(input: RegisterInput!): AuthOutput!
   removeAvatar(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  respondBuddy(input: RelationshipInput!): RelationshipOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
@@ -93,6 +95,9 @@ type PageInfo {
 }
 
 type Profile {
+  buddies: [Relationship]
+  buddyPendings: [Relationship]
+  buddyRequests: [Relationship]
   createdAt: Date
   id: ID!
   profile_avatar: String
@@ -131,6 +136,33 @@ input RegisterInput {
   email: String!
   password: String!
   username: String!
+}
+
+type Relationship {
+  addressee_id: String!
+  createdAt: Date!
+  requester_id: String!
+  specifier_id: String!
+  status: RelationshipStatusCode!
+  updatedAt: Date!
+}
+
+input RelationshipInput {
+  addressee_id: String!
+  requester_id: String!
+  specifier_id: String!
+  status: RelationshipStatusCode!
+}
+
+type RelationshipOutput {
+  IOutput: IOutput!
+  Relationship: Relationship
+}
+
+enum RelationshipStatusCode {
+  ACCEPTED
+  DECLINED
+  REQUESTED
 }
 
 type Subscription {
