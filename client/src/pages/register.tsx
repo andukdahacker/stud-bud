@@ -12,6 +12,7 @@ import logo from "../assets/Mark.png";
 import Loading from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import Layout from "../components/Layout";
 
 const Register = () => {
   const [registerMutation, { loading }] = useRegisterMutation({});
@@ -60,13 +61,7 @@ const Register = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
-
+    <Layout>
       <div className="h-[44rem] bg-gray-50">
         <Formik
           initialValues={initialValues}
@@ -139,7 +134,7 @@ const Register = () => {
           )}
         </Formik>
       </div>
-    </>
+    </Layout>
   );
 };
 

@@ -11,6 +11,8 @@ import {
 import * as Yup from "yup";
 import { mapErrorField } from "../../utils/mapErrorField";
 import Head from "next/head";
+import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -63,18 +65,12 @@ const ChangePassword = () => {
 
   if (loading)
     return (
-      <>
-        <NavBar />
-        <div>Loading...</div>
-      </>
+      <Layout>
+        <Loading />
+      </Layout>
     );
   return (
-    <>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -91,7 +87,7 @@ const ChangePassword = () => {
           </Form>
         )}
       </Formik>
-    </>
+    </Layout>
   );
 };
 

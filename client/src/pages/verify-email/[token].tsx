@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import Layout from "../../components/Layout";
 import NavBar from "../../components/NavBar";
 import { useVerifyEmailMutation } from "../../generated/graphql";
 
@@ -30,18 +31,13 @@ const VerifyEmail = () => {
   }, [verifyEmail, router]);
 
   return (
-    <>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       {loading ? (
         <div>Verifying account...</div>
       ) : !verifyEmailSuccess ? (
         <div>{verifyEmailMessage}</div>
       ) : null}
-    </>
+    </Layout>
   );
 };
 

@@ -17,9 +17,10 @@ import Image from "next/image";
 import logo from "../assets/Mark.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import Layout from "../components/Layout";
 
 const Login = () => {
-  const [logInMutation, { data, loading }] = useLoginMutation();
+  const [logInMutation, { loading }] = useLoginMutation();
 
   const router = useRouter();
 
@@ -72,12 +73,7 @@ const Login = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       <div className="h-[44rem] bg-gray-50">
         <Formik
           initialValues={initialValues}
@@ -144,7 +140,7 @@ const Login = () => {
           )}
         </Formik>
       </div>
-    </>
+    </Layout>
   );
 };
 

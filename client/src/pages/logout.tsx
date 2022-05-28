@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Layout from "../components/Layout";
 import NavBar from "../components/NavBar";
 import {
   GetUserDocument,
@@ -28,18 +29,12 @@ const LogOut = () => {
 
   if (loading)
     return (
-      <>
-        <NavBar />
+      <Layout>
         <div>Loading...</div>
-      </>
+      </Layout>
     );
   return (
-    <div>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       <div className="flex flex-col items-center justify-start  h-[45rem] p-56">
         <span className="mb-10 text-2xl font-bold">
           Are you sure you want to log out?
@@ -60,7 +55,7 @@ const LogOut = () => {
         </div>
         <div>{data?.logout.IOutput.message}</div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

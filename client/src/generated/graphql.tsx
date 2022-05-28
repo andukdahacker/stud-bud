@@ -97,6 +97,7 @@ export type LoginInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword?: Maybe<AuthOutput>;
+  connectBuddy?: Maybe<RelationshipOutput>;
   createProfile?: Maybe<ProfileMutationOutput>;
   forgotPassword?: Maybe<AuthOutput>;
   login: AuthOutput;
@@ -104,6 +105,7 @@ export type Mutation = {
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
   removeWallpaper?: Maybe<ProfileMutationOutput>;
+  respondBuddy?: Maybe<RelationshipOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
 };
@@ -111,6 +113,11 @@ export type Mutation = {
 
 export type MutationChangePasswordArgs = {
   input: ChangePasswordInput;
+};
+
+
+export type MutationConnectBuddyArgs = {
+  input: RelationshipInput;
 };
 
 
@@ -146,6 +153,11 @@ export type MutationRemoveWallpaperArgs = {
 };
 
 
+export type MutationRespondBuddyArgs = {
+  input: RelationshipInput;
+};
+
+
 export type MutationUpdateProfileArgs = {
   input: CreateProfileInput;
   where: ProfileWhereUniqueInput;
@@ -164,6 +176,9 @@ export type PageInfo = {
 
 export type Profile = {
   __typename?: 'Profile';
+  buddies?: Maybe<Array<Maybe<Relationship>>>;
+  buddyPendings?: Maybe<Array<Maybe<Relationship>>>;
+  buddyRequests?: Maybe<Array<Maybe<Relationship>>>;
   createdAt?: Maybe<Scalars['Date']>;
   id: Scalars['ID'];
   profile_avatar?: Maybe<Scalars['String']>;
@@ -222,6 +237,35 @@ export type RegisterInput = {
   username: Scalars['String'];
 };
 
+export type Relationship = {
+  __typename?: 'Relationship';
+  addressee_id: Scalars['String'];
+  createdAt: Scalars['Date'];
+  requester_id: Scalars['String'];
+  specifier_id: Scalars['String'];
+  status: RelationshipStatusCode;
+  updatedAt: Scalars['Date'];
+};
+
+export type RelationshipInput = {
+  addressee_id: Scalars['String'];
+  requester_id: Scalars['String'];
+  specifier_id: Scalars['String'];
+  status: RelationshipStatusCode;
+};
+
+export type RelationshipOutput = {
+  __typename?: 'RelationshipOutput';
+  IOutput: IOutput;
+  Relationship?: Maybe<Relationship>;
+};
+
+export enum RelationshipStatusCode {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Requested = 'REQUESTED'
+}
+
 export type Subscription = {
   __typename?: 'Subscription';
   truths?: Maybe<Scalars['Boolean']>;
@@ -250,6 +294,13 @@ export type ChangePasswordMutationVariables = Exact<{
 
 
 export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword?: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, username: string, email: string } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } | null };
+
+export type ConnectBuddyMutationVariables = Exact<{
+  input: RelationshipInput;
+}>;
+
+
+export type ConnectBuddyMutation = { __typename?: 'Mutation', connectBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Relationship?: { __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, createdAt: any, updatedAt: any } | null } | null };
 
 export type CreateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -290,7 +341,7 @@ export type RemoveAvatarMutationVariables = Exact<{
 }>;
 
 
-export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
 
 export type RemoveWallpaperMutationVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -298,7 +349,14 @@ export type RemoveWallpaperMutationVariables = Exact<{
 }>;
 
 
-export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', profile_bio?: string | null, profile_avatar?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+
+export type RespondBuddyMutationVariables = Exact<{
+  input: RelationshipInput;
+}>;
+
+
+export type RespondBuddyMutation = { __typename?: 'Mutation', respondBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Relationship?: { __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode } | null } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -388,6 +446,50 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const ConnectBuddyDocument = gql`
+    mutation connectBuddy($input: RelationshipInput!) {
+  connectBuddy(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Relationship {
+      requester_id
+      addressee_id
+      specifier_id
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type ConnectBuddyMutationFn = Apollo.MutationFunction<ConnectBuddyMutation, ConnectBuddyMutationVariables>;
+
+/**
+ * __useConnectBuddyMutation__
+ *
+ * To run a mutation, you first call `useConnectBuddyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectBuddyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectBuddyMutation, { data, loading, error }] = useConnectBuddyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConnectBuddyMutation(baseOptions?: Apollo.MutationHookOptions<ConnectBuddyMutation, ConnectBuddyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConnectBuddyMutation, ConnectBuddyMutationVariables>(ConnectBuddyDocument, options);
+      }
+export type ConnectBuddyMutationHookResult = ReturnType<typeof useConnectBuddyMutation>;
+export type ConnectBuddyMutationResult = Apollo.MutationResult<ConnectBuddyMutation>;
+export type ConnectBuddyMutationOptions = Apollo.BaseMutationOptions<ConnectBuddyMutation, ConnectBuddyMutationVariables>;
 export const CreateProfileDocument = gql`
     mutation createProfile($input: CreateProfileInput!) {
   createProfile(input: $input) {
@@ -618,8 +720,12 @@ export const RemoveAvatarDocument = gql`
       message
     }
     Profile {
+      id
       profile_bio
       profile_avatar
+      profile_avatar_public_id
+      profile_wallpaper_public_id
+      profile_wallpaper
       profile_interests {
         interest {
           interest_name
@@ -665,8 +771,12 @@ export const RemoveWallpaperDocument = gql`
       message
     }
     Profile {
+      id
       profile_bio
       profile_avatar
+      profile_avatar_public_id
+      profile_wallpaper_public_id
+      profile_wallpaper
       profile_interests {
         interest {
           interest_name
@@ -703,6 +813,49 @@ export function useRemoveWallpaperMutation(baseOptions?: Apollo.MutationHookOpti
 export type RemoveWallpaperMutationHookResult = ReturnType<typeof useRemoveWallpaperMutation>;
 export type RemoveWallpaperMutationResult = Apollo.MutationResult<RemoveWallpaperMutation>;
 export type RemoveWallpaperMutationOptions = Apollo.BaseMutationOptions<RemoveWallpaperMutation, RemoveWallpaperMutationVariables>;
+export const RespondBuddyDocument = gql`
+    mutation respondBuddy($input: RelationshipInput!) {
+  respondBuddy(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Relationship {
+      requester_id
+      addressee_id
+      specifier_id
+      status
+    }
+  }
+}
+    `;
+export type RespondBuddyMutationFn = Apollo.MutationFunction<RespondBuddyMutation, RespondBuddyMutationVariables>;
+
+/**
+ * __useRespondBuddyMutation__
+ *
+ * To run a mutation, you first call `useRespondBuddyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRespondBuddyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [respondBuddyMutation, { data, loading, error }] = useRespondBuddyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRespondBuddyMutation(baseOptions?: Apollo.MutationHookOptions<RespondBuddyMutation, RespondBuddyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RespondBuddyMutation, RespondBuddyMutationVariables>(RespondBuddyDocument, options);
+      }
+export type RespondBuddyMutationHookResult = ReturnType<typeof useRespondBuddyMutation>;
+export type RespondBuddyMutationResult = Apollo.MutationResult<RespondBuddyMutation>;
+export type RespondBuddyMutationOptions = Apollo.BaseMutationOptions<RespondBuddyMutation, RespondBuddyMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: CreateProfileInput!, $where: ProfileWhereUniqueInput!) {
   updateProfile(input: $input, where: $where) {

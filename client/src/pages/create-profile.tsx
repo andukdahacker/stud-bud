@@ -1,8 +1,8 @@
 import { Field, FieldArray, Form, Formik } from "formik";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import NavBar from "../components/NavBar";
+import Layout from "../components/Layout";
+import Loading from "../components/Loading";
 import {
   CreateProfileInput,
   useCreateProfileMutation,
@@ -46,18 +46,12 @@ const CreateProfile = () => {
 
   if (createProfileLoading)
     return (
-      <>
-        <NavBar />
-        <div>Loading...</div>
-      </>
+      <Layout>
+        <Loading />
+      </Layout>
     );
   return (
-    <div>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ isSubmitting, values, setFieldValue }) => (
           <Form>
@@ -106,7 +100,7 @@ const CreateProfile = () => {
           </Form>
         )}
       </Formik>
-    </div>
+    </Layout>
   );
 };
 

@@ -1,22 +1,14 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
 import Image from "next/image";
 import friendsImg from "../assets/friends.png";
-import Head from "next/head";
 import worldIcon from "../assets/world-icon.png";
 import messageIcon from "../assets/message-icon.png";
+import Layout from "../components/Layout";
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-
-      <NavBar />
+    <Layout>
       <div className="flex flex-col ">
         {/* hero section */}
         <div className="bg-gradient-to-b from-[#0056FF] to-purple-100 h-[44rem] flex flex-col justify-start items-center w-full p-20">
@@ -117,8 +109,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

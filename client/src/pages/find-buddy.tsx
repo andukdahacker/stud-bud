@@ -1,11 +1,9 @@
 import { NetworkStatus } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
-import Footer from "../components/Footer";
+import Layout from "../components/Layout";
 import Loading from "../components/Loading";
-import NavBar from "../components/NavBar";
 import ProfileCard from "../components/ProfileCard";
 import SuggestionCard from "../components/SuggestionCard";
 import {
@@ -29,9 +27,12 @@ const FindBuddy = () => {
   const suggestions = getManyInterestsData?.getManyInterests?.Interest;
 
   const [search, setSearch] = useState<string | null>(null);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+  const router = useRouter();
+
   const debouncedSearch = useDebounce(search, 500);
   useEffect(() => {
     async function fetchData() {
@@ -46,8 +47,6 @@ const FindBuddy = () => {
 
     if (debouncedSearch) fetchData();
   }, [debouncedSearch]);
-
-  const router = useRouter();
 
   const initialValues: GetManyInterestsInput & GetManyProfilesInput = {
     search_input: "",
@@ -104,47 +103,40 @@ const FindBuddy = () => {
   };
 
   return (
-    <div className="flex flex-col ">
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
-      <div>
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
-          <Form className="flex flex-col items-center content-center justify-center w-full bg-center h-50 bg-gradient-to-r from-cyan-500 to-blue-500">
-            <label className="m-6 text-3xl font-bold leading-9 text-white">
-              Find your perfect buddy
-            </label>
-            <div className="mb-3">
-              <Field
-                placeholder="what are you interested in?"
-                type="search"
-                name="search_input"
-                onKeyUp={handleChange}
-                className="p-1 m-1 rounded-md w-96"
-              />
-            </div>
-            <div className="flex content-center h-14">
-              {getManyInterestsLoading ? (
-                <Loading />
-              ) : !getManyInterestsSuccess ? (
-                <div>{getManyInterestMessage}</div>
-              ) : !suggestions || !search ? null : (
-                suggestions.map((interest, index) => {
-                  return (
-                    <SuggestionCard
-                      key={index}
-                      interest_name={interest?.interest_name as string}
-                      refetch={refetch}
-                    />
-                  );
-                })
-              )}
-            </div>
-          </Form>
-        </Formik>
-      </div>
+    <Layout>
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        <Form className="flex flex-col items-center content-center justify-center w-full bg-center h-50 bg-gradient-to-r from-cyan-500 to-blue-500">
+          <label className="m-6 text-3xl font-bold leading-9 text-white">
+            Find your perfect buddy
+          </label>
+          <div className="mb-3">
+            <Field
+              placeholder="what are you interested in?"
+              type="search"
+              name="search_input"
+              onKeyUp={handleChange}
+              className="p-1 m-1 rounded-md w-96"
+            />
+          </div>
+          <div className="flex content-center h-14">
+            {getManyInterestsLoading ? (
+              <Loading />
+            ) : !getManyInterestsSuccess ? (
+              <div>{getManyInterestMessage}</div>
+            ) : !suggestions || !search ? null : (
+              suggestions.map((interest, index) => {
+                return (
+                  <SuggestionCard
+                    key={index}
+                    interest_name={interest?.interest_name as string}
+                    refetch={refetch}
+                  />
+                );
+              })
+            )}
+          </div>
+        </Form>
+      </Formik>
 
       <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
         {getManyProfilesLoading || networkStatus == NetworkStatus.refetch ? (
@@ -161,6 +153,7 @@ const FindBuddy = () => {
             return (
               <ProfileCard
                 key={index}
+                id={profile?.id}
                 username={profile?.user?.username}
                 avatar={
                   profile?.profile_avatar ? profile.profile_avatar : undefined
@@ -178,7 +171,7 @@ const FindBuddy = () => {
       ) : (
         <div>End of list</div>
       )}
-    </div>
+    </Layout>
   );
 };
 

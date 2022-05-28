@@ -16,6 +16,8 @@ import { useCheckAuth } from "../../../utils/useCheckAuth";
 import Avatar from "../../../components/Avatar";
 import { useRef } from "react";
 import Wallpaper from "../../../components/Wallpaper";
+import Layout from "../../../components/Layout";
+import Loading from "../../../components/Loading";
 
 const EditProfile = () => {
   const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
@@ -114,12 +116,18 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
-      update(cache, { data }) {},
+      update(cache, { data }) {
+        if (result.data?.removeAvatar?.IOutput.success) {
+          cache.writeQuery<GetProfileQuery>({
+            query: GetProfileDocument,
+            data: {
+              __typename: "Query",
+              getProfile: data?.removeAvatar,
+            },
+          });
+        }
+      },
     });
-
-    if (result.data?.removeAvatar?.IOutput.success) {
-      router.reload();
-    }
   };
 
   const removeAvatarSuccess = removeAvatarData?.removeAvatar?.IOutput.success;
@@ -138,11 +146,18 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
+      update(cache, { data }) {
+        if (result.data?.removeWallpaper?.IOutput.success) {
+          cache.writeQuery<GetProfileQuery>({
+            query: GetProfileDocument,
+            data: {
+              __typename: "Query",
+              getProfile: data?.removeWallpaper,
+            },
+          });
+        }
+      },
     });
-
-    if (result.data?.removeWallpaper?.IOutput.success) {
-      router.reload();
-    }
   };
 
   const removeWallpaperSuccess =
@@ -155,29 +170,21 @@ const EditProfile = () => {
     removeWallpaperLoading
   )
     return (
-      <>
-        <NavBar />
-        <div>Loading...</div>
-      </>
+      <Layout>
+        <Loading />
+      </Layout>
     );
 
   if (checkAuthData?.getUser?.profile?.id !== profile_id) {
     return (
-      <>
-        <NavBar />
+      <Layout>
         <div>Forbidden</div>
-      </>
+      </Layout>
     );
   }
 
-  console.log(profile_avatar_public_id);
   return (
-    <>
-      <Head>
-        <title>StudBud</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <NavBar />
+    <Layout>
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -290,7 +297,7 @@ const EditProfile = () => {
           </Form>
         )}
       </Formik>
-    </>
+    </Layout>
   );
 };
 

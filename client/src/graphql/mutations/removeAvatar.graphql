@@ -9,8 +9,12 @@ mutation removeAvatar(
       message
     }
     Profile {
+      id
       profile_bio
       profile_avatar
+      profile_avatar_public_id
+      profile_wallpaper_public_id
+      profile_wallpaper
       profile_interests {
         interest {
           interest_name
