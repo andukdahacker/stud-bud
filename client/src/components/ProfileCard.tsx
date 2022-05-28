@@ -1,10 +1,18 @@
 import Avatar from "./Avatar";
 import ReactModal from "react-modal";
 import { useState } from "react";
-import { useGetProfileLazyQuery } from "../generated/graphql";
+import {
+  GetUserDocument,
+  GetUserQuery,
+  RelationshipInput,
+  RelationshipStatusCode,
+  useConnectBuddyMutation,
+  useGetProfileLazyQuery,
+} from "../generated/graphql";
 import ProfilePage from "./ProfilePage";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useApolloClient } from "@apollo/client";
 
 interface ProfileCardProps {
   id?: string;
@@ -15,9 +23,10 @@ interface ProfileCardProps {
 
 const ProfileCard = (props: ProfileCardProps) => {
   const router = useRouter();
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
     useGetProfileLazyQuery();
+
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const openModal = async (profile_id: string) => {
     setShowModal(true);
@@ -59,10 +68,7 @@ const ProfileCard = (props: ProfileCardProps) => {
         </div>
       </div>
       <div className="flex items-center justify-center mt-3 h-1/3">
-        <Link
-          href={`/find-buddy/?profile_id=${props.id}`}
-          as={`/profile/${props.id}`}
-        >
+        <Link href={`/find-buddy`} as={`/profile/${props.id}`}>
           <a
             className="h-10 px-3 py-1 text-sm font-medium leading-6 text-gray-700 bg-gray-100 rounded shadow-sm shadow-gray-300"
             onClick={() => openModal(props.id!)}

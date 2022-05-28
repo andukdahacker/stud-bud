@@ -1,50 +1,34 @@
 import { useRouter } from "next/router";
-import { useGetProfileQuery } from "../../generated/graphql";
-import { useCheckAuth } from "../../utils/useCheckAuth";
+import { useGetProfileLazyQuery } from "../../generated/graphql";
 import ProfilePage from "../../components/ProfilePage";
 import Layout from "../../components/Layout";
-import Loading from "../../components/Loading";
+import { useEffect } from "react";
 
 const Profile = () => {
-  const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
   const router = useRouter();
   const profile_id = router.query.profileId as string;
 
-  const { data: getProfileData, loading: getProfileLoading } =
-    useGetProfileQuery({
-      variables: {
-        where: {
-          profile_id,
+  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
+    useGetProfileLazyQuery();
+
+  useEffect(() => {
+    async function fetchData() {
+      await getProfile({
+        variables: {
+          where: {
+            profile_id,
+          },
         },
-      },
-    });
+      });
+    }
 
+    if (router.isReady) fetchData();
+  }, [router.isReady]);
   const username = getProfileData?.getProfile?.Profile?.user?.username;
-
-  if (checkAuthLoading)
-    return (
-      <Layout>
-        <Loading />
-      </Layout>
-    );
-  if (checkAuthData?.getUser?.profile?.id !== profile_id)
-    return (
-      <Layout username={username}>
-        <ProfilePage
-          data={getProfileData}
-          profileOwner={false}
-          loading={getProfileLoading}
-        />
-      </Layout>
-    );
 
   return (
     <Layout username={username}>
-      <ProfilePage
-        data={getProfileData}
-        profileOwner={true}
-        loading={getProfileLoading}
-      />
+      <ProfilePage data={getProfileData} loading={getProfileLoading} />
     </Layout>
   );
 };

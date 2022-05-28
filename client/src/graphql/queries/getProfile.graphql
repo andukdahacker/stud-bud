@@ -5,18 +5,40 @@ query getProfile($where: ProfileWhereUniqueInput!) {
       success
       message
     }
-
     Profile {
       id
       profile_bio
       profile_avatar
       profile_avatar_public_id
-      profile_wallpaper_public_id
       profile_wallpaper
+      profile_wallpaper_public_id
       profile_interests {
         interest {
           interest_name
         }
+      }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
       }
       user {
         id

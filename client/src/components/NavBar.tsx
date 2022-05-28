@@ -3,11 +3,23 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCheckAuth } from "../utils/useCheckAuth";
 import logo from "../assets/Mark.jpg";
+import { useState } from "react";
+import ReactModal from "react-modal";
+import LogOut from "./Logout";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
   const router = useRouter();
   const profile = authData?.getUser?.profile;
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <div className="flex items-center justify-between px-10 py-5 bg-white shadow-md shadow-gray-200 ">
@@ -53,11 +65,24 @@ const NavBar = () => {
               Profile
             </a>
           </Link>
-          <Link href="/logout">
-            <a className="ml-10 text-sm font-medium text-gray-800 hover:text-blue-700">
-              Log out
-            </a>
-          </Link>
+
+          <button
+            onClick={openModal}
+            className="ml-10 text-sm font-medium text-gray-800 hover:text-blue-700"
+          >
+            Log out
+          </button>
+
+          <ReactModal isOpen={showModal} onRequestClose={closeModal}>
+            <LogOut>
+              <button
+                onClick={closeModal}
+                className="p-3 ml-5 text-sm font-medium leading-6 text-gray-900 rounded shadow-sm bg-gray-50 shadow-gray-900"
+              >
+                No
+              </button>
+            </LogOut>
+          </ReactModal>
         </div>
       ) : (
         <div>

@@ -20,6 +20,29 @@ mutation updateProfile(
           interest_name
         }
       }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
       user {
         id
         username

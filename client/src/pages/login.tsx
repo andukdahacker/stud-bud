@@ -9,9 +9,7 @@ import {
 import TextError from "../components/TextError";
 import { mapErrorField } from "../utils/mapErrorField";
 import * as Yup from "yup";
-import NavBar from "../components/NavBar";
 import Link from "next/link";
-import Head from "next/head";
 import Loading from "../components/Loading";
 import Image from "next/image";
 import logo from "../assets/Mark.png";

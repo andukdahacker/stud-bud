@@ -151,15 +151,16 @@ const FindBuddy = () => {
               return { interest_name: obj?.interest.interest_name as string };
             });
             return (
-              <ProfileCard
-                key={index}
-                id={profile?.id}
-                username={profile?.user?.username}
-                avatar={
-                  profile?.profile_avatar ? profile.profile_avatar : undefined
-                }
-                interests={interests}
-              />
+              <div key={index}>
+                <ProfileCard
+                  id={profile?.id}
+                  username={profile?.user?.username}
+                  avatar={
+                    profile?.profile_avatar ? profile.profile_avatar : undefined
+                  }
+                  interests={interests}
+                />
+              </div>
             );
           })
         )}

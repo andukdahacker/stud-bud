@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useGetUserQuery } from "../generated/graphql";
 
 export const useCheckAuth = () => {
-  const { data, loading } = useGetUserQuery(); //put in context fix
+  const { data, loading } = useGetUserQuery();
   const router = useRouter();
 
   useEffect(() => {

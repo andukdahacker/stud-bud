@@ -1,39 +1,51 @@
 import { Field, FieldArray, Form, Formik } from "formik";
-import Head from "next/head";
 import { useRouter } from "next/router";
-import NavBar from "../../../components/NavBar";
 import {
   CreateProfileInput,
   GetProfileDocument,
   GetProfileQuery,
+  GetUserDocument,
+  GetUserQuery,
   ProfileWhereUniqueInput,
-  useGetProfileQuery,
+  useGetProfileLazyQuery,
   useRemoveAvatarMutation,
   useRemoveWallpaperMutation,
   useUpdateProfileMutation,
 } from "../../../generated/graphql";
-import { useCheckAuth } from "../../../utils/useCheckAuth";
 import Avatar from "../../../components/Avatar";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Wallpaper from "../../../components/Wallpaper";
 import Layout from "../../../components/Layout";
 import Loading from "../../../components/Loading";
+import { useApolloClient } from "@apollo/client";
 
 const EditProfile = () => {
-  const { data: checkAuthData, loading: checkAuthLoading } = useCheckAuth();
+  const client = useApolloClient();
+  const user_profile_id = client.readQuery<GetUserQuery>({
+    query: GetUserDocument,
+  })?.getUser?.profile?.id;
+
   const router = useRouter();
   const profile_id = router.query.profileId as string;
   const profileAvatarInput = useRef<null | HTMLInputElement>(null);
   const profileWallpaperInput = useRef<null | HTMLInputElement>(null);
 
-  const { data: getProfileData, loading: getProfileLoading } =
-    useGetProfileQuery({
-      variables: {
-        where: {
-          profile_id,
+  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
+    useGetProfileLazyQuery();
+
+  useEffect(() => {
+    async function fetchData() {
+      await getProfile({
+        variables: {
+          where: {
+            profile_id,
+          },
         },
-      },
-    });
+      });
+    }
+
+    if (router.isReady) fetchData();
+  }, [router.isReady]);
 
   const [
     updateProfile,
@@ -107,7 +119,7 @@ const EditProfile = () => {
     { data: removeAvatarData, loading: removeAvatarLoading },
   ] = useRemoveAvatarMutation();
   const onRemoveAvatar = async (public_id: string) => {
-    const result = await removeAvatar({
+    await removeAvatar({
       variables: {
         where: {
           profile_id,
@@ -117,7 +129,7 @@ const EditProfile = () => {
         },
       },
       update(cache, { data }) {
-        if (result.data?.removeAvatar?.IOutput.success) {
+        if (data?.removeAvatar?.IOutput.success) {
           cache.writeQuery<GetProfileQuery>({
             query: GetProfileDocument,
             data: {
@@ -137,7 +149,7 @@ const EditProfile = () => {
     { data: removeWallpaperData, loading: removeWallpaperLoading },
   ] = useRemoveWallpaperMutation();
   const onRemoveWallpaper = async (public_id: string) => {
-    const result = await removeWallpaper({
+    await removeWallpaper({
       variables: {
         where: {
           profile_id,
@@ -147,7 +159,7 @@ const EditProfile = () => {
         },
       },
       update(cache, { data }) {
-        if (result.data?.removeWallpaper?.IOutput.success) {
+        if (data?.removeWallpaper?.IOutput.success) {
           cache.writeQuery<GetProfileQuery>({
             query: GetProfileDocument,
             data: {
@@ -165,7 +177,6 @@ const EditProfile = () => {
   if (
     getProfileLoading ||
     updateProfileLoading ||
-    checkAuthLoading ||
     removeAvatarLoading ||
     removeWallpaperLoading
   )
@@ -175,7 +186,7 @@ const EditProfile = () => {
       </Layout>
     );
 
-  if (checkAuthData?.getUser?.profile?.id !== profile_id) {
+  if (user_profile_id !== profile_id) {
     return (
       <Layout>
         <div>Forbidden</div>
@@ -254,7 +265,7 @@ const EditProfile = () => {
             <FieldArray name="profile_interest">
               {({ push, remove }) => (
                 <div>
-                  {values.profile_interest.map((interest, index) => {
+                  {values.profile_interest.map((_interest, index) => {
                     return (
                       <div key={index}>
                         <Field

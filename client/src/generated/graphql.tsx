@@ -341,7 +341,7 @@ export type RemoveAvatarMutationVariables = Exact<{
 }>;
 
 
-export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type RemoveWallpaperMutationVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -349,7 +349,7 @@ export type RemoveWallpaperMutationVariables = Exact<{
 }>;
 
 
-export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null } | null } | null };
+export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type RespondBuddyMutationVariables = Exact<{
   input: RelationshipInput;
@@ -364,7 +364,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
@@ -392,7 +392,7 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper_public_id?: string | null, profile_wallpaper?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -724,12 +724,40 @@ export const RemoveAvatarDocument = gql`
       profile_bio
       profile_avatar
       profile_avatar_public_id
-      profile_wallpaper_public_id
       profile_wallpaper
+      profile_wallpaper_public_id
       profile_interests {
         interest {
           interest_name
         }
+      }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
       }
     }
   }
@@ -775,12 +803,40 @@ export const RemoveWallpaperDocument = gql`
       profile_bio
       profile_avatar
       profile_avatar_public_id
-      profile_wallpaper_public_id
       profile_wallpaper
+      profile_wallpaper_public_id
       profile_interests {
         interest {
           interest_name
         }
+      }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
       }
     }
   }
@@ -875,6 +931,29 @@ export const UpdateProfileDocument = gql`
         interest {
           interest_name
         }
+      }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
       }
       user {
         id
@@ -1068,12 +1147,35 @@ export const GetProfileDocument = gql`
       profile_bio
       profile_avatar
       profile_avatar_public_id
-      profile_wallpaper_public_id
       profile_wallpaper
+      profile_wallpaper_public_id
       profile_interests {
         interest {
           interest_name
         }
+      }
+      buddies {
+        requester_id
+        addressee_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyRequests {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
+      buddyPendings {
+        requester_id
+        addressee_id
+        specifier_id
+        status
+        createdAt
+        updatedAt
       }
       user {
         id
