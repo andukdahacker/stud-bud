@@ -19,7 +19,6 @@ import {
   INVALID_TOKEN,
   UNVERIFIED,
 } from "../../constants";
-
 import { sendIMail } from "../../utils/emailService";
 import { validateChangePasswordInput } from "../../utils/validateChangePasswordInput";
 import { validateForgotPasswordInput } from "../../utils/validateForgotPasswordInput";
@@ -78,7 +77,7 @@ export const RegisterMutation = mutationField("register", {
           isVerified: false,
         },
       });
-      // await sendIMail(ctx, newUser.id, email, "verifyEmail");
+      // await sendIMail(ctx, newUser.id, email, "verifyEmail"); create enum option
 
       //all good
       return {

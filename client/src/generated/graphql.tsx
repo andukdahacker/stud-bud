@@ -104,6 +104,7 @@ export type Mutation = {
   logout: AuthOutput;
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
+  removeBuddy?: Maybe<RelationshipOutput>;
   removeWallpaper?: Maybe<ProfileMutationOutput>;
   respondBuddy?: Maybe<RelationshipOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
@@ -144,6 +145,11 @@ export type MutationRegisterArgs = {
 export type MutationRemoveAvatarArgs = {
   input: DestroyImageInput;
   where: ProfileWhereUniqueInput;
+};
+
+
+export type MutationRemoveBuddyArgs = {
+  input: RelationshipInput;
 };
 
 
@@ -250,8 +256,8 @@ export type Relationship = {
 export type RelationshipInput = {
   addressee_id: Scalars['String'];
   requester_id: Scalars['String'];
-  specifier_id: Scalars['String'];
-  status: RelationshipStatusCode;
+  specifier_id?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<RelationshipStatusCode>;
 };
 
 export type RelationshipOutput = {
@@ -342,6 +348,13 @@ export type RemoveAvatarMutationVariables = Exact<{
 
 
 export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+
+export type RemoveBuddyMutationVariables = Exact<{
+  input: RelationshipInput;
+}>;
+
+
+export type RemoveBuddyMutation = { __typename?: 'Mutation', removeBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
 export type RemoveWallpaperMutationVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -790,6 +803,43 @@ export function useRemoveAvatarMutation(baseOptions?: Apollo.MutationHookOptions
 export type RemoveAvatarMutationHookResult = ReturnType<typeof useRemoveAvatarMutation>;
 export type RemoveAvatarMutationResult = Apollo.MutationResult<RemoveAvatarMutation>;
 export type RemoveAvatarMutationOptions = Apollo.BaseMutationOptions<RemoveAvatarMutation, RemoveAvatarMutationVariables>;
+export const RemoveBuddyDocument = gql`
+    mutation removeBuddy($input: RelationshipInput!) {
+  removeBuddy(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+  }
+}
+    `;
+export type RemoveBuddyMutationFn = Apollo.MutationFunction<RemoveBuddyMutation, RemoveBuddyMutationVariables>;
+
+/**
+ * __useRemoveBuddyMutation__
+ *
+ * To run a mutation, you first call `useRemoveBuddyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveBuddyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeBuddyMutation, { data, loading, error }] = useRemoveBuddyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveBuddyMutation(baseOptions?: Apollo.MutationHookOptions<RemoveBuddyMutation, RemoveBuddyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveBuddyMutation, RemoveBuddyMutationVariables>(RemoveBuddyDocument, options);
+      }
+export type RemoveBuddyMutationHookResult = ReturnType<typeof useRemoveBuddyMutation>;
+export type RemoveBuddyMutationResult = Apollo.MutationResult<RemoveBuddyMutation>;
+export type RemoveBuddyMutationOptions = Apollo.BaseMutationOptions<RemoveBuddyMutation, RemoveBuddyMutationVariables>;
 export const RemoveWallpaperDocument = gql`
     mutation removeWallpaper($where: ProfileWhereUniqueInput!, $input: DestroyImageInput!) {
   removeWallpaper(where: $where, input: $input) {

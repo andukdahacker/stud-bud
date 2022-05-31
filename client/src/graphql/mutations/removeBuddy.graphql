@@ -1,0 +1,9 @@
+mutation removeBuddy($input: RelationshipInput!) {
+  removeBuddy(input: $input) {
+    IOutput {
+      code
+      success
+      message
+    }
+  }
+}

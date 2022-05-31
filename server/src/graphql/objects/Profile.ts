@@ -30,14 +30,7 @@ export const Profile = objectType({
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.relationship.findMany({
           where: {
-            OR: [
-              {
-                requester_id: root.id,
-              },
-              {
-                addressee_id: root.id,
-              },
-            ],
+            requester_id: root.id,
             status: "ACCEPTED",
           },
         });

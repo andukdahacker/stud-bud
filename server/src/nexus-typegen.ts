@@ -76,8 +76,8 @@ export interface NexusGenInputs {
   RelationshipInput: { // input type
     addressee_id: string; // String!
     requester_id: string; // String!
-    specifier_id: string; // String!
-    status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
+    specifier_id?: string | null; // String
+    status?: NexusGenEnums['RelationshipStatusCode'] | null; // RelationshipStatusCode
   }
   VerifyEmailInput: { // input type
     token: string; // String!
@@ -221,6 +221,7 @@ export interface NexusGenFieldTypes {
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    removeBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     removeWallpaper: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     respondBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
@@ -322,6 +323,7 @@ export interface NexusGenFieldTypeNames {
     logout: 'AuthOutput'
     register: 'AuthOutput'
     removeAvatar: 'ProfileMutationOutput'
+    removeBuddy: 'RelationshipOutput'
     removeWallpaper: 'ProfileMutationOutput'
     respondBuddy: 'RelationshipOutput'
     updateProfile: 'ProfileMutationOutput'
@@ -408,6 +410,9 @@ export interface NexusGenArgTypes {
     removeAvatar: { // args
       input: NexusGenInputs['DestroyImageInput']; // DestroyImageInput!
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    removeBuddy: { // args
+      input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
     }
     removeWallpaper: { // args
       input: NexusGenInputs['DestroyImageInput']; // DestroyImageInput!

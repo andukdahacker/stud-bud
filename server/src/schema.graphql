@@ -83,6 +83,7 @@ type Mutation {
   logout: AuthOutput!
   register(input: RegisterInput!): AuthOutput!
   removeAvatar(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  removeBuddy(input: RelationshipInput!): RelationshipOutput
   removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   respondBuddy(input: RelationshipInput!): RelationshipOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
@@ -150,8 +151,8 @@ type Relationship {
 input RelationshipInput {
   addressee_id: String!
   requester_id: String!
-  specifier_id: String!
-  status: RelationshipStatusCode!
+  specifier_id: String
+  status: RelationshipStatusCode
 }
 
 type RelationshipOutput {

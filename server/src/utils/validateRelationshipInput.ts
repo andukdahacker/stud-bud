@@ -1,5 +1,6 @@
 import { RelationShipInput } from "../types";
 import { Context } from "../context";
+import { INVALID_INPUT } from "../constants";
 
 export const validateRelationshipInput = async (
   input: RelationShipInput,
@@ -31,19 +32,19 @@ export const validateRelationshipInput = async (
         IOutput: {
           code: 400,
           success: false,
-          message: "REQUESTED only",
+          message: INVALID_INPUT,
         },
       };
-    }
 
-    if (profile?.id !== requester_id) {
-      result = {
-        IOutput: {
-          code: 400,
-          success: false,
-          message: "Wrong requester",
-        },
-      };
+      if (requester_id !== specifier_id) {
+        result = {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: INVALID_INPUT,
+          },
+        };
+      }
     }
   }
 
@@ -53,7 +54,17 @@ export const validateRelationshipInput = async (
         IOutput: {
           code: 400,
           success: false,
-          message: "ACCEPTED or DECLINED only",
+          message: INVALID_INPUT,
+        },
+      };
+    }
+
+    if (requester_id === specifier_id && status === "ACCEPTED") {
+      result = {
+        IOutput: {
+          code: 400,
+          success: false,
+          message: INVALID_INPUT,
         },
       };
     }
@@ -64,8 +75,7 @@ export const validateRelationshipInput = async (
       IOutput: {
         code: 400,
         success: false,
-        message:
-          "You can connect with yourself in a spritual level, but on our app it is not yet a viable option",
+        message: INVALID_INPUT,
       },
     };
 
@@ -74,7 +84,7 @@ export const validateRelationshipInput = async (
       IOutput: {
         code: 400,
         success: false,
-        message: "Wrong specifier",
+        message: INVALID_INPUT,
       },
     };
   }

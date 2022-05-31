@@ -94,6 +94,22 @@ export const respondBuddy = mutationField("respondBuddy", {
             },
           },
           data: {
+            status,
+          },
+        });
+
+        await ctx.prisma.relationship.create({
+          data: {
+            requester: {
+              connect: {
+                id: addressee_id,
+              },
+            },
+            addressee: {
+              connect: {
+                id: requester_id,
+              },
+            },
             specifier: {
               connect: {
                 id: specifier_id,
@@ -112,7 +128,7 @@ export const respondBuddy = mutationField("respondBuddy", {
           Relationship: updatedRelationship,
         };
       } else if (status === "DECLINED") {
-        await ctx.prisma.relationship.delete({
+        const relationship = await ctx.prisma.relationship.delete({
           where: {
             requester_id_addressee_id: {
               requester_id,
@@ -120,6 +136,15 @@ export const respondBuddy = mutationField("respondBuddy", {
             },
           },
         });
+
+        if (!relationship)
+          return {
+            IOutput: {
+              code: 400,
+              success: false,
+              message: "Relationship does not exist",
+            },
+          };
 
         return {
           IOutput: {
@@ -135,6 +160,51 @@ export const respondBuddy = mutationField("respondBuddy", {
           code: 200,
           success: true,
           message: "Unhandled",
+        },
+      };
+    } catch (error) {
+      return {
+        IOutput: {
+          code: 500,
+          success: false,
+          message: INTERNAL_SERVER_ERROR,
+        },
+      };
+    }
+  },
+});
+
+export const removeBuddy = mutationField("removeBuddy", {
+  type: RelationshipOutput,
+  args: {
+    input: nonNull(RelationshipInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { requester_id, addressee_id } = args.input;
+    try {
+      await ctx.prisma.relationship.delete({
+        where: {
+          requester_id_addressee_id: {
+            requester_id,
+            addressee_id,
+          },
+        },
+      });
+
+      await ctx.prisma.relationship.delete({
+        where: {
+          requester_id_addressee_id: {
+            requester_id: addressee_id,
+            addressee_id: requester_id,
+          },
+        },
+      });
+
+      return {
+        IOutput: {
+          code: 200,
+          success: true,
+          message: "Success unBuddy",
         },
       };
     } catch (error) {
