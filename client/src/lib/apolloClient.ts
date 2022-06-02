@@ -2,6 +2,7 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
+  split,
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 import { GetManyProfilesOutput } from "../generated/graphql";
@@ -9,6 +10,9 @@ import merge from "deepmerge";
 import { IncomingHttpHeaders } from "http";
 import { useMemo } from "react";
 import { isEqual } from "lodash";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -39,8 +43,32 @@ export const createApolloClient = (
     fetch: enhancedFetch,
   });
 
+  const wsLink =
+    typeof window !== "undefined"
+      ? new GraphQLWsLink(
+          createClient({
+            url: "ws://localhost:4000/graphql",
+          })
+        )
+      : null;
+
+  const link =
+    typeof window !== "undefined" && wsLink != null
+      ? split(
+          ({ query }) => {
+            const def = getMainDefinition(query);
+            return (
+              def.kind === "OperationDefinition" &&
+              def.operation === "subscription"
+            );
+          },
+          wsLink,
+          uploadLink
+        )
+      : uploadLink;
+
   return new ApolloClient({
-    link: uploadLink,
+    link,
     cache: new InMemoryCache({
       typePolicies: {
         Query: {

@@ -76,8 +76,8 @@ export interface NexusGenInputs {
   RelationshipInput: { // input type
     addressee_id: string; // String!
     requester_id: string; // String!
-    specifier_id?: string | null; // String
-    status?: NexusGenEnums['RelationshipStatusCode'] | null; // RelationshipStatusCode
+    specifier_id: string; // String!
+    status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
   }
   VerifyEmailInput: { // input type
     token: string; // String!
@@ -88,6 +88,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
+  NotificationType: "ADMIN" | "COMMENT_CREATED" | "COMMENT_LIKED" | "POST_CREATED" | "POST_LIKED" | "RELATIONSHIP_ACCEPT" | "RELATIONSHIP_REQUEST" | "USER"
   RelationshipStatusCode: "ACCEPTED" | "DECLINED" | "REQUESTED"
 }
 

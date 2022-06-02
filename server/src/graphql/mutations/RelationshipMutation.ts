@@ -182,7 +182,7 @@ export const removeBuddy = mutationField("removeBuddy", {
   resolve: async (_root, args, ctx) => {
     const { requester_id, addressee_id } = args.input;
     try {
-      await ctx.prisma.relationship.delete({
+      const delete1 = ctx.prisma.relationship.delete({
         where: {
           requester_id_addressee_id: {
             requester_id,
@@ -191,7 +191,7 @@ export const removeBuddy = mutationField("removeBuddy", {
         },
       });
 
-      await ctx.prisma.relationship.delete({
+      const delete2 = ctx.prisma.relationship.delete({
         where: {
           requester_id_addressee_id: {
             requester_id: addressee_id,
@@ -199,6 +199,16 @@ export const removeBuddy = mutationField("removeBuddy", {
           },
         },
       });
+
+      const deleteResult = await ctx.prisma.$transaction([delete1, delete2]);
+      if (!deleteResult)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Request failed",
+          },
+        };
 
       return {
         IOutput: {

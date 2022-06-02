@@ -32,6 +32,8 @@ model Profile {
   requester                   Relationship[]     @relation("requester")
   addressee                   Relationship[]     @relation("addressee")
   specifier                   Relationship[]     @relation("specifier")
+  noti_notifier               Notification[]     @relation("notifier")
+  noti_receiver               Notification[]     @relation("receiver")
   user                        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id                     String             @unique
   createdAt                   DateTime           @unique @default(now())
@@ -59,6 +61,7 @@ model ProfileInterests {
 }
 
 model Relationship {
+
   requester    Profile                @relation("requester", fields: [requester_id], references: [id], onDelete: Cascade)
   requester_id String
   addressee    Profile                @relation("addressee", fields: [addressee_id], references: [id], onDelete: Cascade)
@@ -76,4 +79,25 @@ enum RelationshipStatusCode {
   REQUESTED
   ACCEPTED
   DECLINED
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  notifier    Profile          @relation("notifier", fields: [notifier_id], references: [id], onDelete: Cascade)
+  notifier_id String
+  receiver    Profile          @relation("receiver", fields: [receiver_id], references: [id], onDelete: Cascade)
+  receiver_id String
+  type        NotificationType @relation(fields: [type_id], references: [id])
+  type_id     Int
+  entity_id   String?
+  message     String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model NotificationType {
+  id        Int            @id @default(autoincrement())
+  type      Notification[]
+  main_type String
+  sub_type  String
 }

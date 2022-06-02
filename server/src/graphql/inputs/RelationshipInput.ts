@@ -6,8 +6,8 @@ export const RelationshipInput = inputObjectType({
   definition(t) {
     t.nonNull.string("requester_id");
     t.nonNull.string("addressee_id");
-    t.nullable.string("specifier_id");
-    t.nullable.field("status", {
+    t.nonNull.string("specifier_id");
+    t.nonNull.field("status", {
       type: RelationshipStatusCode,
     });
   },

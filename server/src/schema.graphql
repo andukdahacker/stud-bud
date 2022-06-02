@@ -90,6 +90,17 @@ type Mutation {
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
 
+enum NotificationType {
+  ADMIN
+  COMMENT_CREATED
+  COMMENT_LIKED
+  POST_CREATED
+  POST_LIKED
+  RELATIONSHIP_ACCEPT
+  RELATIONSHIP_REQUEST
+  USER
+}
+
 type PageInfo {
   endCursor: Date
   hasNextPage: Boolean
@@ -151,8 +162,8 @@ type Relationship {
 input RelationshipInput {
   addressee_id: String!
   requester_id: String!
-  specifier_id: String
-  status: RelationshipStatusCode
+  specifier_id: String!
+  status: RelationshipStatusCode!
 }
 
 type RelationshipOutput {

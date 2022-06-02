@@ -19,13 +19,6 @@ import { useServer } from "graphql-ws/lib/use/ws";
 
 dotenv.config();
 
-//declaration merge to inject userId into express session object
-declare module "express-session" {
-  export interface SessionData {
-    userId: string;
-  }
-}
-
 const startServer = async () => {
   const app = express();
   const httpServer = http.createServer(app);

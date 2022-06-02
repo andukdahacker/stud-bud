@@ -64,7 +64,7 @@ const ProfilePage = (props: ProfilePageProps) => {
     } else {
       setStatus(undefined);
     }
-  }, [isBuddy, isRequested, isPending]);
+  }, []);
 
   const respondButtonHandleClick = () => {
     if (hideButton === "hidden") setHideButton("");

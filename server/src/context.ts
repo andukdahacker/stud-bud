@@ -12,6 +12,13 @@ export interface Context {
   redis: Redis;
 }
 
+//declaration merge to inject userId into express session object
+declare module "express-session" {
+  export interface SessionData {
+    userId: string;
+  }
+}
+
 export const createContext = async (
   request: ExpressContext
 ): Promise<Partial<Context>> => {
