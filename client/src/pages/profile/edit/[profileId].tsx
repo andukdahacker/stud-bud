@@ -234,7 +234,7 @@ const EditProfile = () => {
                 type="button"
                 onClick={() => profileAvatarInput.current!.click()}
               >
-                <Avatar img_url={profile_avatar} />
+                <Avatar img_url={profile_avatar} width={20} height={20} />
               </button>
               {profile_avatar_public_id && (
                 <button

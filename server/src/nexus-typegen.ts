@@ -88,7 +88,6 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  NotificationType: "ADMIN" | "COMMENT_CREATED" | "COMMENT_LIKED" | "POST_CREATED" | "POST_LIKED" | "RELATIONSHIP_ACCEPT" | "RELATIONSHIP_REQUEST" | "USER"
   RelationshipStatusCode: "ACCEPTED" | "DECLINED" | "REQUESTED"
 }
 
@@ -263,8 +262,10 @@ export interface NexusGenFieldTypes {
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   Relationship: { // field return type
+    addressee: NexusGenRootTypes['Profile'] | null; // Profile
     addressee_id: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
+    requester: NexusGenRootTypes['Profile'] | null; // Profile
     requester_id: string; // String!
     specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
@@ -365,8 +366,10 @@ export interface NexusGenFieldTypeNames {
     getUser: 'User'
   }
   Relationship: { // field return type name
+    addressee: 'Profile'
     addressee_id: 'String'
     createdAt: 'Date'
+    requester: 'Profile'
     requester_id: 'String'
     specifier_id: 'String'
     status: 'RelationshipStatusCode'

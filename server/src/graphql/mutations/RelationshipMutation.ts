@@ -50,6 +50,7 @@ export const connectBuddy = mutationField("connectBuddy", {
             message: "Request failed",
           },
         };
+
       return {
         IOutput: {
           code: 200,
@@ -86,7 +87,7 @@ export const respondBuddy = mutationField("respondBuddy", {
     if (validateInputErrors) return validateInputErrors;
     try {
       if (status === "ACCEPTED") {
-        const updatedRelationship = await ctx.prisma.relationship.update({
+        const updatedRelationship = ctx.prisma.relationship.update({
           where: {
             requester_id_addressee_id: {
               requester_id,
@@ -98,7 +99,7 @@ export const respondBuddy = mutationField("respondBuddy", {
           },
         });
 
-        await ctx.prisma.relationship.create({
+        const otherEndRelationship = ctx.prisma.relationship.create({
           data: {
             requester: {
               connect: {
@@ -119,13 +120,26 @@ export const respondBuddy = mutationField("respondBuddy", {
           },
         });
 
+        const result = await ctx.prisma.$transaction([
+          updatedRelationship,
+          otherEndRelationship,
+        ]);
+
+        if (!result)
+          return {
+            IOutput: {
+              code: 400,
+              success: false,
+              message: "Request failed",
+            },
+          };
+
         return {
           IOutput: {
             code: 200,
             success: true,
             message: "ACCEPTED",
           },
-          Relationship: updatedRelationship,
         };
       } else if (status === "DECLINED") {
         const relationship = await ctx.prisma.relationship.delete({

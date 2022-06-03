@@ -23,7 +23,7 @@ const Profile = () => {
     }
 
     if (router.isReady) fetchData();
-  }, [router.isReady]);
+  }, [router.isReady, router]);
   const username = getProfileData?.getProfile?.Profile?.user?.username;
 
   return (

@@ -5,6 +5,27 @@ query getUser {
     email
     profile {
       id
+      profile_avatar
+      buddyRequests {
+        requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
+        addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 }

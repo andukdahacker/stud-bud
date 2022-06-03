@@ -19,14 +19,38 @@ query getProfile($where: ProfileWhereUniqueInput!) {
       }
       buddies {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         status
         createdAt
         updatedAt
       }
       buddyRequests {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt
@@ -34,7 +58,19 @@ query getProfile($where: ProfileWhereUniqueInput!) {
       }
       buddyPendings {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt

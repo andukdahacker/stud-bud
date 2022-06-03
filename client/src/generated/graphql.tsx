@@ -245,8 +245,10 @@ export type RegisterInput = {
 
 export type Relationship = {
   __typename?: 'Relationship';
+  addressee?: Maybe<Profile>;
   addressee_id: Scalars['String'];
   createdAt: Scalars['Date'];
+  requester?: Maybe<Profile>;
   requester_id: Scalars['String'];
   specifier_id: Scalars['String'];
   status: RelationshipStatusCode;
@@ -256,8 +258,8 @@ export type Relationship = {
 export type RelationshipInput = {
   addressee_id: Scalars['String'];
   requester_id: Scalars['String'];
-  specifier_id?: InputMaybe<Scalars['String']>;
-  status?: InputMaybe<RelationshipStatusCode>;
+  specifier_id: Scalars['String'];
+  status: RelationshipStatusCode;
 };
 
 export type RelationshipOutput = {
@@ -405,12 +407,12 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null } | null> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null } | null> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string } | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string, profile_avatar?: string | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null } | null> | null } | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1206,14 +1208,38 @@ export const GetProfileDocument = gql`
       }
       buddies {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         status
         createdAt
         updatedAt
       }
       buddyRequests {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt
@@ -1221,7 +1247,19 @@ export const GetProfileDocument = gql`
       }
       buddyPendings {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt
@@ -1272,6 +1310,27 @@ export const GetUserDocument = gql`
     email
     profile {
       id
+      profile_avatar
+      buddyRequests {
+        requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
+        addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
+        specifier_id
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 }

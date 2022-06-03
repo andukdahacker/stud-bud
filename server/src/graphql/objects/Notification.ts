@@ -1,5 +1,4 @@
 import { objectType } from "nexus";
-import { NotificationType } from "../enums";
 
 export const Notification = objectType({
   name: "Notification",
@@ -12,6 +11,16 @@ export const Notification = objectType({
     });
     t.nonNull.string("message");
     t.nullable.string("entity_id");
+    t.nonNull.boolean("isRead");
     t.nonNull.date("createdAt");
+  },
+});
+
+export const NotificationType = objectType({
+  name: "NotificationType",
+  definition(t) {
+    t.nonNull.int("id");
+    t.nonNull.string("main_type");
+    t.nonNull.string("sub_type");
   },
 });
