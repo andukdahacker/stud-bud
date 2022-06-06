@@ -232,9 +232,9 @@ export interface NexusGenFieldTypes {
     hasNextPage: boolean | null; // Boolean
   }
   Profile: { // field return type
-    buddies: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
-    buddyPendings: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
-    buddyRequests: Array<NexusGenRootTypes['Relationship'] | null> | null; // [Relationship]
+    buddies: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    buddyPendings: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    buddyRequests: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar: string | null; // String

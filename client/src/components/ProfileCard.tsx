@@ -5,6 +5,7 @@ import { useGetProfileLazyQuery } from "../generated/graphql";
 import ProfilePage from "./ProfilePage";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import BuddyButton from "./BuddyButton";
 
 interface ProfileCardProps {
   id?: string;
@@ -72,7 +73,7 @@ const ProfileCard = (props: ProfileCardProps) => {
           className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
           type="button"
         >
-          Add
+          Connect
         </button>
       </div>
 

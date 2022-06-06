@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useGetUserQuery } from "../generated/graphql";
 
 export const useCheckAuth = () => {
-  const { data, loading } = useGetUserQuery();
+  const { data, loading, refetch } = useGetUserQuery();
   const router = useRouter();
 
   useEffect(() => {
@@ -34,5 +34,5 @@ export const useCheckAuth = () => {
     //NOT LOGGED IN -> Redirect to login page
   }, [data, loading, router]);
 
-  return { data, loading };
+  return { data, loading, refetch };
 };

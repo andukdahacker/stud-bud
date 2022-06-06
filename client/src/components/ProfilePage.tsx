@@ -58,7 +58,9 @@ const ProfilePage = (props: ProfilePageProps) => {
   return (
     <div>
       <Wallpaper img_url={profile_wallpaper} />
+
       <Avatar img_url={profile_avatar} width={20} height={20} />
+
       <h1>{username}</h1>
       <Link href={`/profile/edit/${profile_id}`}>
         <a>Edit profile</a>
@@ -83,16 +85,7 @@ const ProfilePage = (props: ProfilePageProps) => {
             );
           })
         : null}
-      <h2>They requested to be your buddies: </h2>
-      {buddiesRequests
-        ? buddiesRequests.map((request, index) => {
-            return (
-              <Link href={`/profile/${request?.requester_id}`} key={index}>
-                <a>{request?.requester?.user?.username}</a>
-              </Link>
-            );
-          })
-        : null}
+
       <h2>You requested to be their buddies: </h2>
       {buddiesPendings
         ? buddiesPendings.map((pending, index) => {

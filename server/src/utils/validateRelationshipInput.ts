@@ -54,7 +54,7 @@ export const validateRelationshipInput = async (
         IOutput: {
           code: 400,
           success: false,
-          message: INVALID_INPUT,
+          message: "1",
         },
       };
     }
@@ -64,7 +64,7 @@ export const validateRelationshipInput = async (
         IOutput: {
           code: 400,
           success: false,
-          message: INVALID_INPUT,
+          message: "2",
         },
       };
     }
@@ -75,7 +75,7 @@ export const validateRelationshipInput = async (
       IOutput: {
         code: 400,
         success: false,
-        message: INVALID_INPUT,
+        message: "3",
       },
     };
 
@@ -84,7 +84,7 @@ export const validateRelationshipInput = async (
       IOutput: {
         code: 400,
         success: false,
-        message: INVALID_INPUT,
+        message: "4",
       },
     };
   }

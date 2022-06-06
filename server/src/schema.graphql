@@ -96,9 +96,9 @@ type PageInfo {
 }
 
 type Profile {
-  buddies: [Relationship]
-  buddyPendings: [Relationship]
-  buddyRequests: [Relationship]
+  buddies: [Relationship!]
+  buddyPendings: [Relationship!]
+  buddyRequests: [Relationship!]
   createdAt: Date
   id: ID!
   profile_avatar: String

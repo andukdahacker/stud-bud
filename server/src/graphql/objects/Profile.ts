@@ -25,7 +25,7 @@ export const Profile = objectType({
           .profile_interests();
       },
     });
-    t.nullable.list.field("buddies", {
+    t.nullable.list.nonNull.field("buddies", {
       type: Relationship,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.relationship.findMany({
@@ -36,7 +36,7 @@ export const Profile = objectType({
         });
       },
     });
-    t.nullable.list.field("buddyRequests", {
+    t.nullable.list.nonNull.field("buddyRequests", {
       type: Relationship,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.relationship.findMany({
@@ -47,7 +47,7 @@ export const Profile = objectType({
         });
       },
     });
-    t.nullable.list.field("buddyPendings", {
+    t.nullable.list.nonNull.field("buddyPendings", {
       type: Relationship,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.relationship.findMany({

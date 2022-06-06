@@ -7,7 +7,7 @@ import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BuddyRequests from "./BuddyRequests";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -25,7 +25,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="flex items-center justify-between px-10 py-5 bg-white shadow-md shadow-gray-200 ">
+    <div className="flex items-center justify-between px-10 py-5 bg-white ">
       <div className="flex items-center">
         <Link href="/">
           <a className="flex items-center text-sm font-medium leading-5">
@@ -56,21 +56,8 @@ const NavBar = () => {
       ) : router.route == "/login" ||
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
-        <div className="flex">
-          <div className="relative">
-            <FontAwesomeIcon icon={"user-group"} size={"1x"} />
-            <div>
-              {profile?.buddyRequests?.map((request, index) => {
-                return (
-                  <div key={index}>
-                    <div>
-                      {request?.requester?.user?.username} sent a request to you
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        <div className="flex justify-around">
+          <BuddyRequests data={authData} />
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
               className={` flex  text-sm font-medium  ${
@@ -79,13 +66,12 @@ const NavBar = () => {
                   : `text-gray-800 hover:text-blue-700`
               }`}
             >
-              <div className="w-10 h-10">
-                <Avatar
-                  img_url={profile?.profile_avatar}
-                  width={"full"}
-                  height={"full"}
-                />
-              </div>
+              <Avatar
+                img_url={profile?.profile_avatar}
+                width={10}
+                height={10}
+              />
+
               <div>{username}</div>
             </a>
           </Link>

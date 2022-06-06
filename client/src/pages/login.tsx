@@ -113,12 +113,13 @@ const Login = () => {
                     placeholder="Password"
                     className="w-full h-10 border border-gray-200 border-solid rounded-b-sm "
                   />
-                  <FontAwesomeIcon
-                    icon="eye"
-                    size="lg"
-                    className="absolute bottom-3 right-2 hover:cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  />
+                  <div className="absolute bottom-3 right-2 hover:cursor-pointer">
+                    <FontAwesomeIcon
+                      icon="eye"
+                      size="lg"
+                      onClick={togglePasswordVisibility}
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"
