@@ -13,3 +13,15 @@ export const RelationshipOutput = objectType({
     });
   },
 });
+
+export const BuddyRequestsOutput = objectType({
+  name: "BuddyRequestsOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+    t.nullable.list.nonNull.field("Requests", {
+      type: Relationship,
+    });
+  },
+});

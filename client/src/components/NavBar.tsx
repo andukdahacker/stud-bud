@@ -57,21 +57,22 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div className="flex justify-around">
-          <BuddyRequests data={authData} />
+          <BuddyRequests />
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
-              className={` flex  text-sm font-medium  ${
+              className={` flex text-sm font-medium  ${
                 router.asPath == `/profile/${profile?.id}`
                   ? `text-blue-700`
                   : `text-gray-800 hover:text-blue-700`
               }`}
             >
-              <Avatar
-                img_url={profile?.profile_avatar}
-                width={10}
-                height={10}
-              />
-
+              <div>
+                <Avatar
+                  img_url={profile?.profile_avatar}
+                  width={10}
+                  height={10}
+                />
+              </div>
               <div>{username}</div>
             </a>
           </Link>

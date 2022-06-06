@@ -32,7 +32,7 @@ export const sendIMail = async (
   ctx: Context,
   userId: string,
   email: string,
-  options: string
+  options: "verifyEmail" | "forgotPassword"
 ) => {
   const token = v4();
   const key =

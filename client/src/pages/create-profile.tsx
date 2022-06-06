@@ -26,7 +26,6 @@ const CreateProfile = () => {
     profile_avatar,
     profile_interest,
   }: CreateProfileInput) => {
-    console.log(profile_avatar);
     const result = await createProfile({
       variables: {
         input: {

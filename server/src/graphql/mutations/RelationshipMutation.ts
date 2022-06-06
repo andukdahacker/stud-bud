@@ -57,7 +57,6 @@ export const connectBuddy = mutationField("connectBuddy", {
           success: true,
           message: "Request made successfully",
         },
-        Relationship: relationship,
       };
     } catch (error) {
       return {

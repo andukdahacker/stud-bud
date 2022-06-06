@@ -8,6 +8,11 @@ type AuthOutput {
   User: User
 }
 
+type BuddyRequestsOutput {
+  IOutput: IOutput!
+  Requests: [Relationship!]
+}
+
 input ChangePasswordInput {
   password: String!
   token: String!
@@ -127,6 +132,7 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
+  getBuddyRequests(where: ProfileWhereUniqueInput!): BuddyRequestsOutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
@@ -166,10 +172,6 @@ enum RelationshipStatusCode {
   ACCEPTED
   DECLINED
   REQUESTED
-}
-
-type Subscription {
-  truths: Boolean
 }
 
 """The `Upload` scalar type represents a file upload."""

@@ -107,6 +107,10 @@ export interface NexusGenObjects {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     User?: NexusGenRootTypes['User'] | null; // User
   }
+  BuddyRequestsOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Requests?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+  }
   ErrorFieldOutput: { // root type
     field: string; // String!
     message: string; // String!
@@ -164,7 +168,6 @@ export interface NexusGenObjects {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Relationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
-  Subscription: {};
   User: { // root type
     email: string; // String!
     id: string; // ID!
@@ -188,6 +191,10 @@ export interface NexusGenFieldTypes {
     ErrorFieldOutput: NexusGenRootTypes['ErrorFieldOutput'][] | null; // [ErrorFieldOutput!]
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     User: NexusGenRootTypes['User'] | null; // User
+  }
+  BuddyRequestsOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    Requests: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
   }
   ErrorFieldOutput: { // field return type
     field: string; // String!
@@ -256,6 +263,7 @@ export interface NexusGenFieldTypes {
     Profile: NexusGenRootTypes['Profile'] | null; // Profile
   }
   Query: { // field return type
+    getBuddyRequests: NexusGenRootTypes['BuddyRequestsOutput'] | null; // BuddyRequestsOutput
     getManyInterests: NexusGenRootTypes['GetManyInterestOutput'] | null; // GetManyInterestOutput
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
     getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
@@ -275,9 +283,6 @@ export interface NexusGenFieldTypes {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Relationship: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
-  Subscription: { // field return type
-    truths: boolean | null; // Boolean
-  }
   User: { // field return type
     email: string; // String!
     id: string; // ID!
@@ -292,6 +297,10 @@ export interface NexusGenFieldTypeNames {
     ErrorFieldOutput: 'ErrorFieldOutput'
     IOutput: 'IOutput'
     User: 'User'
+  }
+  BuddyRequestsOutput: { // field return type name
+    IOutput: 'IOutput'
+    Requests: 'Relationship'
   }
   ErrorFieldOutput: { // field return type name
     field: 'String'
@@ -360,6 +369,7 @@ export interface NexusGenFieldTypeNames {
     Profile: 'Profile'
   }
   Query: { // field return type name
+    getBuddyRequests: 'BuddyRequestsOutput'
     getManyInterests: 'GetManyInterestOutput'
     getManyProfiles: 'GetManyProfilesOutput'
     getProfile: 'ProfileMutationOutput'
@@ -378,9 +388,6 @@ export interface NexusGenFieldTypeNames {
   RelationshipOutput: { // field return type name
     IOutput: 'IOutput'
     Relationship: 'Relationship'
-  }
-  Subscription: { // field return type name
-    truths: 'Boolean'
   }
   User: { // field return type name
     email: 'String'
@@ -434,6 +441,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getBuddyRequests: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
     getManyInterests: { // args
       where: NexusGenInputs['getManyInterestsInput']; // getManyInterestsInput!
     }

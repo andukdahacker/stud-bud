@@ -1,23 +1,42 @@
-import { ApolloQueryResult, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Exact,
   GetUserDocument,
   GetUserQuery,
   RelationshipStatusCode,
+  useGetBuddyRequestsLazyQuery,
   useRespondBuddyMutation,
 } from "../generated/graphql";
 import { BuddyRespondOptions } from "../utils/constants";
+import Loading from "./Loading";
 
-interface BuddyRequestsProps {
-  data?: GetUserQuery;
-}
-const BuddyRequests = ({ data }: BuddyRequestsProps) => {
-  const buddyRequests = data?.getUser?.profile?.buddyRequests;
-  const user_profile_id = data?.getUser?.profile?.id;
+const BuddyRequests = () => {
+  const client = useApolloClient();
+  const user_profile_id = client.readQuery<GetUserQuery>({
+    query: GetUserDocument,
+  })?.getUser?.profile?.id;
 
+  const [
+    getBuddyRequests,
+    { data: buddyRequestsData, loading: buddyRequestLoading, subscribeToMore },
+  ] = useGetBuddyRequestsLazyQuery();
+  useEffect(() => {
+    async function fetchData() {
+      await getBuddyRequests({
+        variables: {
+          where: {
+            profile_id: user_profile_id!,
+          },
+        },
+      });
+    }
+
+    if (user_profile_id) fetchData();
+  }, []);
+
+  const buddyRequests = buddyRequestsData?.getBuddyRequests?.Requests;
   const [respondBuddy, {}] = useRespondBuddyMutation();
   const [hideBuddyRequests, setHideBuddyRequests] = useState<
     string | undefined
@@ -27,7 +46,7 @@ const BuddyRequests = ({ data }: BuddyRequestsProps) => {
     if (hideBuddyRequests === "hidden") setHideBuddyRequests(undefined);
     if (hideBuddyRequests === undefined) setHideBuddyRequests("hidden");
   };
-  const isPopulated = !!buddyRequests!.length;
+  const isPopulated = buddyRequests ? !!buddyRequests.length : undefined;
 
   const [clicked, setClicked] = useState<string>();
   const [acceptClicked, setAcceptClicked] = useState<string | undefined>(
@@ -79,7 +98,9 @@ const BuddyRequests = ({ data }: BuddyRequestsProps) => {
       <div
         className={`${hideBuddyRequests} overflow-auto fixed bg-white top-20 z-10`}
       >
-        {isPopulated ? (
+        {buddyRequestLoading ? (
+          <Loading />
+        ) : isPopulated ? (
           buddyRequests?.map((request, index) => {
             return (
               <div key={index}>

@@ -29,7 +29,7 @@ const ProfilePage = (props: ProfilePageProps) => {
   const profile_id = profileData?.id;
   const profile_bio = profileData?.profile_bio;
   const buddies = profileData?.buddies;
-  const buddiesRequests = profileData?.buddyRequests;
+
   const buddiesPendings = profileData?.buddyPendings;
 
   if (props.loading) return <Loading />;

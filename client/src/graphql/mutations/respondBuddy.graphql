@@ -5,12 +5,5 @@ mutation respondBuddy($input: RelationshipInput!) {
       success
       message
     }
-
-    Relationship {
-      requester_id
-      addressee_id
-      specifier_id
-      status
-    }
   }
 }

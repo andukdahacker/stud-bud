@@ -1,19 +1,3 @@
-import { subscriptionField } from "nexus";
+import { PubSub } from "graphql-subscriptions";
 
-export const SubscriptionField = subscriptionField("truths", {
-  type: "Boolean",
-
-  subscribe() {
-    return (async function* () {
-      while (true) {
-        await new Promise((res) => setTimeout(res, 1000));
-
-        yield Math.random() > 0.5;
-      }
-    })();
-  },
-
-  resolve() {
-    return true;
-  },
-});
+export const pubsub = new PubSub();

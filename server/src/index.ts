@@ -4,7 +4,8 @@ import http from "http";
 import cors from "cors";
 import {
   ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageProductionDefault,
+  ApolloServerPluginLandingPageLocalDefault,
 } from "apollo-server-core";
 import dotenv from "dotenv";
 import connectRedis from "connect-redis";
@@ -25,7 +26,7 @@ const startServer = async () => {
 
   app.use(
     cors({
-      origin: BASE_URL,
+      origin: [BASE_URL, "https://studio.apollographql.com"],
       credentials: true,
     })
   );
@@ -42,7 +43,7 @@ const startServer = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
         secure: __prod__,
       },
     })
@@ -53,7 +54,12 @@ const startServer = async () => {
     path: "/graphql",
   });
 
-  const serverCleanup = useServer({ schema: schemaWithMiddleware }, wsServer);
+  const serverCleanup = useServer(
+    {
+      schema: schemaWithMiddleware,
+    },
+    wsServer
+  );
 
   const apolloServer = new ApolloServer({
     schema: schemaWithMiddleware,
@@ -69,7 +75,9 @@ const startServer = async () => {
           };
         },
       },
-      ApolloServerPluginLandingPageGraphQLPlayground(),
+      process.env.NODE_ENV === "production"
+        ? ApolloServerPluginLandingPageProductionDefault({ footer: false })
+        : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
     ],
   });
 
@@ -80,7 +88,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: BASE_URL,
+      origin: [BASE_URL, "https://studio.apollographql.com"],
       credentials: true,
     },
   });
