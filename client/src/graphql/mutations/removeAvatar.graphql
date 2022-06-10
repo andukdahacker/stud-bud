@@ -22,14 +22,38 @@ mutation removeAvatar(
       }
       buddies {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         status
         createdAt
         updatedAt
       }
       buddyRequests {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt
@@ -37,7 +61,19 @@ mutation removeAvatar(
       }
       buddyPendings {
         requester_id
+        requester {
+          user {
+            username
+          }
+          profile_avatar
+        }
         addressee_id
+        addressee {
+          user {
+            username
+          }
+          profile_avatar
+        }
         specifier_id
         status
         createdAt

@@ -1,5 +1,6 @@
 import { objectType } from "nexus";
-import { PageInfo, Profile } from "../objects";
+import { Profile } from "../objects";
+import { PageInfo } from "../objects/dev";
 import { IOutput } from "./IOutput";
 
 export const ProfileMutationOutput = objectType({

@@ -169,7 +169,6 @@ export const getManyProfiles = queryField("getManyProfiles", {
         },
       };
     } catch (error) {
-      console.log(error);
       return {
         IOutput: {
           code: 500,

@@ -76,7 +76,7 @@ const startServer = async () => {
           };
         },
       },
-      process.env.NODE_ENV === "production"
+      __prod__
         ? ApolloServerPluginLandingPageProductionDefault({ footer: false })
         : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
     ],

@@ -1,6 +1,10 @@
 import { mutationField, nonNull } from "nexus";
 import { validateRelationshipInput } from "../../utils/validateRelationshipInput";
-import { CONNECT_BUDDY_EVENT, INTERNAL_SERVER_ERROR } from "../../constants";
+import {
+  ACCEPT_BUDDY_EVENT,
+  CONNECT_BUDDY_EVENT,
+  INTERNAL_SERVER_ERROR,
+} from "../../constants";
 import { RelationshipInput } from "../inputs/RelationshipInput";
 import { RelationshipOutput } from "../outputs/RelationshipOutput";
 import { pubsub } from "../subscriptions";
@@ -53,7 +57,7 @@ export const connectBuddy = mutationField("connectBuddy", {
           Relationship: relationship,
         };
 
-      pubsub.publish(CONNECT_BUDDY_EVENT, { relationship });
+      pubsub.publish(CONNECT_BUDDY_EVENT, { data: relationship });
 
       return {
         IOutput: {
@@ -136,6 +140,10 @@ export const respondBuddy = mutationField("respondBuddy", {
               message: "Request failed",
             },
           };
+
+        pubsub.publish(ACCEPT_BUDDY_EVENT, {
+          data: updatedRelationship,
+        });
 
         return {
           IOutput: {

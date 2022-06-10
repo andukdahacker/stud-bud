@@ -25,6 +25,7 @@ const BuddyRequests = () => {
     { data: buddyRequestsData, loading: buddyRequestLoading, subscribeToMore },
   ] = useGetBuddyRequestsLazyQuery();
   const buddyRequests = buddyRequestsData?.getBuddyRequests?.Requests;
+
   useEffect(() => {
     async function fetchData() {
       await getBuddyRequests({
@@ -46,11 +47,7 @@ const BuddyRequests = () => {
           if (!subscriptionData.data) return prev;
           const newRequests = subscriptionData.data;
 
-          console.log(subscriptionData);
-
           const merged = merge(prev, newRequests);
-
-          console.log(merged);
 
           return merged;
         },
