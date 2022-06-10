@@ -168,6 +168,7 @@ export interface NexusGenObjects {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Relationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
+  Subscription: {};
   User: { // root type
     email: string; // String!
     id: string; // ID!
@@ -270,10 +271,10 @@ export interface NexusGenFieldTypes {
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   Relationship: { // field return type
-    addressee: NexusGenRootTypes['Profile'] | null; // Profile
+    addressee: NexusGenRootTypes['Profile']; // Profile!
     addressee_id: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
-    requester: NexusGenRootTypes['Profile'] | null; // Profile
+    requester: NexusGenRootTypes['Profile']; // Profile!
     requester_id: string; // String!
     specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
@@ -282,6 +283,9 @@ export interface NexusGenFieldTypes {
   RelationshipOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Relationship: NexusGenRootTypes['Relationship'] | null; // Relationship
+  }
+  Subscription: { // field return type
+    getBuddyRequests: NexusGenRootTypes['BuddyRequestsOutput'] | null; // BuddyRequestsOutput
   }
   User: { // field return type
     email: string; // String!
@@ -389,6 +393,9 @@ export interface NexusGenFieldTypeNames {
     IOutput: 'IOutput'
     Relationship: 'Relationship'
   }
+  Subscription: { // field return type name
+    getBuddyRequests: 'BuddyRequestsOutput'
+  }
   User: { // field return type name
     email: 'String'
     id: 'ID'
@@ -451,6 +458,11 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['GetManyProfilesInput']; // GetManyProfilesInput!
     }
     getProfile: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+  }
+  Subscription: {
+    getBuddyRequests: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
   }

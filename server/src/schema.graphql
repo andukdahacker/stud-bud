@@ -146,10 +146,10 @@ input RegisterInput {
 }
 
 type Relationship {
-  addressee: Profile
+  addressee: Profile!
   addressee_id: String!
   createdAt: Date!
-  requester: Profile
+  requester: Profile!
   requester_id: String!
   specifier_id: String!
   status: RelationshipStatusCode!
@@ -172,6 +172,10 @@ enum RelationshipStatusCode {
   ACCEPTED
   DECLINED
   REQUESTED
+}
+
+type Subscription {
+  getBuddyRequests(where: ProfileWhereUniqueInput!): BuddyRequestsOutput
 }
 
 """The `Upload` scalar type represents a file upload."""

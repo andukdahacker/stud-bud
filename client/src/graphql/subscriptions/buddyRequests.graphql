@@ -1,13 +1,16 @@
-subscription buddyRequests($where: ProfileWhereUniqueInput!) {
-  buddyRequests(where: $where) {
+subscription getBuddyRequestsSubscription($where: ProfileWhereUniqueInput!) {
+  getBuddyRequests(where: $where) {
     IOutput {
       code
-      message
       success
+      message
     }
     Requests {
       requester_id
       requester {
+        user {
+          username
+        }
         profile_avatar
       }
       createdAt

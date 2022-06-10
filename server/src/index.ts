@@ -57,6 +57,7 @@ const startServer = async () => {
   const serverCleanup = useServer(
     {
       schema: schemaWithMiddleware,
+      context: createContext,
     },
     wsServer
   );

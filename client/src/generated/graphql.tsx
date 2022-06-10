@@ -257,10 +257,10 @@ export type RegisterInput = {
 
 export type Relationship = {
   __typename?: 'Relationship';
-  addressee?: Maybe<Profile>;
+  addressee: Profile;
   addressee_id: Scalars['String'];
   createdAt: Scalars['Date'];
-  requester?: Maybe<Profile>;
+  requester: Profile;
   requester_id: Scalars['String'];
   specifier_id: Scalars['String'];
   status: RelationshipStatusCode;
@@ -288,11 +288,11 @@ export enum RelationshipStatusCode {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  buddyRequests?: Maybe<BuddyRequestsOutput>;
+  getBuddyRequests?: Maybe<BuddyRequestsOutput>;
 };
 
 
-export type SubscriptionBuddyRequestsArgs = {
+export type SubscriptionGetBuddyRequestsArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -410,7 +410,7 @@ export type GetBuddyRequestsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuddyRequestsQuery = { __typename?: 'Query', getBuddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null } | null };
+export type GetBuddyRequestsQuery = { __typename?: 'Query', getBuddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -431,19 +431,19 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null, addressee?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string, profile_avatar?: string | null } | null } | null };
 
-export type BuddyRequestsSubscriptionVariables = Exact<{
+export type GetBuddyRequestsSubscriptionSubscriptionVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type BuddyRequestsSubscription = { __typename?: 'Subscription', buddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester?: { __typename?: 'Profile', profile_avatar?: string | null } | null }> | null } | null };
+export type GetBuddyRequestsSubscriptionSubscription = { __typename?: 'Subscription', getBuddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1409,17 +1409,20 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
-export const BuddyRequestsDocument = gql`
-    subscription buddyRequests($where: ProfileWhereUniqueInput!) {
-  buddyRequests(where: $where) {
+export const GetBuddyRequestsSubscriptionDocument = gql`
+    subscription getBuddyRequestsSubscription($where: ProfileWhereUniqueInput!) {
+  getBuddyRequests(where: $where) {
     IOutput {
       code
-      message
       success
+      message
     }
     Requests {
       requester_id
       requester {
+        user {
+          username
+        }
         profile_avatar
       }
       createdAt
@@ -1429,24 +1432,24 @@ export const BuddyRequestsDocument = gql`
     `;
 
 /**
- * __useBuddyRequestsSubscription__
+ * __useGetBuddyRequestsSubscriptionSubscription__
  *
- * To run a query within a React component, call `useBuddyRequestsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useBuddyRequestsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetBuddyRequestsSubscriptionSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetBuddyRequestsSubscriptionSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useBuddyRequestsSubscription({
+ * const { data, loading, error } = useGetBuddyRequestsSubscriptionSubscription({
  *   variables: {
  *      where: // value for 'where'
  *   },
  * });
  */
-export function useBuddyRequestsSubscription(baseOptions: Apollo.SubscriptionHookOptions<BuddyRequestsSubscription, BuddyRequestsSubscriptionVariables>) {
+export function useGetBuddyRequestsSubscriptionSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetBuddyRequestsSubscriptionSubscription, GetBuddyRequestsSubscriptionSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<BuddyRequestsSubscription, BuddyRequestsSubscriptionVariables>(BuddyRequestsDocument, options);
+        return Apollo.useSubscription<GetBuddyRequestsSubscriptionSubscription, GetBuddyRequestsSubscriptionSubscriptionVariables>(GetBuddyRequestsSubscriptionDocument, options);
       }
-export type BuddyRequestsSubscriptionHookResult = ReturnType<typeof useBuddyRequestsSubscription>;
-export type BuddyRequestsSubscriptionResult = Apollo.SubscriptionResult<BuddyRequestsSubscription>;
+export type GetBuddyRequestsSubscriptionSubscriptionHookResult = ReturnType<typeof useGetBuddyRequestsSubscriptionSubscription>;
+export type GetBuddyRequestsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<GetBuddyRequestsSubscriptionSubscription>;

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  GetBuddyRequestsSubscriptionDocument,
   GetUserDocument,
   GetUserQuery,
   RelationshipStatusCode,
@@ -11,6 +12,7 @@ import {
 } from "../generated/graphql";
 import { BuddyRespondOptions } from "../utils/constants";
 import Loading from "./Loading";
+import merge from "deepmerge";
 
 const BuddyRequests = () => {
   const client = useApolloClient();
@@ -22,6 +24,7 @@ const BuddyRequests = () => {
     getBuddyRequests,
     { data: buddyRequestsData, loading: buddyRequestLoading, subscribeToMore },
   ] = useGetBuddyRequestsLazyQuery();
+  const buddyRequests = buddyRequestsData?.getBuddyRequests?.Requests;
   useEffect(() => {
     async function fetchData() {
       await getBuddyRequests({
@@ -31,12 +34,32 @@ const BuddyRequests = () => {
           },
         },
       });
+
+      subscribeToMore({
+        document: GetBuddyRequestsSubscriptionDocument,
+        variables: {
+          where: {
+            profile_id: user_profile_id,
+          },
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          const newRequests = subscriptionData.data;
+
+          console.log(subscriptionData);
+
+          const merged = merge(prev, newRequests);
+
+          console.log(merged);
+
+          return merged;
+        },
+      });
     }
 
     if (user_profile_id) fetchData();
-  }, []);
+  }, [subscribeToMore, buddyRequests]);
 
-  const buddyRequests = buddyRequestsData?.getBuddyRequests?.Requests;
   const [respondBuddy, {}] = useRespondBuddyMutation();
   const [hideBuddyRequests, setHideBuddyRequests] = useState<
     string | undefined
