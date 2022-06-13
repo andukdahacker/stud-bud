@@ -264,7 +264,7 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     isRead: boolean; // Boolean!
     message: string | null; // String
-    notifier: NexusGenRootTypes['Profile']; // Profile!
+    notifier: NexusGenRootTypes['Profile'] | null; // Profile
     notifier_id: string; // String!
     receiver_id: string; // String!
     type_id: number; // Int!

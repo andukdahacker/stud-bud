@@ -139,9 +139,7 @@ const FindBuddy = () => {
       </Formik>
 
       <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
-        {getManyProfilesLoading || networkStatus == NetworkStatus.refetch ? (
-          <Loading />
-        ) : !getManyProfilesSuccess ? (
+        {!getManyProfilesSuccess ? (
           <div>{getManyProfilesMessage}</div>
         ) : profiles!.length == 0 ? (
           <div>Sorry, we found no result for your search</div>
@@ -167,7 +165,13 @@ const FindBuddy = () => {
       </div>
       {getManyProfilesPageInfo?.hasNextPage ? (
         <button onClick={loadMore} type="button">
-          Load more
+          {getManyProfilesLoading ||
+          networkStatus == NetworkStatus.fetchMore ||
+          networkStatus == NetworkStatus.loading ? (
+            <Loading />
+          ) : (
+            <div>Load more</div>
+          )}
         </button>
       ) : (
         <div>End of list</div>

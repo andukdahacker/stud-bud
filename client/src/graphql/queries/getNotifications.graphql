@@ -27,8 +27,13 @@ query getNotifications($where: ProfileWhereUniqueInput!) {
         user {
           username
         }
-        createdAt
       }
+      type_id
+      createdAt
+      receiver_id
+      message
+      entity_id
+      isRead
     }
   }
 }

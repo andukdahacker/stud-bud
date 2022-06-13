@@ -2,12 +2,12 @@ import { nonNull, subscriptionField } from "nexus";
 import { Notification } from "../../types";
 import { pubsub } from ".";
 import {
+  ACCEPT_BUDDY_EVENT,
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
   QUERY_SUCCESS,
 } from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
-
 import { NotificationOutput } from "../outputs/NotificationOutput";
 import { withFilter } from "graphql-subscriptions";
 
@@ -17,7 +17,7 @@ export const connectBuddyEvent = subscriptionField("getNotification", {
     where: nonNull(ProfileWhereUniqueInput),
   },
   subscribe: withFilter(
-    () => pubsub.asyncIterator([CONNECT_BUDDY_EVENT]),
+    () => pubsub.asyncIterator([CONNECT_BUDDY_EVENT, ACCEPT_BUDDY_EVENT]),
     (root: Notification, args, _ctx) => {
       return root.data.receiver_id === args.where.profile_id;
     }

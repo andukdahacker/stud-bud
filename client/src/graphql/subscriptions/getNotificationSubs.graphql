@@ -28,7 +28,12 @@ subscription getNotificationsSubs($where: ProfileWhereUniqueInput!) {
           username
         }
       }
+      type_id
       createdAt
+      receiver_id
+      message
+      entity_id
+      isRead
     }
   }
 }

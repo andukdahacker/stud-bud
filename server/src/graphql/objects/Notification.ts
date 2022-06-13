@@ -6,7 +6,7 @@ export const Notification = objectType({
   definition(t) {
     t.nonNull.string("id");
     t.nonNull.string("notifier_id");
-    t.nonNull.field("notifier", {
+    t.nullable.field("notifier", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.profile.findUnique({

@@ -193,7 +193,7 @@ export type Notification = {
   id: Scalars['String'];
   isRead: Scalars['Boolean'];
   message?: Maybe<Scalars['String']>;
-  notifier: Profile;
+  notifier?: Maybe<Profile>;
   notifier_id: Scalars['String'];
   receiver_id: Scalars['String'];
   type_id: Scalars['Int'];
@@ -443,13 +443,6 @@ export type VerifyEmailMutationVariables = Exact<{
 
 export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, isVerified: boolean, email: string } | null } };
 
-export type GetBuddyRequestsQueryVariables = Exact<{
-  where: ProfileWhereUniqueInput;
-}>;
-
-
-export type GetBuddyRequestsQuery = { __typename?: 'Query', getBuddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
-
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
 }>;
@@ -469,7 +462,7 @@ export type GetNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationsQuery = { __typename?: 'Query', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, notifier: { __typename?: 'Profile', profile_avatar?: string | null, createdAt?: any | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetNotificationsQuery = { __typename?: 'Query', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, type_id: number, createdAt: any, receiver_id: string, message?: string | null, entity_id?: string | null, isRead: boolean, notifier?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null } | null };
 
 export type GetProfileQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -488,7 +481,7 @@ export type GetNotificationsSubsSubscriptionVariables = Exact<{
 }>;
 
 
-export type GetNotificationsSubsSubscription = { __typename?: 'Subscription', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetNotificationsSubsSubscription = { __typename?: 'Subscription', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, type_id: number, createdAt: any, receiver_id: string, message?: string | null, entity_id?: string | null, isRead: boolean, notifier?: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } | null }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1026,55 +1019,6 @@ export function useVerifyEmailMutation(baseOptions?: Apollo.MutationHookOptions<
 export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>;
 export type VerifyEmailMutationResult = Apollo.MutationResult<VerifyEmailMutation>;
 export type VerifyEmailMutationOptions = Apollo.BaseMutationOptions<VerifyEmailMutation, VerifyEmailMutationVariables>;
-export const GetBuddyRequestsDocument = gql`
-    query getBuddyRequests($where: ProfileWhereUniqueInput!) {
-  getBuddyRequests(where: $where) {
-    IOutput {
-      code
-      success
-      message
-    }
-    Requests {
-      requester_id
-      requester {
-        user {
-          username
-        }
-        profile_avatar
-      }
-      createdAt
-    }
-  }
-}
-    `;
-
-/**
- * __useGetBuddyRequestsQuery__
- *
- * To run a query within a React component, call `useGetBuddyRequestsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetBuddyRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetBuddyRequestsQuery({
- *   variables: {
- *      where: // value for 'where'
- *   },
- * });
- */
-export function useGetBuddyRequestsQuery(baseOptions: Apollo.QueryHookOptions<GetBuddyRequestsQuery, GetBuddyRequestsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBuddyRequestsQuery, GetBuddyRequestsQueryVariables>(GetBuddyRequestsDocument, options);
-      }
-export function useGetBuddyRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBuddyRequestsQuery, GetBuddyRequestsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBuddyRequestsQuery, GetBuddyRequestsQueryVariables>(GetBuddyRequestsDocument, options);
-        }
-export type GetBuddyRequestsQueryHookResult = ReturnType<typeof useGetBuddyRequestsQuery>;
-export type GetBuddyRequestsLazyQueryHookResult = ReturnType<typeof useGetBuddyRequestsLazyQuery>;
-export type GetBuddyRequestsQueryResult = Apollo.QueryResult<GetBuddyRequestsQuery, GetBuddyRequestsQueryVariables>;
 export const GetManyInterestsDocument = gql`
     query getManyInterests($where: getManyInterestsInput!) {
   getManyInterests(where: $where) {
@@ -1206,8 +1150,13 @@ export const GetNotificationsDocument = gql`
         user {
           username
         }
-        createdAt
       }
+      type_id
+      createdAt
+      receiver_id
+      message
+      entity_id
+      isRead
     }
   }
 }
@@ -1427,7 +1376,12 @@ export const GetNotificationsSubsDocument = gql`
           username
         }
       }
+      type_id
       createdAt
+      receiver_id
+      message
+      entity_id
+      isRead
     }
   }
 }

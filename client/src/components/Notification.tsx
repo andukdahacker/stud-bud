@@ -6,11 +6,15 @@ import {
   GetNotificationsSubsDocument,
   GetUserDocument,
   GetUserQuery,
+  RelationshipStatusCode,
   useGetNotificationsLazyQuery,
+  useRespondBuddyMutation,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
 import merge from "deepmerge";
+import { BuddyRespondOptions } from "../utils/constants";
+import BuddyNotification from "./BuddyNotification";
 
 const Notification = () => {
   const client = useApolloClient();
@@ -26,8 +30,19 @@ const Notification = () => {
     },
   ] = useGetNotificationsLazyQuery();
 
+  const [
+    respondBuddy,
+    { data: respondBuddyData, loading: respondBuddyLoading },
+  ] = useRespondBuddyMutation();
+
   const buddyNotifications =
     getNotificationsData?.getNotification?.BuddyNotifications;
+
+  const buddyRequests = buddyNotifications?.filter(
+    (noti) => noti.type_id === 1
+  );
+  const buddyAccepts = buddyNotifications?.filter((noti) => noti.type_id === 2);
+
   const otherNotifications =
     getNotificationsData?.getNotification?.Notifications;
 
@@ -59,19 +74,41 @@ const Notification = () => {
 
           const newBuddyNotification = subscriptionData.data;
 
-          console.log("prev", prev);
-          console.log(newBuddyNotification);
-
           const merged = merge(prev, newBuddyNotification);
 
-          console.log("merged", merged);
           return merged;
         },
       });
     }
 
     if (user_profile_id) fetchData();
-  }, [subscribeToMore, buddyNotifications]);
+  }, []);
+
+  const respond = async (option: BuddyRespondOptions, requester_id: string) => {
+    if (option === BuddyRespondOptions.ACCEPT) {
+      await respondBuddy({
+        variables: {
+          input: {
+            requester_id,
+            addressee_id: user_profile_id as string,
+            status: RelationshipStatusCode.Accepted,
+            specifier_id: user_profile_id as string,
+          },
+        },
+      });
+    } else if (option === BuddyRespondOptions.DECLINE) {
+      await respondBuddy({
+        variables: {
+          input: {
+            requester_id,
+            addressee_id: user_profile_id as string,
+            status: RelationshipStatusCode.Declined,
+            specifier_id: user_profile_id as string,
+          },
+        },
+      });
+    }
+  };
 
   return (
     <div>
@@ -95,24 +132,31 @@ const Notification = () => {
               return (
                 <div key={index}>
                   <Avatar
-                    img_url={noti.notifier.profile_avatar}
+                    img_url={noti.notifier?.profile_avatar}
                     width={50}
                     height={50}
                   />
                   <Link href={`/profile/${noti.notifier_id}`}>
                     <a>
-                      <b>{noti.notifier.user?.username}</b> sent a buddy request
+                      <b>{noti.notifier?.user?.username}</b> sent a buddy
+                      request
                     </a>
                   </Link>
                   <button
                     className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
                     type="button"
+                    onClick={() =>
+                      respond(BuddyRespondOptions.ACCEPT, noti.notifier_id)
+                    }
                   >
                     Accept
                   </button>
                   <button
                     className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-black bg-gray-300 rounded shadow-sm shadow-blue-300"
                     type="button"
+                    onClick={() =>
+                      respond(BuddyRespondOptions.DECLINE, noti.notifier_id)
+                    }
                   >
                     Decline
                   </button>
@@ -134,12 +178,12 @@ const Notification = () => {
               return (
                 <div key={index} className="flex">
                   <Avatar
-                    img_url={noti.notifier.profile_avatar}
+                    img_url={noti.notifier?.profile_avatar}
                     width={50}
                     height={50}
                   />
                   <div>
-                    {noti.notifier.user?.username} {noti.message}
+                    {noti.notifier?.user?.username} {noti.message}
                   </div>
                 </div>
               );

@@ -106,7 +106,7 @@ type Notification {
   id: String!
   isRead: Boolean!
   message: String
-  notifier: Profile!
+  notifier: Profile
   notifier_id: String!
   receiver_id: String!
   type_id: Int!
