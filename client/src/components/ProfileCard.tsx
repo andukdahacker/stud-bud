@@ -40,7 +40,7 @@ const ProfileCard = (props: ProfileCardProps) => {
   return (
     <div className="flex flex-col w-full p-4 transition duration-300 ease-in-out delay-150 bg-white shadow-xl rounded-xl h-60 hover:bg-blue-800 hover:text-white">
       <div className="flex flex-col items-center h-30">
-        <Avatar img_url={props.avatar} width={20} height={20} />
+        <Avatar img_url={props.avatar} width={50} height={50} />
         <div className="self-center mx-2 text-xl ">{props.username}</div>
       </div>
       <div className="flex flex-col items-center h-1/3">

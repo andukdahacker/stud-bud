@@ -4,6 +4,8 @@ import {
   ACCEPT_BUDDY_EVENT,
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
+  RELATIONSHIP_ACCEPT,
+  RELATIONSHIP_CONNECT,
 } from "../../constants";
 import { RelationshipInput } from "../inputs/RelationshipInput";
 import { RelationshipOutput } from "../outputs/RelationshipOutput";
@@ -57,7 +59,28 @@ export const connectBuddy = mutationField("connectBuddy", {
           Relationship: relationship,
         };
 
-      pubsub.publish(CONNECT_BUDDY_EVENT, { data: relationship });
+      const notification = await ctx.prisma.notification.create({
+        data: {
+          notifier: {
+            connect: {
+              id: requester_id,
+            },
+          },
+          receiver: {
+            connect: {
+              id: addressee_id,
+            },
+          },
+          isRead: false,
+          type: {
+            connect: {
+              id: RELATIONSHIP_CONNECT,
+            },
+          },
+        },
+      });
+
+      pubsub.publish(CONNECT_BUDDY_EVENT, { data: notification });
 
       return {
         IOutput: {
@@ -67,13 +90,7 @@ export const connectBuddy = mutationField("connectBuddy", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -141,8 +158,29 @@ export const respondBuddy = mutationField("respondBuddy", {
             },
           };
 
+        const notification = await ctx.prisma.notification.create({
+          data: {
+            notifier: {
+              connect: {
+                id: addressee_id,
+              },
+            },
+            receiver: {
+              connect: {
+                id: requester_id,
+              },
+            },
+            isRead: false,
+            type: {
+              connect: {
+                id: RELATIONSHIP_ACCEPT,
+              },
+            },
+          },
+        });
+
         pubsub.publish(ACCEPT_BUDDY_EVENT, {
-          data: updatedRelationship,
+          data: notification,
         });
 
         return {
@@ -188,13 +226,7 @@ export const respondBuddy = mutationField("respondBuddy", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -243,13 +275,7 @@ export const removeBuddy = mutationField("removeBuddy", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });

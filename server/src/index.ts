@@ -4,8 +4,8 @@ import http from "http";
 import cors from "cors";
 import {
   ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageProductionDefault,
   ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
 } from "apollo-server-core";
 import dotenv from "dotenv";
 import connectRedis from "connect-redis";
@@ -44,7 +44,7 @@ const startServer = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         httpOnly: true,
         sameSite: "none",
-        secure: __prod__,
+        secure: true,
       },
     })
   );
@@ -77,8 +77,10 @@ const startServer = async () => {
         },
       },
       __prod__
-        ? ApolloServerPluginLandingPageProductionDefault({ footer: false })
-        : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+        ? ApolloServerPluginLandingPageProductionDefault({
+            includeCookies: true,
+          })
+        : ApolloServerPluginLandingPageLocalDefault({ includeCookies: true }),
     ],
   });
 

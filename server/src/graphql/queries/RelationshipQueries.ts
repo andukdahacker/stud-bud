@@ -1,7 +1,7 @@
 import { nonNull, queryField } from "nexus";
-import { INTERNAL_SERVER_ERROR } from "../../constants";
+import { INTERNAL_SERVER_ERROR, QUERY_SUCCESS } from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
-import { BuddyRequestsOutput } from "../outputs";
+import { BuddyPendingsOutput, BuddyRequestsOutput } from "../outputs";
 
 export const getBuddyRequests = queryField("getBuddyRequests", {
   type: BuddyRequestsOutput,
@@ -23,21 +23,36 @@ export const getBuddyRequests = queryField("getBuddyRequests", {
       });
 
       return {
-        IOutput: {
-          code: 200,
-          success: true,
-          message: "success",
-        },
+        IOutput: QUERY_SUCCESS,
         Requests: requests,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
+      return INTERNAL_SERVER_ERROR;
+    }
+  },
+});
+
+export const getBuddyPendings = queryField("getBuddyPendings", {
+  type: BuddyPendingsOutput,
+  args: {
+    where: nonNull(ProfileWhereUniqueInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { profile_id } = args.where;
+    try {
+      const pendings = await ctx.prisma.relationship.findMany({
+        where: {
+          requester_id: profile_id,
+          status: "REQUESTED",
         },
+      });
+
+      return {
+        IOutput: QUERY_SUCCESS,
+        Pendings: pendings,
       };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });

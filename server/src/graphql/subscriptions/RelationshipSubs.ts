@@ -1,49 +1,51 @@
-import { withFilter } from "graphql-subscriptions";
 import { nonNull, subscriptionField } from "nexus";
-import { Relationship } from "../../types";
+import { Notification } from "../../types";
 import { pubsub } from ".";
-import { CONNECT_BUDDY_EVENT } from "../../constants";
+import {
+  CONNECT_BUDDY_EVENT,
+  INTERNAL_SERVER_ERROR,
+  QUERY_SUCCESS,
+} from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
 
-import { BuddyRequestsOutput } from "../outputs";
+import { NotificationOutput } from "../outputs/NotificationOutput";
+import { withFilter } from "graphql-subscriptions";
 
-export const connectBuddyEvent = subscriptionField("getBuddyRequests", {
-  type: BuddyRequestsOutput,
+export const connectBuddyEvent = subscriptionField("getNotification", {
+  type: NotificationOutput,
   args: {
     where: nonNull(ProfileWhereUniqueInput),
   },
   subscribe: withFilter(
     () => pubsub.asyncIterator([CONNECT_BUDDY_EVENT]),
-    (root: Relationship, args, _ctx) => {
-      return root.data.addressee_id === args.where.profile_id;
+    (root: Notification, args, _ctx) => {
+      return root.data.receiver_id === args.where.profile_id;
     }
   ),
-  resolve: async (root: Relationship, _args, ctx) => {
-    const relationship = await ctx.prisma.relationship.findUnique({
-      where: {
-        requester_id_addressee_id: {
-          requester_id: root.data.requester_id,
-          addressee_id: root.data.addressee_id,
+  resolve: async (root: Notification, _args, ctx) => {
+    try {
+      const newBuddyNotification = await ctx.prisma.notification.findUnique({
+        where: {
+          id: root.data.id,
         },
-      },
-    });
+      });
 
-    if (!relationship)
+      if (!newBuddyNotification)
+        return {
+          IOutput: {
+            code: 400,
+            success: false,
+            message: "Cannot get notification",
+          },
+        };
+
       return {
-        IOutput: {
-          code: 400,
-          success: false,
-          message: "Nei",
-        },
+        IOutput: QUERY_SUCCESS,
+        BuddyNotifications: [newBuddyNotification],
+        Notifications: [],
       };
-
-    return {
-      IOutput: {
-        code: 200,
-        success: true,
-        message: "Yay",
-      },
-      Requests: [relationship],
-    };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
+    }
   },
 });

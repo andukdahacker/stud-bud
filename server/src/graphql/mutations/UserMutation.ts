@@ -90,13 +90,7 @@ export const RegisterMutation = mutationField("register", {
         User: newUser,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -146,13 +140,7 @@ export const VerifyEmail = mutationField("verifyEmail", {
         User: verifiedUser,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -236,13 +224,7 @@ export const LoginMutation = mutationField("login", {
         User: existingUser,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -278,13 +260,7 @@ export const LogoutMutation = mutationField("logout", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -330,13 +306,7 @@ export const forgotPassword = mutationField("forgotPassword", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -410,13 +380,7 @@ export const changePassword = mutationField("changePassword", {
         User: updatedUser,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });

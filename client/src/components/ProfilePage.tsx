@@ -38,7 +38,7 @@ const ProfilePage = (props: ProfilePageProps) => {
     return (
       <div>
         <Wallpaper img_url={profile_wallpaper} />
-        <Avatar img_url={profile_avatar} width={20} height={20} />
+        <Avatar img_url={profile_avatar} width={70} height={70} />
         <BuddyButton data={props.data} />
         <h1>{username}</h1>
         <h2>Bio: {profile_bio}</h2>
@@ -59,7 +59,7 @@ const ProfilePage = (props: ProfilePageProps) => {
     <div>
       <Wallpaper img_url={profile_wallpaper} />
 
-      <Avatar img_url={profile_avatar} width={20} height={20} />
+      <Avatar img_url={profile_avatar} width={70} height={70} />
 
       <h1>{username}</h1>
       <Link href={`/profile/edit/${profile_id}`}>

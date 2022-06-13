@@ -8,7 +8,10 @@ export const NotificationOutput = objectType({
     t.nonNull.field("IOutput", {
       type: IOutput,
     });
-    t.nonNull.field("Notification", {
+    t.nullable.list.nonNull.field("Notifications", {
+      type: Notification,
+    });
+    t.nullable.list.nonNull.field("BuddyNotifications", {
       type: Notification,
     });
   },

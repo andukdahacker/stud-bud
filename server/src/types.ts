@@ -17,3 +17,16 @@ export type Relationship = {
     updatedAt: Date;
   };
 };
+
+export type Notification = {
+  data: {
+    id: string;
+    notifier_id: string;
+    receiver_id: string;
+    type_id: number;
+    entity_id: string | null;
+    message: string | null;
+    isRead: boolean;
+    createdAt: Date;
+  };
+};

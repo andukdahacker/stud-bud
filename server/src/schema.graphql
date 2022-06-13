@@ -8,6 +8,11 @@ type AuthOutput {
   User: User
 }
 
+type BuddyPendingsOutput {
+  IOutput: IOutput!
+  Pendings: [Relationship!]
+}
+
 type BuddyRequestsOutput {
   IOutput: IOutput!
   Requests: [Relationship!]
@@ -95,6 +100,24 @@ type Mutation {
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
 
+type Notification {
+  createdAt: Date!
+  entity_id: String
+  id: String!
+  isRead: Boolean!
+  message: String
+  notifier: Profile!
+  notifier_id: String!
+  receiver_id: String!
+  type_id: Int!
+}
+
+type NotificationOutput {
+  BuddyNotifications: [Notification!]
+  IOutput: IOutput!
+  Notifications: [Notification!]
+}
+
 type PageInfo {
   endCursor: Date
   hasNextPage: Boolean
@@ -132,9 +155,11 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
+  getBuddyPendings(where: ProfileWhereUniqueInput!): BuddyPendingsOutput
   getBuddyRequests(where: ProfileWhereUniqueInput!): BuddyRequestsOutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getNotification(where: ProfileWhereUniqueInput!): NotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getUser: User
 }
@@ -175,7 +200,7 @@ enum RelationshipStatusCode {
 }
 
 type Subscription {
-  getBuddyRequests(where: ProfileWhereUniqueInput!): BuddyRequestsOutput
+  getNotification(where: ProfileWhereUniqueInput!): NotificationOutput
 }
 
 """The `Upload` scalar type represents a file upload."""

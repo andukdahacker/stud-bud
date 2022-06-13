@@ -66,13 +66,7 @@ export const createProfile = mutationField("createProfile", {
         Profile: profile,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -182,13 +176,7 @@ export const updateProfile = mutationField("updateProfile", {
         Profile: updatedProfile,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -233,13 +221,7 @@ export const removeAvatar = mutationField("removeAvatar", {
         Profile: updatedProfile,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -284,13 +266,7 @@ export const removeWallpaper = mutationField("removeWallpaper", {
         Profile: updatedProfile,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });

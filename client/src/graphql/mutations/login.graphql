@@ -11,6 +11,7 @@ mutation login($input: LoginInput!) {
       username
       profile {
         id
+        profile_avatar
       }
     }
     ErrorFieldOutput {

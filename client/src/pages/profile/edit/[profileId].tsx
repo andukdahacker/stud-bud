@@ -30,8 +30,10 @@ const EditProfile = () => {
   const profileAvatarInput = useRef<null | HTMLInputElement>(null);
   const profileWallpaperInput = useRef<null | HTMLInputElement>(null);
 
-  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
-    useGetProfileLazyQuery();
+  const [
+    getProfile,
+    { data: getProfileData, loading: getProfileLoading, refetch },
+  ] = useGetProfileLazyQuery();
 
   useEffect(() => {
     async function fetchData() {
@@ -96,20 +98,25 @@ const EditProfile = () => {
           profile_interest,
         },
       },
-      update(cache, { data }) {
-        if (data?.updateProfile?.IOutput.success) {
-          cache.writeQuery<GetProfileQuery>({
-            query: GetProfileDocument,
-            data: {
-              __typename: "Query",
-              getProfile: data.updateProfile,
-            },
-          });
-        }
-      },
+      // update(cache, { data }) {
+      //   if (data?.updateProfile?.IOutput.success) {
+      //     cache.writeQuery<GetProfileQuery>({
+      //       query: GetProfileDocument,
+      //       data: {
+      //         __typename: "Query",
+      //         getProfile: data.updateProfile,
+      //       },
+      //     });
+      //   }
+      // },
     });
 
     if (result.data?.updateProfile?.IOutput.success) {
+      refetch({
+        where: {
+          profile_id,
+        },
+      });
       router.push(`/profile/${profile_id}`);
     }
   };
@@ -119,7 +126,7 @@ const EditProfile = () => {
     { data: removeAvatarData, loading: removeAvatarLoading },
   ] = useRemoveAvatarMutation();
   const onRemoveAvatar = async (public_id: string) => {
-    await removeAvatar({
+    const result = await removeAvatar({
       variables: {
         where: {
           profile_id,
@@ -128,18 +135,26 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
-      update(cache, { data }) {
-        if (data?.removeAvatar?.IOutput.success) {
-          cache.writeQuery<GetProfileQuery>({
-            query: GetProfileDocument,
-            data: {
-              __typename: "Query",
-              getProfile: data?.removeAvatar,
-            },
-          });
-        }
-      },
+      // update(cache, { data }) {
+      //   if (data?.removeAvatar?.IOutput.success) {
+      //     cache.writeQuery<GetProfileQuery>({
+      //       query: GetProfileDocument,
+      //       data: {
+      //         __typename: "Query",
+      //         getProfile: data?.removeAvatar,
+      //       },
+      //     });
+      //   }
+      // },
     });
+
+    if (result.data?.removeAvatar?.IOutput.success) {
+      refetch({
+        where: {
+          profile_id,
+        },
+      });
+    }
   };
 
   const removeAvatarSuccess = removeAvatarData?.removeAvatar?.IOutput.success;
@@ -149,7 +164,7 @@ const EditProfile = () => {
     { data: removeWallpaperData, loading: removeWallpaperLoading },
   ] = useRemoveWallpaperMutation();
   const onRemoveWallpaper = async (public_id: string) => {
-    await removeWallpaper({
+    const result = await removeWallpaper({
       variables: {
         where: {
           profile_id,
@@ -158,18 +173,26 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
-      update(cache, { data }) {
-        if (data?.removeWallpaper?.IOutput.success) {
-          cache.writeQuery<GetProfileQuery>({
-            query: GetProfileDocument,
-            data: {
-              __typename: "Query",
-              getProfile: data?.removeWallpaper,
-            },
-          });
-        }
-      },
+      // update(cache, { data }) {
+      //   if (data?.removeWallpaper?.IOutput.success) {
+      //     cache.writeQuery<GetProfileQuery>({
+      //       query: GetProfileDocument,
+      //       data: {
+      //         __typename: "Query",
+      //         getProfile: data?.removeWallpaper,
+      //       },
+      //     });
+      //   }
+      // },
     });
+
+    if (result.data?.removeWallpaper?.IOutput.success) {
+      refetch({
+        where: {
+          profile_id,
+        },
+      });
+    }
   };
 
   const removeWallpaperSuccess =
@@ -234,7 +257,7 @@ const EditProfile = () => {
                 type="button"
                 onClick={() => profileAvatarInput.current!.click()}
               >
-                <Avatar img_url={profile_avatar} width={20} height={20} />
+                <Avatar img_url={profile_avatar} width={70} height={70} />
               </button>
               {profile_avatar_public_id && (
                 <button

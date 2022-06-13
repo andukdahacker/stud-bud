@@ -89,7 +89,7 @@ model Notification {
   type        NotificationType @relation(fields: [type_id], references: [id])
   type_id     Int
   entity_id   String?
-  message     String
+  message     String?
   isRead      Boolean
   createdAt   DateTime         @default(now())
 

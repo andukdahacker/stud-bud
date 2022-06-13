@@ -7,7 +7,7 @@ import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
-import BuddyRequests from "./BuddyRequests";
+import Notification from "./Notification";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -57,7 +57,7 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div className="flex justify-around">
-          <BuddyRequests />
+          <Notification />
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
               className={` flex text-sm font-medium  ${
@@ -66,13 +66,12 @@ const NavBar = () => {
                   : `text-gray-800 hover:text-blue-700`
               }`}
             >
-              <div>
-                <Avatar
-                  img_url={profile?.profile_avatar}
-                  width={10}
-                  height={10}
-                />
-              </div>
+              <Avatar
+                img_url={profile?.profile_avatar}
+                width={50}
+                height={50}
+              />
+
               <div>{username}</div>
             </a>
           </Link>

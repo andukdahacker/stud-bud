@@ -1,6 +1,6 @@
 import { allow, rule, shield } from "graphql-shield";
 import { IRuleResult } from "graphql-shield/dist/types";
-import { UNAUTHORISED } from "../constants";
+// import { UNAUTHORISED } from "../constants";
 import { Context } from "../context";
 
 const rules = {
@@ -9,7 +9,7 @@ const rules = {
       const userId = ctx.req.session.userId;
 
       if (!userId) {
-        return new Error(UNAUTHORISED);
+        return new Error("1");
       } else {
         return true;
       }
@@ -32,7 +32,7 @@ const rules = {
         return true;
       }
 
-      return new Error(UNAUTHORISED);
+      return new Error("2");
     }
   ),
 };

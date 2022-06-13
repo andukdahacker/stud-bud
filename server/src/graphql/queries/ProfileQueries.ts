@@ -1,6 +1,6 @@
 import { Profile } from "@prisma/client";
 import { nonNull, queryField } from "nexus";
-import { INTERNAL_SERVER_ERROR } from "../../constants";
+import { INTERNAL_SERVER_ERROR, QUERY_SUCCESS } from "../../constants";
 import { GetManyProfilesInput, ProfileWhereUniqueInput } from "../inputs";
 import { GetManyProfilesOutput, ProfileMutationOutput } from "../outputs";
 
@@ -31,21 +31,11 @@ export const getProfile = queryField("getProfile", {
         };
 
       return {
-        IOutput: {
-          code: 200,
-          success: true,
-          message: "Success",
-        },
+        IOutput: QUERY_SUCCESS,
         Profile: profile,
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });
@@ -144,11 +134,7 @@ export const getManyProfiles = queryField("getManyProfiles", {
           },
         });
         return {
-          IOutput: {
-            code: 200,
-            success: true,
-            message: "Query is done successfully",
-          },
+          IOutput: QUERY_SUCCESS,
           Profile: queryResult,
           PageInfo: {
             endCursor: myCursor,
@@ -157,11 +143,7 @@ export const getManyProfiles = queryField("getManyProfiles", {
         };
       }
       return {
-        IOutput: {
-          code: 200,
-          success: true,
-          message: "Query is done successfully",
-        },
+        IOutput: QUERY_SUCCESS,
         Profile: [],
         PageInfo: {
           endCursor: null,
@@ -169,13 +151,7 @@ export const getManyProfiles = queryField("getManyProfiles", {
         },
       };
     } catch (error) {
-      return {
-        IOutput: {
-          code: 500,
-          success: false,
-          message: INTERNAL_SERVER_ERROR,
-        },
-      };
+      return INTERNAL_SERVER_ERROR;
     }
   },
 });

@@ -1,8 +1,6 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Layout from "../../components/Layout";
-import NavBar from "../../components/NavBar";
 import { useVerifyEmailMutation } from "../../generated/graphql";
 
 const VerifyEmail = () => {

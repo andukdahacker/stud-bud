@@ -25,3 +25,15 @@ export const BuddyRequestsOutput = objectType({
     });
   },
 });
+
+export const BuddyPendingsOutput = objectType({
+  name: "BuddyPendingsOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+    t.nullable.list.nonNull.field("Pendings", {
+      type: Relationship,
+    });
+  },
+});

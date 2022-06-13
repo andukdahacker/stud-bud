@@ -26,6 +26,12 @@ export type AuthOutput = {
   User?: Maybe<User>;
 };
 
+export type BuddyPendingsOutput = {
+  __typename?: 'BuddyPendingsOutput';
+  IOutput: IOutput;
+  Pendings?: Maybe<Array<Relationship>>;
+};
+
 export type BuddyRequestsOutput = {
   __typename?: 'BuddyRequestsOutput';
   IOutput: IOutput;
@@ -180,6 +186,26 @@ export type MutationVerifyEmailArgs = {
   input: VerifyEmailInput;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  createdAt: Scalars['Date'];
+  entity_id?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isRead: Scalars['Boolean'];
+  message?: Maybe<Scalars['String']>;
+  notifier: Profile;
+  notifier_id: Scalars['String'];
+  receiver_id: Scalars['String'];
+  type_id: Scalars['Int'];
+};
+
+export type NotificationOutput = {
+  __typename?: 'NotificationOutput';
+  BuddyNotifications?: Maybe<Array<Notification>>;
+  IOutput: IOutput;
+  Notifications?: Maybe<Array<Notification>>;
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['Date']>;
@@ -222,11 +248,18 @@ export type ProfileWhereUniqueInput = {
 
 export type Query = {
   __typename?: 'Query';
+  getBuddyPendings?: Maybe<BuddyPendingsOutput>;
   getBuddyRequests?: Maybe<BuddyRequestsOutput>;
   getManyInterests?: Maybe<GetManyInterestOutput>;
   getManyProfiles?: Maybe<GetManyProfilesOutput>;
+  getNotification?: Maybe<NotificationOutput>;
   getProfile?: Maybe<ProfileMutationOutput>;
   getUser?: Maybe<User>;
+};
+
+
+export type QueryGetBuddyPendingsArgs = {
+  where: ProfileWhereUniqueInput;
 };
 
 
@@ -242,6 +275,11 @@ export type QueryGetManyInterestsArgs = {
 
 export type QueryGetManyProfilesArgs = {
   where: GetManyProfilesInput;
+};
+
+
+export type QueryGetNotificationArgs = {
+  where: ProfileWhereUniqueInput;
 };
 
 
@@ -288,11 +326,11 @@ export enum RelationshipStatusCode {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  getBuddyRequests?: Maybe<BuddyRequestsOutput>;
+  getNotification?: Maybe<NotificationOutput>;
 };
 
 
-export type SubscriptionGetBuddyRequestsArgs = {
+export type SubscriptionGetNotificationArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -346,7 +384,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, email: string, username: string, profile?: { __typename?: 'Profile', id: string } | null } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, email: string, username: string, profile?: { __typename?: 'Profile', id: string, profile_avatar?: string | null } | null } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -366,7 +404,7 @@ export type RemoveAvatarMutationVariables = Exact<{
 }>;
 
 
-export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type RemoveAvatarMutation = { __typename?: 'Mutation', removeAvatar?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
 export type RemoveBuddyMutationVariables = Exact<{
   input: RelationshipInput;
@@ -381,7 +419,7 @@ export type RemoveWallpaperMutationVariables = Exact<{
 }>;
 
 
-export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type RemoveWallpaperMutation = { __typename?: 'Mutation', removeWallpaper?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
 export type RespondBuddyMutationVariables = Exact<{
   input: RelationshipInput;
@@ -396,7 +434,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', requester_id: string, addressee_id: string, specifier_id: string, status: RelationshipStatusCode, createdAt: any, updatedAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }, addressee: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
@@ -426,6 +464,13 @@ export type GetManyProfilesQueryVariables = Exact<{
 
 export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null> | null, PageInfo?: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage?: boolean | null } | null } | null };
 
+export type GetNotificationsQueryVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetNotificationsQuery = { __typename?: 'Query', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, notifier: { __typename?: 'Profile', profile_avatar?: string | null, createdAt?: any | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+
 export type GetProfileQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
@@ -438,12 +483,12 @@ export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string, profile_avatar?: string | null } | null } | null };
 
-export type GetBuddyRequestsSubscriptionSubscriptionVariables = Exact<{
+export type GetNotificationsSubsSubscriptionVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetBuddyRequestsSubscriptionSubscription = { __typename?: 'Subscription', getBuddyRequests?: { __typename?: 'BuddyRequestsOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Requests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetNotificationsSubsSubscription = { __typename?: 'Subscription', getNotification?: { __typename?: 'NotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Notifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, message?: string | null, isRead: boolean, entity_id?: string | null, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, BuddyNotifications?: Array<{ __typename?: 'Notification', id: string, notifier_id: string, createdAt: any, notifier: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -633,6 +678,7 @@ export const LoginDocument = gql`
       username
       profile {
         id
+        profile_avatar
       }
     }
     ErrorFieldOutput {
@@ -758,83 +804,6 @@ export const RemoveAvatarDocument = gql`
       success
       message
     }
-    Profile {
-      id
-      profile_bio
-      profile_avatar
-      profile_avatar_public_id
-      profile_wallpaper
-      profile_wallpaper_public_id
-      profile_interests {
-        interest {
-          interest_name
-        }
-      }
-      buddies {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        status
-        createdAt
-        updatedAt
-      }
-      buddyRequests {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      buddyPendings {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      user {
-        id
-        username
-        email
-      }
-    }
   }
 }
     `;
@@ -910,83 +879,6 @@ export const RemoveWallpaperDocument = gql`
       success
       message
     }
-    Profile {
-      id
-      profile_bio
-      profile_avatar
-      profile_avatar_public_id
-      profile_wallpaper
-      profile_wallpaper_public_id
-      profile_interests {
-        interest {
-          interest_name
-        }
-      }
-      buddies {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        status
-        createdAt
-        updatedAt
-      }
-      buddyRequests {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      buddyPendings {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      user {
-        id
-        username
-        email
-      }
-    }
   }
 }
     `;
@@ -1061,83 +953,6 @@ export const UpdateProfileDocument = gql`
       code
       success
       message
-    }
-    Profile {
-      id
-      profile_bio
-      profile_avatar
-      profile_avatar_public_id
-      profile_wallpaper
-      profile_wallpaper_public_id
-      profile_interests {
-        interest {
-          interest_name
-        }
-      }
-      buddies {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        status
-        createdAt
-        updatedAt
-      }
-      buddyRequests {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      buddyPendings {
-        requester_id
-        requester {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        addressee_id
-        addressee {
-          user {
-            username
-          }
-          profile_avatar
-        }
-        specifier_id
-        status
-        createdAt
-        updatedAt
-      }
-      user {
-        id
-        username
-        email
-      }
     }
   }
 }
@@ -1361,6 +1176,70 @@ export function useGetManyProfilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetManyProfilesQueryHookResult = ReturnType<typeof useGetManyProfilesQuery>;
 export type GetManyProfilesLazyQueryHookResult = ReturnType<typeof useGetManyProfilesLazyQuery>;
 export type GetManyProfilesQueryResult = Apollo.QueryResult<GetManyProfilesQuery, GetManyProfilesQueryVariables>;
+export const GetNotificationsDocument = gql`
+    query getNotifications($where: ProfileWhereUniqueInput!) {
+  getNotification(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Notifications {
+      id
+      notifier_id
+      notifier {
+        profile_avatar
+        user {
+          username
+        }
+      }
+      message
+      isRead
+      entity_id
+      createdAt
+    }
+    BuddyNotifications {
+      id
+      notifier_id
+      notifier {
+        profile_avatar
+        user {
+          username
+        }
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetNotificationsQuery__
+ *
+ * To run a query within a React component, call `useGetNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotificationsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetNotificationsQuery(baseOptions: Apollo.QueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, options);
+      }
+export function useGetNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, options);
+        }
+export type GetNotificationsQueryHookResult = ReturnType<typeof useGetNotificationsQuery>;
+export type GetNotificationsLazyQueryHookResult = ReturnType<typeof useGetNotificationsLazyQuery>;
+export type GetNotificationsQueryResult = Apollo.QueryResult<GetNotificationsQuery, GetNotificationsQueryVariables>;
 export const GetProfileDocument = gql`
     query getProfile($where: ProfileWhereUniqueInput!) {
   getProfile(where: $where) {
@@ -1517,21 +1396,36 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
-export const GetBuddyRequestsSubscriptionDocument = gql`
-    subscription getBuddyRequestsSubscription($where: ProfileWhereUniqueInput!) {
-  getBuddyRequests(where: $where) {
+export const GetNotificationsSubsDocument = gql`
+    subscription getNotificationsSubs($where: ProfileWhereUniqueInput!) {
+  getNotification(where: $where) {
     IOutput {
       code
       success
       message
     }
-    Requests {
-      requester_id
-      requester {
+    Notifications {
+      id
+      notifier_id
+      notifier {
+        profile_avatar
         user {
           username
         }
+      }
+      message
+      isRead
+      entity_id
+      createdAt
+    }
+    BuddyNotifications {
+      id
+      notifier_id
+      notifier {
         profile_avatar
+        user {
+          username
+        }
       }
       createdAt
     }
@@ -1540,24 +1434,24 @@ export const GetBuddyRequestsSubscriptionDocument = gql`
     `;
 
 /**
- * __useGetBuddyRequestsSubscriptionSubscription__
+ * __useGetNotificationsSubsSubscription__
  *
- * To run a query within a React component, call `useGetBuddyRequestsSubscriptionSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetBuddyRequestsSubscriptionSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetNotificationsSubsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotificationsSubsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetBuddyRequestsSubscriptionSubscription({
+ * const { data, loading, error } = useGetNotificationsSubsSubscription({
  *   variables: {
  *      where: // value for 'where'
  *   },
  * });
  */
-export function useGetBuddyRequestsSubscriptionSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetBuddyRequestsSubscriptionSubscription, GetBuddyRequestsSubscriptionSubscriptionVariables>) {
+export function useGetNotificationsSubsSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetNotificationsSubsSubscription, GetNotificationsSubsSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetBuddyRequestsSubscriptionSubscription, GetBuddyRequestsSubscriptionSubscriptionVariables>(GetBuddyRequestsSubscriptionDocument, options);
+        return Apollo.useSubscription<GetNotificationsSubsSubscription, GetNotificationsSubsSubscriptionVariables>(GetNotificationsSubsDocument, options);
       }
-export type GetBuddyRequestsSubscriptionSubscriptionHookResult = ReturnType<typeof useGetBuddyRequestsSubscriptionSubscription>;
-export type GetBuddyRequestsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<GetBuddyRequestsSubscriptionSubscription>;
+export type GetNotificationsSubsSubscriptionHookResult = ReturnType<typeof useGetNotificationsSubsSubscription>;
+export type GetNotificationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetNotificationsSubsSubscription>;

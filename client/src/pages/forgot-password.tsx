@@ -1,5 +1,4 @@
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
-import NavBar from "../components/NavBar";
 import {
   ForgotPasswordInput,
   useForgotPasswordMutation,
@@ -7,7 +6,6 @@ import {
 import * as Yup from "yup";
 import { mapErrorField } from "../utils/mapErrorField";
 import TextError from "../components/TextError";
-import Head from "next/head";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 
