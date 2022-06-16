@@ -47,11 +47,7 @@ export const getManyProfiles = queryField("getManyProfiles", {
   },
   resolve: async (_root, args, ctx) => {
     const { search_input, cursor, take } = args.where;
-    // const hashCursor = Buffer.from(cursor).toString("base64");
-    // const decodeCursor = Buffer.from(hashCursor, "base64").toString();
-    // console.log("cursor", cursor);
-    // console.log("hashCursor", hashCursor);
-    // console.log("decodeCursor", decodeCursor);
+
     let queryResult: Profile[] | null = null;
 
     try {

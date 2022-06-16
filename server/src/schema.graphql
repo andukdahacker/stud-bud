@@ -8,14 +8,11 @@ type AuthOutput {
   User: User
 }
 
-type BuddyPendingsOutput {
+type BuddyNotificationOutput {
   IOutput: IOutput!
-  Pendings: [Relationship!]
-}
-
-type BuddyRequestsOutput {
-  IOutput: IOutput!
-  Requests: [Relationship!]
+  PageInfo: PageInfo
+  buddyAccepts: [Relationship!]
+  buddyRequests: [Relationship!]
 }
 
 input ChangePasswordInput {
@@ -100,24 +97,6 @@ type Mutation {
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
 }
 
-type Notification {
-  createdAt: Date!
-  entity_id: String
-  id: String!
-  isRead: Boolean!
-  message: String
-  notifier: Profile
-  notifier_id: String!
-  receiver_id: String!
-  type_id: Int!
-}
-
-type NotificationOutput {
-  BuddyNotifications: [Notification!]
-  IOutput: IOutput!
-  Notifications: [Notification!]
-}
-
 type PageInfo {
   endCursor: Date
   hasNextPage: Boolean
@@ -155,11 +134,9 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
-  getBuddyPendings(where: ProfileWhereUniqueInput!): BuddyPendingsOutput
-  getBuddyRequests(where: ProfileWhereUniqueInput!): BuddyRequestsOutput
+  getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
-  getNotification(where: ProfileWhereUniqueInput!): NotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getUser: User
 }
@@ -190,7 +167,7 @@ input RelationshipInput {
 
 type RelationshipOutput {
   IOutput: IOutput!
-  Relationship: Relationship
+  Relationship: [Relationship!]
 }
 
 enum RelationshipStatusCode {
@@ -200,7 +177,7 @@ enum RelationshipStatusCode {
 }
 
 type Subscription {
-  getNotification(where: ProfileWhereUniqueInput!): NotificationOutput
+  getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
 }
 
 """The `Upload` scalar type represents a file upload."""

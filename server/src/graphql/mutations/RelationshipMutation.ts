@@ -4,8 +4,6 @@ import {
   ACCEPT_BUDDY_EVENT,
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
-  RELATIONSHIP_ACCEPT,
-  RELATIONSHIP_CONNECT,
 } from "../../constants";
 import { RelationshipInput } from "../inputs/RelationshipInput";
 import { RelationshipOutput } from "../outputs/RelationshipOutput";
@@ -46,6 +44,7 @@ export const connectBuddy = mutationField("connectBuddy", {
             },
           },
           status,
+          isRead: false,
         },
       });
 
@@ -59,28 +58,7 @@ export const connectBuddy = mutationField("connectBuddy", {
           Relationship: relationship,
         };
 
-      const notification = await ctx.prisma.notification.create({
-        data: {
-          notifier: {
-            connect: {
-              id: requester_id,
-            },
-          },
-          receiver: {
-            connect: {
-              id: addressee_id,
-            },
-          },
-          isRead: false,
-          type: {
-            connect: {
-              id: RELATIONSHIP_CONNECT,
-            },
-          },
-        },
-      });
-
-      pubsub.publish(CONNECT_BUDDY_EVENT, { data: notification });
+      pubsub.publish(CONNECT_BUDDY_EVENT, { data: relationship });
 
       return {
         IOutput: {
@@ -141,6 +119,7 @@ export const respondBuddy = mutationField("respondBuddy", {
               },
             },
             status,
+            isRead: false,
           },
         });
 
@@ -158,36 +137,15 @@ export const respondBuddy = mutationField("respondBuddy", {
             },
           };
 
-        const notification = await ctx.prisma.notification.create({
-          data: {
-            notifier: {
-              connect: {
-                id: addressee_id,
-              },
-            },
-            receiver: {
-              connect: {
-                id: requester_id,
-              },
-            },
-            isRead: false,
-            type: {
-              connect: {
-                id: RELATIONSHIP_ACCEPT,
-              },
-            },
-          },
-        });
-
         pubsub.publish(ACCEPT_BUDDY_EVENT, {
-          data: notification,
+          data: result[1],
         });
 
         return {
           IOutput: {
             code: 200,
             success: true,
-            message: "ACCEPTED",
+            message: "You have become buddies!",
           },
         };
       } else if (status === "DECLINED") {
@@ -205,7 +163,7 @@ export const respondBuddy = mutationField("respondBuddy", {
             IOutput: {
               code: 400,
               success: false,
-              message: "Relationship does not exist",
+              message: "Request does not exist anymore",
             },
           };
 
@@ -213,7 +171,7 @@ export const respondBuddy = mutationField("respondBuddy", {
           IOutput: {
             code: 200,
             success: true,
-            message: "DECLINED",
+            message: "Request has been cancelled.",
           },
         };
       }

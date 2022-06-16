@@ -27,3 +27,8 @@ export const QUERY_SUCCESS = {
   success: true,
   message: "Query made successfully",
 };
+export const UNSUCCESSFUL_QUERY = {
+  code: 400,
+  success: false,
+  message: "Query made unsuccessfully",
+};

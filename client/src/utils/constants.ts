@@ -11,3 +11,9 @@ export enum BuddyRespondOptions {
   REMOVE,
   UNDO,
 }
+
+export interface BuddyNotificationProps {
+  profile_id: string;
+  profile_avatar?: string | null;
+  username: string;
+}

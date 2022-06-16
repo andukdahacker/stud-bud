@@ -1,8 +1,8 @@
 import { inputObjectType } from "nexus";
 
-export const NotificationInput = inputObjectType({
+export const NotificationWhereUniqueInput = inputObjectType({
   name: "NotificationInput",
   definition(t) {
-    t.nonNull.string("receiver_id");
+    t.nonNull.string("id");
   },
 });

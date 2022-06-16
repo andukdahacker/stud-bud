@@ -7,7 +7,8 @@ import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
-import Notification from "./Notification";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NotificationBar from "./NotificationBar";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -22,6 +23,12 @@ const NavBar = () => {
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const [hidden, setHidden] = useState<string | undefined>("hidden");
+  const toggleNotification = () => {
+    if (hidden === "hidden") setHidden(undefined);
+    if (hidden === undefined) setHidden("hidden");
   };
 
   return (
@@ -57,7 +64,23 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div className="flex justify-around">
-          <Notification />
+          <FontAwesomeIcon
+            icon="bell"
+            size="1x"
+            onClick={
+              router.pathname === "/notifications"
+                ? () => {}
+                : toggleNotification
+            }
+            className={
+              router.pathname === "/notifications"
+                ? " bg-blue-400"
+                : "cursor-pointer"
+            }
+          />
+          <div className={`${hidden} overflow-auto fixed bg-white top-20 z-10`}>
+            <NotificationBar />
+          </div>
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
               className={` flex text-sm font-medium  ${

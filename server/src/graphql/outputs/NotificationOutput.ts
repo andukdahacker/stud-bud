@@ -16,3 +16,5 @@ export const NotificationOutput = objectType({
     });
   },
 });
+
+// split into 2 queries and subs

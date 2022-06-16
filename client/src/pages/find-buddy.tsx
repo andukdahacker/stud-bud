@@ -35,17 +35,14 @@ const FindBuddy = () => {
 
   const debouncedSearch = useDebounce(search, 500);
   useEffect(() => {
-    async function fetchData() {
-      await getManyInterests({
+    if (debouncedSearch)
+      getManyInterests({
         variables: {
           where: {
             search_input: search,
           },
         },
       });
-    }
-
-    if (debouncedSearch) fetchData();
   }, [debouncedSearch]);
 
   const initialValues: GetManyInterestsInput & GetManyProfilesInput = {

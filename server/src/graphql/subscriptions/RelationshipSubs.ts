@@ -1,49 +1,63 @@
 import { nonNull, subscriptionField } from "nexus";
-import { Notification } from "../../types";
+import { Relationship } from "../../types";
 import { pubsub } from ".";
 import {
   ACCEPT_BUDDY_EVENT,
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
   QUERY_SUCCESS,
+  UNSUCCESSFUL_QUERY,
 } from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
-import { NotificationOutput } from "../outputs/NotificationOutput";
-import { withFilter } from "graphql-subscriptions";
 
-export const connectBuddyEvent = subscriptionField("getNotification", {
-  type: NotificationOutput,
+import { withFilter } from "graphql-subscriptions";
+import { BuddyNotificationsOutput } from "../outputs";
+import { RelationshipStatusCode } from "@prisma/client";
+
+export const connectBuddyEvent = subscriptionField("getBuddyNotifications", {
+  type: BuddyNotificationsOutput,
   args: {
     where: nonNull(ProfileWhereUniqueInput),
   },
   subscribe: withFilter(
     () => pubsub.asyncIterator([CONNECT_BUDDY_EVENT, ACCEPT_BUDDY_EVENT]),
-    (root: Notification, args, _ctx) => {
-      return root.data.receiver_id === args.where.profile_id;
+    (root: Relationship, args, _ctx) => {
+      return root.data.addressee_id === args.where.profile_id;
     }
   ),
-  resolve: async (root: Notification, _args, ctx) => {
+  resolve: async (root: Relationship, _args, ctx) => {
     try {
-      const newBuddyNotification = await ctx.prisma.notification.findUnique({
+      const relationship = await ctx.prisma.relationship.findUnique({
         where: {
-          id: root.data.id,
+          requester_id_addressee_id: {
+            requester_id: root.data.requester_id,
+            addressee_id: root.data.addressee_id,
+          },
         },
       });
 
-      if (!newBuddyNotification)
+      if (!relationship)
         return {
-          IOutput: {
-            code: 400,
-            success: false,
-            message: "Cannot get notification",
-          },
+          IOutput: UNSUCCESSFUL_QUERY,
         };
 
-      return {
-        IOutput: QUERY_SUCCESS,
-        BuddyNotifications: [newBuddyNotification],
-        Notifications: [],
-      };
+      if (relationship.status === RelationshipStatusCode.REQUESTED) {
+        return {
+          IOutput: QUERY_SUCCESS,
+          buddyRequests: [relationship],
+          buddyAccepts: [],
+        };
+      }
+
+      if (relationship.status === RelationshipStatusCode.ACCEPTED) {
+        return {
+          IOutput: QUERY_SUCCESS,
+          buddyRequests: [],
+          buddyAccepts: [relationship],
+        };
+      }
+
+      return null;
     } catch (error) {
       return INTERNAL_SERVER_ERROR;
     }

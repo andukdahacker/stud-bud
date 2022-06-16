@@ -36,17 +36,14 @@ const EditProfile = () => {
   ] = useGetProfileLazyQuery();
 
   useEffect(() => {
-    async function fetchData() {
-      await getProfile({
+    if (router.isReady)
+      getProfile({
         variables: {
           where: {
             profile_id,
           },
         },
       });
-    }
-
-    if (router.isReady) fetchData();
   }, [router.isReady]);
 
   const [
@@ -98,17 +95,6 @@ const EditProfile = () => {
           profile_interest,
         },
       },
-      // update(cache, { data }) {
-      //   if (data?.updateProfile?.IOutput.success) {
-      //     cache.writeQuery<GetProfileQuery>({
-      //       query: GetProfileDocument,
-      //       data: {
-      //         __typename: "Query",
-      //         getProfile: data.updateProfile,
-      //       },
-      //     });
-      //   }
-      // },
     });
 
     if (result.data?.updateProfile?.IOutput.success) {

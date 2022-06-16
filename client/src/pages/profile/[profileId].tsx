@@ -12,18 +12,15 @@ const Profile = () => {
     useGetProfileLazyQuery();
 
   useEffect(() => {
-    async function fetchData() {
-      await getProfile({
+    if (router.isReady)
+      getProfile({
         variables: {
           where: {
             profile_id,
           },
         },
       });
-    }
-
-    if (router.isReady) fetchData();
-  }, [router.isReady, router]);
+  }, [router.isReady]);
   const username = getProfileData?.getProfile?.Profile?.user?.username;
 
   return (

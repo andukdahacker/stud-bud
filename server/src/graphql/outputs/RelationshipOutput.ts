@@ -1,4 +1,5 @@
 import { objectType } from "nexus";
+import { PageInfo } from "../objects";
 import { Relationship } from "../objects/Relationship";
 import { IOutput } from "./IOutput";
 
@@ -8,32 +9,29 @@ export const RelationshipOutput = objectType({
     t.nonNull.field("IOutput", {
       type: IOutput,
     });
-    t.nullable.field("Relationship", {
+    t.nullable.list.nonNull.field("Relationship", {
       type: Relationship,
     });
   },
 });
 
-export const BuddyRequestsOutput = objectType({
-  name: "BuddyRequestsOutput",
+export const BuddyNotificationsOutput = objectType({
+  name: "BuddyNotificationOutput",
   definition(t) {
     t.nonNull.field("IOutput", {
       type: IOutput,
     });
-    t.nullable.list.nonNull.field("Requests", {
-      type: Relationship,
-    });
-  },
-});
 
-export const BuddyPendingsOutput = objectType({
-  name: "BuddyPendingsOutput",
-  definition(t) {
-    t.nonNull.field("IOutput", {
-      type: IOutput,
-    });
-    t.nullable.list.nonNull.field("Pendings", {
+    t.nullable.list.nonNull.field("buddyRequests", {
       type: Relationship,
+    });
+
+    t.nullable.list.nonNull.field("buddyAccepts", {
+      type: Relationship,
+    });
+
+    t.nullable.field("PageInfo", {
+      type: PageInfo,
     });
   },
 });
