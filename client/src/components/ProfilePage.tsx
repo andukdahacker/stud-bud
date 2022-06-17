@@ -28,9 +28,6 @@ const ProfilePage = (props: ProfilePageProps) => {
   const username = profileData?.user?.username;
   const profile_id = profileData?.id;
   const profile_bio = profileData?.profile_bio;
-  const buddies = profileData?.buddies;
-
-  const buddiesPendings = profileData?.buddyPendings;
 
   if (props.loading) return <Loading />;
 
@@ -75,27 +72,6 @@ const ProfilePage = (props: ProfilePageProps) => {
             </div>
           );
         })}
-      <h2>Buddies: </h2>
-      {buddies
-        ? buddies.map((buddy, index) => {
-            return (
-              <Link href={`/profile/${buddy?.addressee_id}`} key={index}>
-                <a>{buddy?.addressee?.user?.username}</a>
-              </Link>
-            );
-          })
-        : null}
-
-      <h2>You requested to be their buddies: </h2>
-      {buddiesPendings
-        ? buddiesPendings.map((pending, index) => {
-            return (
-              <Link href={`/profile/${pending?.addressee_id}`} key={index}>
-                <a>{pending?.addressee?.user?.username}</a>
-              </Link>
-            );
-          })
-        : null}
     </div>
   );
 };

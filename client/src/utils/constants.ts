@@ -1,3 +1,5 @@
+import { RelationshipStatusCode } from "../generated/graphql";
+
 export const PROFILES_TAKE_LIMIT = 1;
 export enum BuddyStatus {
   BUDDY,
@@ -16,4 +18,6 @@ export interface BuddyNotificationProps {
   profile_id: string;
   profile_avatar?: string | null;
   username: string;
+  status: RelationshipStatusCode;
+  isRead: boolean;
 }

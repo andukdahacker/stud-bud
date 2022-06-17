@@ -32,6 +32,7 @@ export type BuddyNotificationOutput = {
   PageInfo?: Maybe<PageInfo>;
   buddyAccepts?: Maybe<Array<Relationship>>;
   buddyRequests?: Maybe<Array<Relationship>>;
+  countNotViewedBuddyNotifications?: Maybe<Scalars['Int']>;
 };
 
 export type ChangePasswordInput = {
@@ -110,6 +111,7 @@ export type Mutation = {
   forgotPassword?: Maybe<AuthOutput>;
   login: AuthOutput;
   logout: AuthOutput;
+  readBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
   removeBuddy?: Maybe<RelationshipOutput>;
@@ -117,6 +119,7 @@ export type Mutation = {
   respondBuddy?: Maybe<RelationshipOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
+  viewBuddyNotifications?: Maybe<BuddyNotificationOutput>;
 };
 
 
@@ -142,6 +145,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationReadBuddyNotificationsArgs = {
+  where: ReadBuddyNotificationsInput;
 };
 
 
@@ -180,6 +188,11 @@ export type MutationUpdateProfileArgs = {
 
 export type MutationVerifyEmailArgs = {
   input: VerifyEmailInput;
+};
+
+
+export type MutationViewBuddyNotificationsArgs = {
+  where: ProfileWhereUniqueInput;
 };
 
 export type PageInfo = {
@@ -251,6 +264,11 @@ export type QueryGetProfileArgs = {
   where: ProfileWhereUniqueInput;
 };
 
+export type ReadBuddyNotificationsInput = {
+  addressee_id: Scalars['String'];
+  requester_id: Scalars['String'];
+};
+
 export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -262,6 +280,8 @@ export type Relationship = {
   addressee: Profile;
   addressee_id: Scalars['String'];
   createdAt: Scalars['Date'];
+  isRead: Scalars['Boolean'];
+  isViewed: Scalars['Boolean'];
   requester: Profile;
   requester_id: Scalars['String'];
   specifier_id: Scalars['String'];
@@ -355,6 +375,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } };
 
+export type ReadBuddyNotificationsMutationVariables = Exact<{
+  where: ReadBuddyNotificationsInput;
+}>;
+
+
+export type ReadBuddyNotificationsMutation = { __typename?: 'Mutation', readBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
+
 export type RegisterMutationVariables = Exact<{
   input: RegisterInput;
 }>;
@@ -407,12 +434,19 @@ export type VerifyEmailMutationVariables = Exact<{
 
 export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, User?: { __typename?: 'User', id: string, isVerified: boolean, email: string } | null } };
 
+export type ViewBuddyNotificationsMutationVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type ViewBuddyNotificationsMutation = { __typename?: 'Mutation', viewBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
+
 export type GetBuddyNotificationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -445,7 +479,7 @@ export type GetBuddyNotificationsSubsSubscriptionVariables = Exact<{
 }>;
 
 
-export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -707,6 +741,43 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const ReadBuddyNotificationsDocument = gql`
+    mutation ReadBuddyNotifications($where: ReadBuddyNotificationsInput!) {
+  readBuddyNotifications(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+  }
+}
+    `;
+export type ReadBuddyNotificationsMutationFn = Apollo.MutationFunction<ReadBuddyNotificationsMutation, ReadBuddyNotificationsMutationVariables>;
+
+/**
+ * __useReadBuddyNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadBuddyNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadBuddyNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readBuddyNotificationsMutation, { data, loading, error }] = useReadBuddyNotificationsMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useReadBuddyNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadBuddyNotificationsMutation, ReadBuddyNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadBuddyNotificationsMutation, ReadBuddyNotificationsMutationVariables>(ReadBuddyNotificationsDocument, options);
+      }
+export type ReadBuddyNotificationsMutationHookResult = ReturnType<typeof useReadBuddyNotificationsMutation>;
+export type ReadBuddyNotificationsMutationResult = Apollo.MutationResult<ReadBuddyNotificationsMutation>;
+export type ReadBuddyNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadBuddyNotificationsMutation, ReadBuddyNotificationsMutationVariables>;
 export const RegisterDocument = gql`
     mutation register($input: RegisterInput!) {
   register(input: $input) {
@@ -983,6 +1054,43 @@ export function useVerifyEmailMutation(baseOptions?: Apollo.MutationHookOptions<
 export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>;
 export type VerifyEmailMutationResult = Apollo.MutationResult<VerifyEmailMutation>;
 export type VerifyEmailMutationOptions = Apollo.BaseMutationOptions<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export const ViewBuddyNotificationsDocument = gql`
+    mutation ViewBuddyNotifications($where: ProfileWhereUniqueInput!) {
+  viewBuddyNotifications(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+  }
+}
+    `;
+export type ViewBuddyNotificationsMutationFn = Apollo.MutationFunction<ViewBuddyNotificationsMutation, ViewBuddyNotificationsMutationVariables>;
+
+/**
+ * __useViewBuddyNotificationsMutation__
+ *
+ * To run a mutation, you first call `useViewBuddyNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useViewBuddyNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [viewBuddyNotificationsMutation, { data, loading, error }] = useViewBuddyNotificationsMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useViewBuddyNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ViewBuddyNotificationsMutation, ViewBuddyNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ViewBuddyNotificationsMutation, ViewBuddyNotificationsMutationVariables>(ViewBuddyNotificationsDocument, options);
+      }
+export type ViewBuddyNotificationsMutationHookResult = ReturnType<typeof useViewBuddyNotificationsMutation>;
+export type ViewBuddyNotificationsMutationResult = Apollo.MutationResult<ViewBuddyNotificationsMutation>;
+export type ViewBuddyNotificationsMutationOptions = Apollo.BaseMutationOptions<ViewBuddyNotificationsMutation, ViewBuddyNotificationsMutationVariables>;
 export const GetBuddyNotificationsDocument = gql`
     query getBuddyNotifications($where: ProfileWhereUniqueInput!) {
   getBuddyNotifications(where: $where) {
@@ -999,6 +1107,9 @@ export const GetBuddyNotificationsDocument = gql`
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
     buddyAccepts {
@@ -1009,8 +1120,12 @@ export const GetBuddyNotificationsDocument = gql`
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
+    countNotViewedBuddyNotifications
   }
 }
     `;
@@ -1315,6 +1430,9 @@ export const GetBuddyNotificationsSubsDocument = gql`
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
     buddyAccepts {
@@ -1325,8 +1443,12 @@ export const GetBuddyNotificationsSubsDocument = gql`
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
+    countNotViewedBuddyNotifications
   }
 }
     `;

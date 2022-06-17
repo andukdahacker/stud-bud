@@ -13,6 +13,9 @@ subscription getBuddyNotificationsSubs($where: ProfileWhereUniqueInput!) {
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
     buddyAccepts {
@@ -23,7 +26,11 @@ subscription getBuddyNotificationsSubs($where: ProfileWhereUniqueInput!) {
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
+    countNotViewedBuddyNotifications
   }
 }

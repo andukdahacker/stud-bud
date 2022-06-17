@@ -36,6 +36,14 @@ export const connectBuddyEvent = subscriptionField("getBuddyNotifications", {
         },
       });
 
+      const countNotViewedBuddyNotifications =
+        await ctx.prisma.relationship.count({
+          where: {
+            addressee_id: root.data.addressee_id,
+            isViewed: false,
+          },
+        });
+
       if (!relationship)
         return {
           IOutput: UNSUCCESSFUL_QUERY,
@@ -46,6 +54,7 @@ export const connectBuddyEvent = subscriptionField("getBuddyNotifications", {
           IOutput: QUERY_SUCCESS,
           buddyRequests: [relationship],
           buddyAccepts: [],
+          countNotViewedBuddyNotifications,
         };
       }
 
@@ -54,6 +63,7 @@ export const connectBuddyEvent = subscriptionField("getBuddyNotifications", {
           IOutput: QUERY_SUCCESS,
           buddyRequests: [],
           buddyAccepts: [relationship],
+          countNotViewedBuddyNotifications,
         };
       }
 

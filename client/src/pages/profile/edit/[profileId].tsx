@@ -2,8 +2,6 @@ import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import {
   CreateProfileInput,
-  GetProfileDocument,
-  GetProfileQuery,
   GetUserDocument,
   GetUserQuery,
   ProfileWhereUniqueInput,
@@ -121,17 +119,6 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
-      // update(cache, { data }) {
-      //   if (data?.removeAvatar?.IOutput.success) {
-      //     cache.writeQuery<GetProfileQuery>({
-      //       query: GetProfileDocument,
-      //       data: {
-      //         __typename: "Query",
-      //         getProfile: data?.removeAvatar,
-      //       },
-      //     });
-      //   }
-      // },
     });
 
     if (result.data?.removeAvatar?.IOutput.success) {
@@ -159,17 +146,6 @@ const EditProfile = () => {
           img_public_id: public_id,
         },
       },
-      // update(cache, { data }) {
-      //   if (data?.removeWallpaper?.IOutput.success) {
-      //     cache.writeQuery<GetProfileQuery>({
-      //       query: GetProfileDocument,
-      //       data: {
-      //         __typename: "Query",
-      //         getProfile: data?.removeWallpaper,
-      //       },
-      //     });
-      //   }
-      // },
     });
 
     if (result.data?.removeWallpaper?.IOutput.success) {
@@ -303,10 +279,6 @@ const EditProfile = () => {
 
             {updateProfileSuccess ? null : (
               <div>{updateProfileData?.updateProfile?.IOutput.message}</div>
-            )}
-
-            {removeAvatarSuccess ? null : (
-              <div>{removeAvatarData?.removeAvatar?.IOutput.message}</div>
             )}
             {removeAvatarSuccess ? null : (
               <div>{removeAvatarData?.removeAvatar?.IOutput.message}</div>

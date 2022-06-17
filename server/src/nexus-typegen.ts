@@ -68,6 +68,10 @@ export interface NexusGenInputs {
   ProfileWhereUniqueInput: { // input type
     profile_id: string; // ID!
   }
+  ReadBuddyNotificationsInput: { // input type
+    addressee_id: string; // String!
+    requester_id: string; // String!
+  }
   RegisterInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -112,6 +116,7 @@ export interface NexusGenObjects {
     PageInfo?: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     buddyAccepts?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     buddyRequests?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    countNotViewedBuddyNotifications?: number | null; // Int
   }
   ErrorFieldOutput: { // root type
     field: string; // String!
@@ -161,6 +166,8 @@ export interface NexusGenObjects {
   Relationship: { // root type
     addressee_id: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
+    isRead: boolean; // Boolean!
+    isViewed: boolean; // Boolean!
     requester_id: string; // String!
     specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
@@ -200,6 +207,7 @@ export interface NexusGenFieldTypes {
     PageInfo: NexusGenRootTypes['PageInfo'] | null; // PageInfo
     buddyAccepts: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     buddyRequests: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    countNotViewedBuddyNotifications: number | null; // Int
   }
   ErrorFieldOutput: { // field return type
     field: string; // String!
@@ -231,6 +239,7 @@ export interface NexusGenFieldTypes {
     forgotPassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
+    readBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     removeBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
@@ -238,6 +247,7 @@ export interface NexusGenFieldTypes {
     respondBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
+    viewBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
   }
   PageInfo: { // field return type
     endCursor: NexusGenScalars['Date'] | null; // Date
@@ -278,6 +288,8 @@ export interface NexusGenFieldTypes {
     addressee: NexusGenRootTypes['Profile']; // Profile!
     addressee_id: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
+    isRead: boolean; // Boolean!
+    isViewed: boolean; // Boolean!
     requester: NexusGenRootTypes['Profile']; // Profile!
     requester_id: string; // String!
     specifier_id: string; // String!
@@ -311,6 +323,7 @@ export interface NexusGenFieldTypeNames {
     PageInfo: 'PageInfo'
     buddyAccepts: 'Relationship'
     buddyRequests: 'Relationship'
+    countNotViewedBuddyNotifications: 'Int'
   }
   ErrorFieldOutput: { // field return type name
     field: 'String'
@@ -342,6 +355,7 @@ export interface NexusGenFieldTypeNames {
     forgotPassword: 'AuthOutput'
     login: 'AuthOutput'
     logout: 'AuthOutput'
+    readBuddyNotifications: 'BuddyNotificationOutput'
     register: 'AuthOutput'
     removeAvatar: 'ProfileMutationOutput'
     removeBuddy: 'RelationshipOutput'
@@ -349,6 +363,7 @@ export interface NexusGenFieldTypeNames {
     respondBuddy: 'RelationshipOutput'
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
+    viewBuddyNotifications: 'BuddyNotificationOutput'
   }
   PageInfo: { // field return type name
     endCursor: 'Date'
@@ -389,6 +404,8 @@ export interface NexusGenFieldTypeNames {
     addressee: 'Profile'
     addressee_id: 'String'
     createdAt: 'Date'
+    isRead: 'Boolean'
+    isViewed: 'Boolean'
     requester: 'Profile'
     requester_id: 'String'
     specifier_id: 'String'
@@ -428,6 +445,9 @@ export interface NexusGenArgTypes {
     login: { // args
       input: NexusGenInputs['LoginInput']; // LoginInput!
     }
+    readBuddyNotifications: { // args
+      where: NexusGenInputs['ReadBuddyNotificationsInput']; // ReadBuddyNotificationsInput!
+    }
     register: { // args
       input: NexusGenInputs['RegisterInput']; // RegisterInput!
     }
@@ -451,6 +471,9 @@ export interface NexusGenArgTypes {
     }
     verifyEmail: { // args
       input: NexusGenInputs['VerifyEmailInput']; // VerifyEmailInput!
+    }
+    viewBuddyNotifications: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
   }
   Query: {

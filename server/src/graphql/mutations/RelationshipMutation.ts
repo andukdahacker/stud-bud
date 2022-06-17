@@ -4,10 +4,19 @@ import {
   ACCEPT_BUDDY_EVENT,
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
+  QUERY_SUCCESS,
+  UNSUCCESSFUL_QUERY,
 } from "../../constants";
-import { RelationshipInput } from "../inputs/RelationshipInput";
-import { RelationshipOutput } from "../outputs/RelationshipOutput";
+import {
+  ReadBuddyNotificationsInput,
+  RelationshipInput,
+} from "../inputs/RelationshipInput";
+import {
+  BuddyNotificationsOutput,
+  RelationshipOutput,
+} from "../outputs/RelationshipOutput";
 import { pubsub } from "../subscriptions";
+import { ProfileWhereUniqueInput } from "../inputs";
 
 export const connectBuddy = mutationField("connectBuddy", {
   type: RelationshipOutput,
@@ -45,6 +54,7 @@ export const connectBuddy = mutationField("connectBuddy", {
           },
           status,
           isRead: false,
+          isViewed: false,
         },
       });
 
@@ -120,6 +130,7 @@ export const respondBuddy = mutationField("respondBuddy", {
             },
             status,
             isRead: false,
+            isViewed: false,
           },
         });
 
@@ -231,6 +242,73 @@ export const removeBuddy = mutationField("removeBuddy", {
           success: true,
           message: "Success unBuddy",
         },
+      };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
+    }
+  },
+});
+
+export const viewBuddyNotifications = mutationField("viewBuddyNotifications", {
+  type: BuddyNotificationsOutput,
+  args: {
+    where: nonNull(ProfileWhereUniqueInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { profile_id } = args.where;
+    try {
+      const updateBuddyNotifications = await ctx.prisma.relationship.updateMany(
+        {
+          where: {
+            addressee_id: profile_id,
+          },
+          data: {
+            isViewed: true,
+          },
+        }
+      );
+
+      if (!updateBuddyNotifications)
+        return {
+          IOutput: UNSUCCESSFUL_QUERY,
+        };
+
+      return {
+        IOutput: QUERY_SUCCESS,
+      };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
+    }
+  },
+});
+
+export const readBuddyNotifications = mutationField("readBuddyNotifications", {
+  type: BuddyNotificationsOutput,
+  args: {
+    where: nonNull(ReadBuddyNotificationsInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { requester_id, addressee_id } = args.where;
+    try {
+      const updateBuddyNotifications = await ctx.prisma.relationship.update({
+        where: {
+          requester_id_addressee_id: {
+            requester_id,
+            addressee_id,
+          },
+        },
+        data: {
+          isRead: true,
+        },
+      });
+
+      if (!updateBuddyNotifications)
+        return {
+          IOutput: UNSUCCESSFUL_QUERY,
+        };
+
+      return {
+        IOutput: QUERY_SUCCESS,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

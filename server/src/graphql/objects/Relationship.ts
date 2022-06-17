@@ -33,6 +33,8 @@ export const Relationship = objectType({
     t.nonNull.field("status", {
       type: RelationshipStatusCode,
     });
+    t.nonNull.boolean("isRead");
+    t.nonNull.boolean("isViewed");
     t.nonNull.date("createdAt");
     t.nonNull.date("updatedAt");
   },

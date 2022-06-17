@@ -12,3 +12,11 @@ export const RelationshipInput = inputObjectType({
     });
   },
 });
+
+export const ReadBuddyNotificationsInput = inputObjectType({
+  name: "ReadBuddyNotificationsInput",
+  definition(t) {
+    t.nonNull.string("requester_id");
+    t.nonNull.string("addressee_id");
+  },
+});

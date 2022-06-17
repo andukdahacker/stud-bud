@@ -31,6 +31,14 @@ export const getBuddyNotifications = queryField("getBuddyNotifications", {
         },
       });
 
+      const countNotViewedBuddyNotifications =
+        await ctx.prisma.relationship.count({
+          where: {
+            addressee_id: profile_id,
+            isViewed: false,
+          },
+        });
+
       if (!buddyRequests || !buddyAccepts) {
         return {
           IOutput: UNSUCCESSFUL_QUERY,
@@ -41,6 +49,7 @@ export const getBuddyNotifications = queryField("getBuddyNotifications", {
         IOutput: QUERY_SUCCESS,
         buddyRequests,
         buddyAccepts,
+        countNotViewedBuddyNotifications,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

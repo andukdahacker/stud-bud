@@ -13,6 +13,9 @@ query getBuddyNotifications($where: ProfileWhereUniqueInput!) {
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
     buddyAccepts {
@@ -23,7 +26,11 @@ query getBuddyNotifications($where: ProfileWhereUniqueInput!) {
           username
         }
       }
+      status
+      isRead
+      isViewed
       createdAt
     }
+    countNotViewedBuddyNotifications
   }
 }

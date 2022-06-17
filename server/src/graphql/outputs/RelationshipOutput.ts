@@ -29,7 +29,7 @@ export const BuddyNotificationsOutput = objectType({
     t.nullable.list.nonNull.field("buddyAccepts", {
       type: Relationship,
     });
-
+    t.nullable.int("countNotViewedBuddyNotifications");
     t.nullable.field("PageInfo", {
       type: PageInfo,
     });
