@@ -1,0 +1,39 @@
+subscription getNotificationsSubs($where: ProfileWhereUniqueInput!) {
+  getNotification(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Notifications {
+      id
+      notifier_id
+      notifier {
+        profile_avatar
+        user {
+          username
+        }
+      }
+      message
+      isRead
+      entity_id
+      createdAt
+    }
+    BuddyNotifications {
+      id
+      notifier_id
+      notifier {
+        profile_avatar
+        user {
+          username
+        }
+      }
+      type_id
+      createdAt
+      receiver_id
+      message
+      entity_id
+      isRead
+    }
+  }
+}
