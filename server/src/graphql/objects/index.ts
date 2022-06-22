@@ -4,3 +4,4 @@ export * from "./Interest";
 export * from "./ProfileInterest";
 export * from "./Relationship";
 export * from "./dev";
+export * from "./Message";

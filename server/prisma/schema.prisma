@@ -22,22 +22,24 @@ model User {
 }
 
 model Profile {
-  id                          String             @id @default(cuid())
-  profile_bio                 String?            @db.VarChar(200)
-  profile_avatar              String?            @db.VarChar
-  profile_avatar_public_id    String?            @db.VarChar
-  profile_wallpaper           String?            @db.VarChar
-  profile_wallpaper_public_id String?            @db.VarChar
+  id                          String              @id @default(cuid())
+  profile_bio                 String?             @db.VarChar(200)
+  profile_avatar              String?             @db.VarChar
+  profile_avatar_public_id    String?             @db.VarChar
+  profile_wallpaper           String?             @db.VarChar
+  profile_wallpaper_public_id String?             @db.VarChar
   profile_interests           ProfileInterests[]
-  requester                   Relationship[]     @relation("requester")
-  addressee                   Relationship[]     @relation("addressee")
-  specifier                   Relationship[]     @relation("specifier")
-  noti_notifier               Notification[]     @relation("notifier")
-  noti_receiver               Notification[]     @relation("receiver")
-  user                        User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id                     String             @unique
-  createdAt                   DateTime           @unique @default(now())
-  updatedAt                   DateTime           @updatedAt
+  requester                   Relationship[]      @relation("requester")
+  addressee                   Relationship[]      @relation("addressee")
+  specifier                   Relationship[]      @relation("specifier")
+  noti_notifier               Notification[]      @relation("notifier")
+  noti_receiver               Notification[]      @relation("receiver")
+  message_author              Message[]
+  conversation_member         ConversationGroup[]
+  user                        User                @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id                     String              @unique
+  createdAt                   DateTime            @unique @default(now())
+  updatedAt                   DateTime            @updatedAt
 
 }
 
@@ -102,5 +104,33 @@ model NotificationType {
   type      Notification[]
   main_type String
   sub_type  String
+}
 
+model Message {
+  id                String       @id @default(cuid())
+  message_author    Profile      @relation(fields: [message_author_id], references: [id], onDelete: Cascade)
+  message_author_id String       @unique
+  conversation      Conversation @relation(fields: [conversation_id], references: [id])
+  conversation_id   String
+  message_content   String       @db.Text
+  createdAt         DateTime     @default(now())
+}
+
+model Conversation {
+  id                  String              @id @default(cuid())
+  conversation_name   String?
+  conversation_avatar String?
+  message             Message[]
+  conversation_group  ConversationGroup[]
+}
+
+model ConversationGroup {
+  conversation_member    Profile      @relation(fields: [conversation_member_id], references: [id], onDelete: Cascade)
+  conversation_member_id String
+  conversation           Conversation @relation(fields: [conversation_id], references: [id])
+  conversation_id        String
+  joined_at              DateTime     @default(now())
+  left_at                DateTime?
+
+  @@id([conversation_member_id, conversation_id])
 }

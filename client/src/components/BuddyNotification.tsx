@@ -1,5 +1,4 @@
 import { useApolloClient } from "@apollo/client";
-import { read } from "fs";
 import Link from "next/link";
 import {
   GetUserDocument,

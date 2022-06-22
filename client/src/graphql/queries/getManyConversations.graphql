@@ -1,0 +1,35 @@
+query getManyConversations($where: ProfileWhereUniqueInput!) {
+  getManyConversations(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversations {
+      conversation_member_id
+      conversation_id
+      conversation {
+        id
+        conversation_name
+        conversation_avatar
+        conversation_latest_message {
+          message_content
+          message_author_id
+          author {
+            user {
+              username
+            }
+          }
+        }
+        conversation_member {
+          profile_avatar
+          user {
+            username
+          }
+        }
+      }
+      joined_at
+      left_at
+    }
+  }
+}

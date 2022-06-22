@@ -1,0 +1,31 @@
+query getConversation($where: ConversationWhereUniqueInput!) {
+  getConversation(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversation {
+      id
+      conversation_name
+      conversation_avatar
+      conversation_member {
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+    Messages {
+      id
+      message_author_id
+      message_content
+      author {
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+  }
+}

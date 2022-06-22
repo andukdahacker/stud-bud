@@ -21,6 +21,26 @@ input ChangePasswordInput {
   token: String!
 }
 
+type Conversation {
+  conversation_avatar: String
+  conversation_latest_message: Message
+  conversation_member: [Profile!]!
+  conversation_name: String
+  id: String!
+}
+
+type ConversationGroup {
+  conversation: Conversation!
+  conversation_id: String!
+  conversation_member_id: String!
+  joined_at: Date!
+  left_at: Date
+}
+
+input ConversationWhereUniqueInput {
+  conversation_id: String!
+}
+
 input CreateInterestInput {
   interest_name: String!
 }
@@ -82,6 +102,14 @@ input LoginInput {
   password: String!
 }
 
+type Message {
+  author: Profile!
+  conversation_id: String!
+  id: String!
+  message_author_id: String!
+  message_content: String!
+}
+
 type Mutation {
   changePassword(input: ChangePasswordInput!): AuthOutput
   connectBuddy(input: RelationshipInput!): RelationshipOutput
@@ -95,6 +123,7 @@ type Mutation {
   removeBuddy(input: RelationshipInput!): RelationshipOutput
   removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   respondBuddy(input: RelationshipInput!): RelationshipOutput
+  sendMessage(input: SendMessageInput!, where: ProfileWhereUniqueInput!): SendMessageOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
   viewBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
@@ -138,6 +167,8 @@ input ProfileWhereUniqueInput {
 
 type Query {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
+  getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
+  getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
@@ -186,6 +217,16 @@ enum RelationshipStatusCode {
   REQUESTED
 }
 
+input SendMessageInput {
+  conversation_id: String!
+  message_content: String!
+}
+
+type SendMessageOutput {
+  IOutput: IOutput!
+  Message: Message
+}
+
 type Subscription {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
 }
@@ -203,6 +244,17 @@ type User {
 
 input VerifyEmailInput {
   token: String!
+}
+
+type getConversationOutput {
+  Conversation: Conversation
+  IOutput: IOutput!
+  Messages: [Message!]
+}
+
+type getManyConversationPutput {
+  Conversations: [ConversationGroup!]
+  IOutput: IOutput!
 }
 
 input getManyInterestsInput {

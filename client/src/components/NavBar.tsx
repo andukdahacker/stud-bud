@@ -235,6 +235,10 @@ const NavBar = () => {
 
           <NotificationBar hidden={hiddenNotification} />
 
+          <Link href={"/chat"}>
+            <a className="">Chat</a>
+          </Link>
+
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
               className={` flex text-sm font-medium  ${

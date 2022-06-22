@@ -152,6 +152,23 @@ export const respondBuddy = mutationField("respondBuddy", {
           data: result[1],
         });
 
+        await ctx.prisma.conversation.create({
+          data: {
+            conversation_group: {
+              createMany: {
+                data: [
+                  {
+                    conversation_member_id: requester_id,
+                  },
+                  {
+                    conversation_member_id: addressee_id,
+                  },
+                ],
+              },
+            },
+          },
+        });
+
         return {
           IOutput: {
             code: 200,

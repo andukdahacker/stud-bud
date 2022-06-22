@@ -40,6 +40,28 @@ export type ChangePasswordInput = {
   token: Scalars['String'];
 };
 
+export type Conversation = {
+  __typename?: 'Conversation';
+  conversation_avatar?: Maybe<Scalars['String']>;
+  conversation_latest_message?: Maybe<Message>;
+  conversation_member: Array<Profile>;
+  conversation_name?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+};
+
+export type ConversationGroup = {
+  __typename?: 'ConversationGroup';
+  conversation: Conversation;
+  conversation_id: Scalars['String'];
+  conversation_member_id: Scalars['String'];
+  joined_at: Scalars['Date'];
+  left_at?: Maybe<Scalars['Date']>;
+};
+
+export type ConversationWhereUniqueInput = {
+  conversation_id: Scalars['String'];
+};
+
 export type CreateInterestInput = {
   interest_name: Scalars['String'];
 };
@@ -103,6 +125,15 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type Message = {
+  __typename?: 'Message';
+  author: Profile;
+  conversation_id: Scalars['String'];
+  id: Scalars['String'];
+  message_author_id: Scalars['String'];
+  message_content: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword?: Maybe<AuthOutput>;
@@ -117,6 +148,7 @@ export type Mutation = {
   removeBuddy?: Maybe<RelationshipOutput>;
   removeWallpaper?: Maybe<ProfileMutationOutput>;
   respondBuddy?: Maybe<RelationshipOutput>;
+  sendMessage?: Maybe<SendMessageOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
   viewBuddyNotifications?: Maybe<BuddyNotificationOutput>;
@@ -180,6 +212,12 @@ export type MutationRespondBuddyArgs = {
 };
 
 
+export type MutationSendMessageArgs = {
+  input: SendMessageInput;
+  where: ProfileWhereUniqueInput;
+};
+
+
 export type MutationUpdateProfileArgs = {
   input: CreateProfileInput;
   where: ProfileWhereUniqueInput;
@@ -238,6 +276,8 @@ export type ProfileWhereUniqueInput = {
 export type Query = {
   __typename?: 'Query';
   getBuddyNotifications?: Maybe<BuddyNotificationOutput>;
+  getConversation?: Maybe<GetConversationOutput>;
+  getManyConversations?: Maybe<GetManyConversationPutput>;
   getManyInterests?: Maybe<GetManyInterestOutput>;
   getManyProfiles?: Maybe<GetManyProfilesOutput>;
   getProfile?: Maybe<ProfileMutationOutput>;
@@ -246,6 +286,16 @@ export type Query = {
 
 
 export type QueryGetBuddyNotificationsArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type QueryGetConversationArgs = {
+  where: ConversationWhereUniqueInput;
+};
+
+
+export type QueryGetManyConversationsArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -308,6 +358,17 @@ export enum RelationshipStatusCode {
   Requested = 'REQUESTED'
 }
 
+export type SendMessageInput = {
+  conversation_id: Scalars['String'];
+  message_content: Scalars['String'];
+};
+
+export type SendMessageOutput = {
+  __typename?: 'SendMessageOutput';
+  IOutput: IOutput;
+  Message?: Maybe<Message>;
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   getBuddyNotifications?: Maybe<BuddyNotificationOutput>;
@@ -329,6 +390,19 @@ export type User = {
 
 export type VerifyEmailInput = {
   token: Scalars['String'];
+};
+
+export type GetConversationOutput = {
+  __typename?: 'getConversationOutput';
+  Conversation?: Maybe<Conversation>;
+  IOutput: IOutput;
+  Messages?: Maybe<Array<Message>>;
+};
+
+export type GetManyConversationPutput = {
+  __typename?: 'getManyConversationPutput';
+  Conversations?: Maybe<Array<ConversationGroup>>;
+  IOutput: IOutput;
 };
 
 export type GetManyInterestsInput = {
@@ -447,6 +521,20 @@ export type GetBuddyNotificationsQueryVariables = Exact<{
 
 
 export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+
+export type GetConversationQueryVariables = Exact<{
+  where: ConversationWhereUniqueInput;
+}>;
+
+
+export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+
+export type GetManyConversationsQueryVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -1157,6 +1245,132 @@ export function useGetBuddyNotificationsLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetBuddyNotificationsQueryHookResult = ReturnType<typeof useGetBuddyNotificationsQuery>;
 export type GetBuddyNotificationsLazyQueryHookResult = ReturnType<typeof useGetBuddyNotificationsLazyQuery>;
 export type GetBuddyNotificationsQueryResult = Apollo.QueryResult<GetBuddyNotificationsQuery, GetBuddyNotificationsQueryVariables>;
+export const GetConversationDocument = gql`
+    query getConversation($where: ConversationWhereUniqueInput!) {
+  getConversation(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversation {
+      id
+      conversation_name
+      conversation_avatar
+      conversation_member {
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+    Messages {
+      id
+      message_author_id
+      message_content
+      author {
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetConversationQuery__
+ *
+ * To run a query within a React component, call `useGetConversationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetConversationQuery(baseOptions: Apollo.QueryHookOptions<GetConversationQuery, GetConversationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
+      }
+export function useGetConversationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetConversationQuery, GetConversationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetConversationQuery, GetConversationQueryVariables>(GetConversationDocument, options);
+        }
+export type GetConversationQueryHookResult = ReturnType<typeof useGetConversationQuery>;
+export type GetConversationLazyQueryHookResult = ReturnType<typeof useGetConversationLazyQuery>;
+export type GetConversationQueryResult = Apollo.QueryResult<GetConversationQuery, GetConversationQueryVariables>;
+export const GetManyConversationsDocument = gql`
+    query getManyConversations($where: ProfileWhereUniqueInput!) {
+  getManyConversations(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversations {
+      conversation_member_id
+      conversation_id
+      conversation {
+        id
+        conversation_name
+        conversation_avatar
+        conversation_latest_message {
+          message_content
+          message_author_id
+          author {
+            user {
+              username
+            }
+          }
+        }
+        conversation_member {
+          profile_avatar
+          user {
+            username
+          }
+        }
+      }
+      joined_at
+      left_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetManyConversationsQuery__
+ *
+ * To run a query within a React component, call `useGetManyConversationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetManyConversationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManyConversationsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetManyConversationsQuery(baseOptions: Apollo.QueryHookOptions<GetManyConversationsQuery, GetManyConversationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetManyConversationsQuery, GetManyConversationsQueryVariables>(GetManyConversationsDocument, options);
+      }
+export function useGetManyConversationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManyConversationsQuery, GetManyConversationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetManyConversationsQuery, GetManyConversationsQueryVariables>(GetManyConversationsDocument, options);
+        }
+export type GetManyConversationsQueryHookResult = ReturnType<typeof useGetManyConversationsQuery>;
+export type GetManyConversationsLazyQueryHookResult = ReturnType<typeof useGetManyConversationsLazyQuery>;
+export type GetManyConversationsQueryResult = Apollo.QueryResult<GetManyConversationsQuery, GetManyConversationsQueryVariables>;
 export const GetManyInterestsDocument = gql`
     query getManyInterests($where: getManyInterestsInput!) {
   getManyInterests(where: $where) {
