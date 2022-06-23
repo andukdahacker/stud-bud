@@ -57,6 +57,8 @@ export const getConversation = queryField("getConversation", {
         },
       });
 
+      const reverseMessageArray = messages.reverse();
+
       if (!conversation)
         return {
           IOutput: UNSUCCESSFUL_QUERY,
@@ -65,7 +67,7 @@ export const getConversation = queryField("getConversation", {
       return {
         IOutput: QUERY_SUCCESS,
         Conversation: conversation,
-        Messages: messages,
+        Messages: reverseMessageArray,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

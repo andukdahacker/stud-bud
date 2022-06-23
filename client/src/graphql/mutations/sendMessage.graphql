@@ -1,0 +1,25 @@
+mutation sendMessage(
+  $input: SendMessageInput!
+  $where: ProfileWhereUniqueInput!
+) {
+  sendMessage(input: $input, where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Message {
+      id
+      message_author_id
+      author {
+        id
+        profile_avatar
+        user {
+          username
+        }
+      }
+      conversation_id
+      message_content
+    }
+  }
+}

@@ -109,7 +109,7 @@ model NotificationType {
 model Message {
   id                String       @id @default(cuid())
   message_author    Profile      @relation(fields: [message_author_id], references: [id], onDelete: Cascade)
-  message_author_id String       @unique
+  message_author_id String
   conversation      Conversation @relation(fields: [conversation_id], references: [id])
   conversation_id   String
   message_content   String       @db.Text

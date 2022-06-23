@@ -10,6 +10,7 @@ query getConversation($where: ConversationWhereUniqueInput!) {
       conversation_name
       conversation_avatar
       conversation_member {
+        id
         profile_avatar
         user {
           username

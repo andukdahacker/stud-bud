@@ -493,6 +493,14 @@ export type RespondBuddyMutationVariables = Exact<{
 
 export type RespondBuddyMutation = { __typename?: 'Mutation', respondBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
+export type SendMessageMutationVariables = Exact<{
+  input: SendMessageInput;
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage?: { __typename?: 'SendMessageOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Message?: { __typename?: 'Message', id: string, message_author_id: string, conversation_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } } | null } | null };
+
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
   where: ProfileWhereUniqueInput;
@@ -527,14 +535,14 @@ export type GetConversationQueryVariables = Exact<{
 }>;
 
 
-export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 export type GetManyConversationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
+export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -1062,6 +1070,57 @@ export function useRespondBuddyMutation(baseOptions?: Apollo.MutationHookOptions
 export type RespondBuddyMutationHookResult = ReturnType<typeof useRespondBuddyMutation>;
 export type RespondBuddyMutationResult = Apollo.MutationResult<RespondBuddyMutation>;
 export type RespondBuddyMutationOptions = Apollo.BaseMutationOptions<RespondBuddyMutation, RespondBuddyMutationVariables>;
+export const SendMessageDocument = gql`
+    mutation sendMessage($input: SendMessageInput!, $where: ProfileWhereUniqueInput!) {
+  sendMessage(input: $input, where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Message {
+      id
+      message_author_id
+      author {
+        id
+        profile_avatar
+        user {
+          username
+        }
+      }
+      conversation_id
+      message_content
+    }
+  }
+}
+    `;
+export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
+
+/**
+ * __useSendMessageMutation__
+ *
+ * To run a mutation, you first call `useSendMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageMutation, { data, loading, error }] = useSendMessageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useSendMessageMutation(baseOptions?: Apollo.MutationHookOptions<SendMessageMutation, SendMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument, options);
+      }
+export type SendMessageMutationHookResult = ReturnType<typeof useSendMessageMutation>;
+export type SendMessageMutationResult = Apollo.MutationResult<SendMessageMutation>;
+export type SendMessageMutationOptions = Apollo.BaseMutationOptions<SendMessageMutation, SendMessageMutationVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: CreateProfileInput!, $where: ProfileWhereUniqueInput!) {
   updateProfile(input: $input, where: $where) {
@@ -1258,6 +1317,7 @@ export const GetConversationDocument = gql`
       conversation_name
       conversation_avatar
       conversation_member {
+        id
         profile_avatar
         user {
           username
@@ -1331,6 +1391,7 @@ export const GetManyConversationsDocument = gql`
           }
         }
         conversation_member {
+          id
           profile_avatar
           user {
             username

@@ -48,6 +48,7 @@ export const sendMessage = mutationField("sendMessage", {
         Message: message,
       };
     } catch (error) {
+      console.log(error);
       return INTERNAL_SERVER_ERROR;
     }
   },

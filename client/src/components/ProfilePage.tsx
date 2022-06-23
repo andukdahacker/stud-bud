@@ -20,6 +20,7 @@ const ProfilePage = (props: ProfilePageProps) => {
   const user_profile_id = client.readQuery<GetUserQuery>({
     query: GetUserDocument,
   })?.getUser?.profile?.id;
+
   const success = props.data?.getProfile?.IOutput.success;
   const profileData = props.data?.getProfile?.Profile;
   const profile_interests = profileData?.profile_interests;

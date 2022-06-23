@@ -22,6 +22,7 @@ query getManyConversations($where: ProfileWhereUniqueInput!) {
           }
         }
         conversation_member {
+          id
           profile_avatar
           user {
             username
