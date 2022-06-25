@@ -9,14 +9,15 @@ import Loading from "./Loading";
 
 interface ConversationInfoBarProps {
   data?: GetConversationQuery;
+  user_profile_id: string | undefined;
   loading: boolean;
 }
 
-const ConversationInfoBar = ({ data, loading }: ConversationInfoBarProps) => {
-  const client = useApolloClient();
-  const user_profile_id = client.readQuery<GetUserQuery>({
-    query: GetUserDocument,
-  })?.getUser?.profile?.id;
+const ConversationInfoBar = ({
+  data,
+  loading,
+  user_profile_id,
+}: ConversationInfoBarProps) => {
   const conversation_avatar =
     data?.getConversation?.Conversation?.conversation_avatar;
   const conversation_name =

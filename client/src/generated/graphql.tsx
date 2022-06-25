@@ -54,8 +54,15 @@ export type ConversationGroup = {
   conversation: Conversation;
   conversation_id: Scalars['String'];
   conversation_member_id: Scalars['String'];
+  isRead: Scalars['Boolean'];
+  isViewed: Scalars['Boolean'];
   joined_at: Scalars['Date'];
   left_at?: Maybe<Scalars['Date']>;
+};
+
+export type ConversationGroupWhereUniqueInput = {
+  conversation_id: Scalars['String'];
+  profile_id: Scalars['String'];
 };
 
 export type ConversationWhereUniqueInput = {
@@ -129,6 +136,7 @@ export type Message = {
   __typename?: 'Message';
   author: Profile;
   conversation_id: Scalars['String'];
+  createdAt?: Maybe<Scalars['Date']>;
   id: Scalars['String'];
   message_author_id: Scalars['String'];
   message_content: Scalars['String'];
@@ -143,6 +151,7 @@ export type Mutation = {
   login: AuthOutput;
   logout: AuthOutput;
   readBuddyNotifications?: Maybe<BuddyNotificationOutput>;
+  readMessage?: Maybe<IOutput>;
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
   removeBuddy?: Maybe<RelationshipOutput>;
@@ -152,6 +161,7 @@ export type Mutation = {
   updateProfile?: Maybe<ProfileMutationOutput>;
   verifyEmail: AuthOutput;
   viewBuddyNotifications?: Maybe<BuddyNotificationOutput>;
+  viewMessage?: Maybe<IOutput>;
 };
 
 
@@ -182,6 +192,11 @@ export type MutationLoginArgs = {
 
 export type MutationReadBuddyNotificationsArgs = {
   where: ReadBuddyNotificationsInput;
+};
+
+
+export type MutationReadMessageArgs = {
+  where: ConversationGroupWhereUniqueInput;
 };
 
 
@@ -230,6 +245,11 @@ export type MutationVerifyEmailArgs = {
 
 
 export type MutationViewBuddyNotificationsArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type MutationViewMessageArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -372,10 +392,22 @@ export type SendMessageOutput = {
 export type Subscription = {
   __typename?: 'Subscription';
   getBuddyNotifications?: Maybe<BuddyNotificationOutput>;
+  getConversation?: Maybe<GetConversationOutput>;
+  getManyConversations?: Maybe<GetManyConversationPutput>;
 };
 
 
 export type SubscriptionGetBuddyNotificationsArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type SubscriptionGetConversationArgs = {
+  where: ConversationWhereUniqueInput;
+};
+
+
+export type SubscriptionGetManyConversationsArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -403,6 +435,7 @@ export type GetManyConversationPutput = {
   __typename?: 'getManyConversationPutput';
   Conversations?: Maybe<Array<ConversationGroup>>;
   IOutput: IOutput;
+  countNotViewedConversation?: Maybe<Scalars['Int']>;
 };
 
 export type GetManyInterestsInput = {
@@ -523,6 +556,13 @@ export type ViewBuddyNotificationsMutationVariables = Exact<{
 
 export type ViewBuddyNotificationsMutation = { __typename?: 'Mutation', viewBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
+export type ViewMessageMutationVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type ViewMessageMutation = { __typename?: 'Mutation', viewMessage?: { __typename?: 'IOutput', code: number, success: boolean, message: string } | null };
+
 export type GetBuddyNotificationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
@@ -535,14 +575,14 @@ export type GetConversationQueryVariables = Exact<{
 }>;
 
 
-export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
 
 export type GetManyConversationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
+export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -576,6 +616,20 @@ export type GetBuddyNotificationsSubsSubscriptionVariables = Exact<{
 
 
 export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, buddyRequests?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, requester: { __typename?: 'Profile', profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+
+export type GetConversationSubSubscriptionVariables = Exact<{
+  where: ConversationWhereUniqueInput;
+}>;
+
+
+export type GetConversationSubSubscription = { __typename?: 'Subscription', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+
+export type GetManyConversationsSubSubscriptionVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetManyConversationsSubSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1238,6 +1292,41 @@ export function useViewBuddyNotificationsMutation(baseOptions?: Apollo.MutationH
 export type ViewBuddyNotificationsMutationHookResult = ReturnType<typeof useViewBuddyNotificationsMutation>;
 export type ViewBuddyNotificationsMutationResult = Apollo.MutationResult<ViewBuddyNotificationsMutation>;
 export type ViewBuddyNotificationsMutationOptions = Apollo.BaseMutationOptions<ViewBuddyNotificationsMutation, ViewBuddyNotificationsMutationVariables>;
+export const ViewMessageDocument = gql`
+    mutation ViewMessage($where: ProfileWhereUniqueInput!) {
+  viewMessage(where: $where) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type ViewMessageMutationFn = Apollo.MutationFunction<ViewMessageMutation, ViewMessageMutationVariables>;
+
+/**
+ * __useViewMessageMutation__
+ *
+ * To run a mutation, you first call `useViewMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useViewMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [viewMessageMutation, { data, loading, error }] = useViewMessageMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useViewMessageMutation(baseOptions?: Apollo.MutationHookOptions<ViewMessageMutation, ViewMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ViewMessageMutation, ViewMessageMutationVariables>(ViewMessageDocument, options);
+      }
+export type ViewMessageMutationHookResult = ReturnType<typeof useViewMessageMutation>;
+export type ViewMessageMutationResult = Apollo.MutationResult<ViewMessageMutation>;
+export type ViewMessageMutationOptions = Apollo.BaseMutationOptions<ViewMessageMutation, ViewMessageMutationVariables>;
 export const GetBuddyNotificationsDocument = gql`
     query getBuddyNotifications($where: ProfileWhereUniqueInput!) {
   getBuddyNotifications(where: $where) {
@@ -1329,6 +1418,7 @@ export const GetConversationDocument = gql`
       message_author_id
       message_content
       author {
+        id
         profile_avatar
         user {
           username
@@ -1389,6 +1479,7 @@ export const GetManyConversationsDocument = gql`
               username
             }
           }
+          createdAt
         }
         conversation_member {
           id
@@ -1401,6 +1492,7 @@ export const GetManyConversationsDocument = gql`
       joined_at
       left_at
     }
+    countNotViewedConversation
   }
 }
     `;
@@ -1750,3 +1842,126 @@ export function useGetBuddyNotificationsSubsSubscription(baseOptions: Apollo.Sub
       }
 export type GetBuddyNotificationsSubsSubscriptionHookResult = ReturnType<typeof useGetBuddyNotificationsSubsSubscription>;
 export type GetBuddyNotificationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetBuddyNotificationsSubsSubscription>;
+export const GetConversationSubDocument = gql`
+    subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
+  getConversation(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversation {
+      id
+      conversation_name
+      conversation_avatar
+      conversation_member {
+        id
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+    Messages {
+      id
+      message_author_id
+      message_content
+      author {
+        id
+        profile_avatar
+        user {
+          username
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetConversationSubSubscription__
+ *
+ * To run a query within a React component, call `useGetConversationSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetConversationSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConversationSubSubscription({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetConversationSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetConversationSubSubscription, GetConversationSubSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GetConversationSubSubscription, GetConversationSubSubscriptionVariables>(GetConversationSubDocument, options);
+      }
+export type GetConversationSubSubscriptionHookResult = ReturnType<typeof useGetConversationSubSubscription>;
+export type GetConversationSubSubscriptionResult = Apollo.SubscriptionResult<GetConversationSubSubscription>;
+export const GetManyConversationsSubDocument = gql`
+    subscription getManyConversationsSub($where: ProfileWhereUniqueInput!) {
+  getManyConversations(where: $where) {
+    IOutput {
+      code
+      success
+      message
+    }
+    Conversations {
+      conversation_member_id
+      conversation_id
+      conversation {
+        id
+        conversation_name
+        conversation_avatar
+        conversation_latest_message {
+          message_content
+          message_author_id
+          author {
+            user {
+              username
+            }
+          }
+          createdAt
+        }
+        conversation_member {
+          id
+          profile_avatar
+          user {
+            username
+          }
+        }
+      }
+      isRead
+      isViewed
+      joined_at
+      left_at
+    }
+    countNotViewedConversation
+  }
+}
+    `;
+
+/**
+ * __useGetManyConversationsSubSubscription__
+ *
+ * To run a query within a React component, call `useGetManyConversationsSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetManyConversationsSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManyConversationsSubSubscription({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetManyConversationsSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetManyConversationsSubSubscription, GetManyConversationsSubSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GetManyConversationsSubSubscription, GetManyConversationsSubSubscriptionVariables>(GetManyConversationsSubDocument, options);
+      }
+export type GetManyConversationsSubSubscriptionHookResult = ReturnType<typeof useGetManyConversationsSubSubscription>;
+export type GetManyConversationsSubSubscriptionResult = Apollo.SubscriptionResult<GetManyConversationsSubSubscription>;

@@ -26,7 +26,7 @@ const VerifyEmail = () => {
     }
 
     if (router.isReady) verify(token);
-  }, [verifyEmail, router]);
+  }, [router.isReady]);
 
   return (
     <Layout>

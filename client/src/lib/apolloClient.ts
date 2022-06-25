@@ -5,7 +5,10 @@ import {
   split,
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
-import { GetManyProfilesOutput } from "../generated/graphql";
+import {
+  GetConversationOutput,
+  GetManyProfilesOutput,
+} from "../generated/graphql";
 import merge from "deepmerge";
 import { IncomingHttpHeaders } from "http";
 import { useMemo } from "react";
@@ -81,7 +84,7 @@ export const createApolloClient = (
               ) => {
                 if (existing) {
                   if (!incoming.IOutput.success) {
-                    return incoming;
+                    return existing;
                   }
                   const merged = merge(existing, incoming);
                   return merged;

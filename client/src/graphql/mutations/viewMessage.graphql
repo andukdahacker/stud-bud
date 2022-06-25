@@ -1,0 +1,7 @@
+mutation ViewMessage($where: ProfileWhereUniqueInput!) {
+  viewMessage(where: $where) {
+    code
+    success
+    message
+  }
+}

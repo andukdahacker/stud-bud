@@ -1,4 +1,4 @@
-query getConversation($where: ConversationWhereUniqueInput!) {
+subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
   getConversation(where: $where) {
     IOutput {
       code

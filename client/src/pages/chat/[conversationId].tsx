@@ -1,4 +1,3 @@
-import { useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import ChatBox from "../../components/ChatBox";
@@ -7,28 +6,37 @@ import ConversationList from "../../components/ConversationList";
 import ConversationListBar from "../../components/ConversationListBar";
 import Layout from "../../components/Layout";
 import {
-  GetUserDocument,
-  GetUserQuery,
+  GetConversationSubDocument,
+  GetManyConversationsSubDocument,
   useGetConversationLazyQuery,
   useGetManyConversationsLazyQuery,
+  useGetUserQuery,
 } from "../../generated/graphql";
+import merge from "deepmerge";
+import Loading from "../../components/Loading";
 
 const ChatWithChatBox = () => {
-  const client = useApolloClient();
-  const user_profile_id = client.readQuery<GetUserQuery>({
-    query: GetUserDocument,
-  })?.getUser?.profile?.id;
+  const { data: userData, loading: userLoading } = useGetUserQuery();
+  const user_profile_id = userData?.getUser?.profile?.id;
 
   const router = useRouter();
 
   const [
     getManyConversations,
-    { data: ManyConversationsData, loading: ManyConversationsLoading },
+    {
+      data: ManyConversationsData,
+      loading: ManyConversationsLoading,
+      subscribeToMore: subsGetManyConversation,
+    },
   ] = useGetManyConversationsLazyQuery();
 
   const [
     getConversation,
-    { data: getConversationData, loading: getConversationLoading },
+    {
+      data: getConversationData,
+      loading: getConversationLoading,
+      subscribeToMore: subsGetConversationData,
+    },
   ] = useGetConversationLazyQuery();
   useEffect(() => {
     async function fetchData() {
@@ -39,6 +47,19 @@ const ChatWithChatBox = () => {
           },
         },
       });
+
+      // subsGetManyConversation({
+      //   document: GetManyConversationsSubDocument,
+      //   variables: {
+      //     where: {
+      //       profile_id: user_profile_id,
+      //     },
+      //   },
+      //   updateQuery: (prev, { subscriptionData }) => {
+      //     if (!subscriptionData.data) return prev;
+      //     return subscriptionData.data;
+      //   },
+      // });
     }
 
     if (user_profile_id) fetchData();
@@ -46,30 +67,63 @@ const ChatWithChatBox = () => {
   const conversation_id = router.query.conversationId as string;
 
   useEffect(() => {
-    if (router.isReady)
-      getConversation({
+    async function fetchData() {
+      await getConversation({
         variables: {
           where: {
             conversation_id,
           },
         },
       });
+
+      subsGetConversationData({
+        document: GetConversationSubDocument,
+        variables: {
+          where: {
+            conversation_id,
+          },
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          const incoming = subscriptionData.data;
+          const merged = merge(prev, incoming);
+
+          return merged;
+        },
+      });
+    }
+
+    if (router.isReady) fetchData();
   }, [router.query, router.isReady]);
+
+  if (userLoading)
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
 
   return (
     <Layout>
-      <div className="flex">
+      <div className="flex ">
         <ConversationListBar>
           <ConversationList
             data={ManyConversationsData}
             loading={ManyConversationsLoading}
+            user_profile_id={user_profile_id}
           />
         </ConversationListBar>
 
-        <ChatBox data={getConversationData} loading={getConversationLoading} />
+        <ChatBox
+          data={getConversationData}
+          conversation_id={conversation_id}
+          user_profile_id={user_profile_id}
+          loading={getConversationLoading}
+        />
         <ConversationInfoBar
           data={getConversationData}
           loading={getConversationLoading}
+          user_profile_id={user_profile_id}
         />
       </div>
     </Layout>

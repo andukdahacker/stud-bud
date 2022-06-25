@@ -1,4 +1,4 @@
-query getManyConversations($where: ProfileWhereUniqueInput!) {
+subscription getManyConversationsSub($where: ProfileWhereUniqueInput!) {
   getManyConversations(where: $where) {
     IOutput {
       code
@@ -30,6 +30,8 @@ query getManyConversations($where: ProfileWhereUniqueInput!) {
           }
         }
       }
+      isRead
+      isViewed
       joined_at
       left_at
     }

@@ -14,7 +14,7 @@ const Layout = ({ children, username }: PropsWithChildren<LayoutProps>) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <NavBar />
-      <main>{children}</main>
+      <main className="w-screen h-full ">{children}</main>
       <Footer />
     </>
   );
