@@ -32,3 +32,16 @@ export const UNSUCCESSFUL_QUERY = {
   success: false,
   message: "Query made unsuccessfully",
 };
+export const UNSUCCESSFUL_MUTATION = {
+  code: 400,
+  success: false,
+  message: "Mutation made unsuccessfully",
+};
+
+export const SUCCESSFUL_MUTATION = {
+  code: 200,
+  success: true,
+  message: "Mutation made successfully",
+};
+export const NEW_MESSAGE_EVENT = "NEW_MESSAGE";
+export const NEW_MESSAGE_EVENT2 = "NEW_MESSAGE2";

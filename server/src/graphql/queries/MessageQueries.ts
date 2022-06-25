@@ -24,9 +24,18 @@ export const getManyConversations = queryField("getManyConversations", {
         },
       });
 
+      const countNotViewedConversation =
+        await ctx.prisma.conversationGroup.count({
+          where: {
+            conversation_member_id: profile_id,
+            isViewed: false,
+          },
+        });
+
       return {
         IOutput: QUERY_SUCCESS,
         Conversations: conversations,
+        countNotViewedConversation,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;
@@ -53,11 +62,11 @@ export const getConversation = queryField("getConversation", {
           conversation_id,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       });
 
-      const reverseMessageArray = messages.reverse();
+      // const reverseMessageArray = messages.reverse();
 
       if (!conversation)
         return {
@@ -67,7 +76,7 @@ export const getConversation = queryField("getConversation", {
       return {
         IOutput: QUERY_SUCCESS,
         Conversation: conversation,
-        Messages: reverseMessageArray,
+        Messages: messages,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

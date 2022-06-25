@@ -14,3 +14,11 @@ export const ConversationWhereUniqueInput = inputObjectType({
     t.nonNull.string("conversation_id");
   },
 });
+
+export const ConversationGroupWhereUniqueInput = inputObjectType({
+  name: "ConversationGroupWhereUniqueInput",
+  definition(t) {
+    t.nonNull.string("conversation_id");
+    t.nonNull.string("profile_id");
+  },
+});

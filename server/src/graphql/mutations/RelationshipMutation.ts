@@ -53,8 +53,6 @@ export const connectBuddy = mutationField("connectBuddy", {
             },
           },
           status,
-          isRead: false,
-          isViewed: false,
         },
       });
 
@@ -129,8 +127,6 @@ export const respondBuddy = mutationField("respondBuddy", {
               },
             },
             status,
-            isRead: false,
-            isViewed: false,
           },
         });
 

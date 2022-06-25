@@ -22,6 +22,7 @@ export const Message = objectType({
     });
     t.nonNull.string("conversation_id");
     t.nonNull.string("message_content");
+    t.nullable.date("createdAt");
   },
 });
 
@@ -83,6 +84,8 @@ export const ConversationGroup = objectType({
         return conversation;
       },
     });
+    t.nonNull.boolean("isRead");
+    t.nonNull.boolean("isViewed");
     t.nonNull.date("joined_at");
     t.nullable.date("left_at");
   },

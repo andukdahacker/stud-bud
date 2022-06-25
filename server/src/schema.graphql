@@ -33,8 +33,15 @@ type ConversationGroup {
   conversation: Conversation!
   conversation_id: String!
   conversation_member_id: String!
+  isRead: Boolean!
+  isViewed: Boolean!
   joined_at: Date!
   left_at: Date
+}
+
+input ConversationGroupWhereUniqueInput {
+  conversation_id: String!
+  profile_id: String!
 }
 
 input ConversationWhereUniqueInput {
@@ -105,6 +112,7 @@ input LoginInput {
 type Message {
   author: Profile!
   conversation_id: String!
+  createdAt: Date
   id: String!
   message_author_id: String!
   message_content: String!
@@ -118,6 +126,7 @@ type Mutation {
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   readBuddyNotifications(where: ReadBuddyNotificationsInput!): BuddyNotificationOutput
+  readMessage(where: ConversationGroupWhereUniqueInput!): IOutput
   register(input: RegisterInput!): AuthOutput!
   removeAvatar(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   removeBuddy(input: RelationshipInput!): RelationshipOutput
@@ -127,6 +136,7 @@ type Mutation {
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
   viewBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
+  viewMessage(where: ProfileWhereUniqueInput!): IOutput
 }
 
 type PageInfo {
@@ -229,6 +239,8 @@ type SendMessageOutput {
 
 type Subscription {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
+  getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
+  getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -255,6 +267,7 @@ type getConversationOutput {
 type getManyConversationPutput {
   Conversations: [ConversationGroup!]
   IOutput: IOutput!
+  countNotViewedConversation: Int
 }
 
 input getManyInterestsInput {

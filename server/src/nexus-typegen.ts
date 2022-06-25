@@ -41,6 +41,10 @@ export interface NexusGenInputs {
     password: string; // String!
     token: string; // String!
   }
+  ConversationGroupWhereUniqueInput: { // input type
+    conversation_id: string; // String!
+    profile_id: string; // String!
+  }
   ConversationWhereUniqueInput: { // input type
     conversation_id: string; // String!
   }
@@ -133,6 +137,8 @@ export interface NexusGenObjects {
   ConversationGroup: { // root type
     conversation_id: string; // String!
     conversation_member_id: string; // String!
+    isRead: boolean; // Boolean!
+    isViewed: boolean; // Boolean!
     joined_at: NexusGenScalars['Date']; // Date!
     left_at?: NexusGenScalars['Date'] | null; // Date
   }
@@ -160,6 +166,7 @@ export interface NexusGenObjects {
   }
   Message: { // root type
     conversation_id: string; // String!
+    createdAt?: NexusGenScalars['Date'] | null; // Date
     id: string; // String!
     message_author_id: string; // String!
     message_content: string; // String!
@@ -220,6 +227,7 @@ export interface NexusGenObjects {
   getManyConversationPutput: { // root type
     Conversations?: NexusGenRootTypes['ConversationGroup'][] | null; // [ConversationGroup!]
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    countNotViewedConversation?: number | null; // Int
   }
 }
 
@@ -257,6 +265,8 @@ export interface NexusGenFieldTypes {
     conversation: NexusGenRootTypes['Conversation']; // Conversation!
     conversation_id: string; // String!
     conversation_member_id: string; // String!
+    isRead: boolean; // Boolean!
+    isViewed: boolean; // Boolean!
     joined_at: NexusGenScalars['Date']; // Date!
     left_at: NexusGenScalars['Date'] | null; // Date
   }
@@ -286,6 +296,7 @@ export interface NexusGenFieldTypes {
   Message: { // field return type
     author: NexusGenRootTypes['Profile']; // Profile!
     conversation_id: string; // String!
+    createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // String!
     message_author_id: string; // String!
     message_content: string; // String!
@@ -298,6 +309,7 @@ export interface NexusGenFieldTypes {
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     readBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
+    readMessage: NexusGenRootTypes['IOutput'] | null; // IOutput
     register: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     removeAvatar: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     removeBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
@@ -307,6 +319,7 @@ export interface NexusGenFieldTypes {
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     verifyEmail: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     viewBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
+    viewMessage: NexusGenRootTypes['IOutput'] | null; // IOutput
   }
   PageInfo: { // field return type
     endCursor: NexusGenScalars['Date'] | null; // Date
@@ -367,6 +380,8 @@ export interface NexusGenFieldTypes {
   }
   Subscription: { // field return type
     getBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
+    getConversation: NexusGenRootTypes['getConversationOutput'] | null; // getConversationOutput
+    getManyConversations: NexusGenRootTypes['getManyConversationPutput'] | null; // getManyConversationPutput
   }
   User: { // field return type
     email: string; // String!
@@ -383,6 +398,7 @@ export interface NexusGenFieldTypes {
   getManyConversationPutput: { // field return type
     Conversations: NexusGenRootTypes['ConversationGroup'][] | null; // [ConversationGroup!]
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    countNotViewedConversation: number | null; // Int
   }
 }
 
@@ -410,6 +426,8 @@ export interface NexusGenFieldTypeNames {
     conversation: 'Conversation'
     conversation_id: 'String'
     conversation_member_id: 'String'
+    isRead: 'Boolean'
+    isViewed: 'Boolean'
     joined_at: 'Date'
     left_at: 'Date'
   }
@@ -439,6 +457,7 @@ export interface NexusGenFieldTypeNames {
   Message: { // field return type name
     author: 'Profile'
     conversation_id: 'String'
+    createdAt: 'Date'
     id: 'String'
     message_author_id: 'String'
     message_content: 'String'
@@ -451,6 +470,7 @@ export interface NexusGenFieldTypeNames {
     login: 'AuthOutput'
     logout: 'AuthOutput'
     readBuddyNotifications: 'BuddyNotificationOutput'
+    readMessage: 'IOutput'
     register: 'AuthOutput'
     removeAvatar: 'ProfileMutationOutput'
     removeBuddy: 'RelationshipOutput'
@@ -460,6 +480,7 @@ export interface NexusGenFieldTypeNames {
     updateProfile: 'ProfileMutationOutput'
     verifyEmail: 'AuthOutput'
     viewBuddyNotifications: 'BuddyNotificationOutput'
+    viewMessage: 'IOutput'
   }
   PageInfo: { // field return type name
     endCursor: 'Date'
@@ -520,6 +541,8 @@ export interface NexusGenFieldTypeNames {
   }
   Subscription: { // field return type name
     getBuddyNotifications: 'BuddyNotificationOutput'
+    getConversation: 'getConversationOutput'
+    getManyConversations: 'getManyConversationPutput'
   }
   User: { // field return type name
     email: 'String'
@@ -536,6 +559,7 @@ export interface NexusGenFieldTypeNames {
   getManyConversationPutput: { // field return type name
     Conversations: 'ConversationGroup'
     IOutput: 'IOutput'
+    countNotViewedConversation: 'Int'
   }
 }
 
@@ -558,6 +582,9 @@ export interface NexusGenArgTypes {
     }
     readBuddyNotifications: { // args
       where: NexusGenInputs['ReadBuddyNotificationsInput']; // ReadBuddyNotificationsInput!
+    }
+    readMessage: { // args
+      where: NexusGenInputs['ConversationGroupWhereUniqueInput']; // ConversationGroupWhereUniqueInput!
     }
     register: { // args
       input: NexusGenInputs['RegisterInput']; // RegisterInput!
@@ -590,6 +617,9 @@ export interface NexusGenArgTypes {
     viewBuddyNotifications: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
+    viewMessage: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
   }
   Query: {
     getBuddyNotifications: { // args
@@ -613,6 +643,12 @@ export interface NexusGenArgTypes {
   }
   Subscription: {
     getBuddyNotifications: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    getConversation: { // args
+      where: NexusGenInputs['ConversationWhereUniqueInput']; // ConversationWhereUniqueInput!
+    }
+    getManyConversations: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
   }

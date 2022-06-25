@@ -23,6 +23,7 @@ export const getManyConversationsOutput = objectType({
     t.nullable.list.nonNull.field("Conversations", {
       type: ConversationGroup,
     });
+    t.nullable.int("countNotViewedConversation");
   },
 });
 

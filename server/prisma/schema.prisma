@@ -70,8 +70,8 @@ model Relationship {
   specifier    Profile                @relation("specifier", fields: [specifier_id], references: [id], onDelete: Cascade)
   specifier_id String
   status       RelationshipStatusCode
-  isRead       Boolean
-  isViewed     Boolean
+  isRead       Boolean                @default(false)
+  isViewed     Boolean                @default(false)
   createdAt    DateTime               @default(now())
   updatedAt    DateTime               @updatedAt
 
@@ -94,7 +94,8 @@ model Notification {
   type_id     Int
   entity_id   String?
   message     String?
-  isRead      Boolean
+  isRead      Boolean          @default(false)
+  isViewed    Boolean          @default(false)
   createdAt   DateTime         @default(now())
 
 }
@@ -129,6 +130,8 @@ model ConversationGroup {
   conversation_member_id String
   conversation           Conversation @relation(fields: [conversation_id], references: [id])
   conversation_id        String
+  isRead                 Boolean      @default(true)
+  isViewed               Boolean      @default(true)
   joined_at              DateTime     @default(now())
   left_at                DateTime?
 
