@@ -50,6 +50,7 @@ const NavBar = () => {
     {
       data: getBuddyNotificationsData,
       loading: getBuddyNotificationsLoading,
+      refetch: refetchBuddyNoti,
       subscribeToMore: subsGetBuddyNotifications,
     },
   ] = useGetBuddyNotificationsLazyQuery();
@@ -59,6 +60,7 @@ const NavBar = () => {
     {
       data: getManyConversationsData,
       loading: getManyConversationsLoading,
+      refetch: refetchChatData,
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();
@@ -101,6 +103,12 @@ const NavBar = () => {
             },
           },
         });
+
+        refetchBuddyNoti({
+          where: {
+            profile_id: user_profile_id as string,
+          },
+        });
       }
     }
 
@@ -123,6 +131,12 @@ const NavBar = () => {
             where: {
               profile_id: user_profile_id as string,
             },
+          },
+        });
+
+        refetchChatData({
+          where: {
+            profile_id: user_profile_id as string,
           },
         });
       }
