@@ -11,9 +11,18 @@ subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
       conversation_avatar
       conversation_member {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
     }
@@ -23,11 +32,25 @@ subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
       message_content
       author {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
+    }
+    ConversationPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
     }
   }
 }

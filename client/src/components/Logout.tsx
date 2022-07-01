@@ -1,3 +1,4 @@
+import { useApolloClient } from "@apollo/client";
 import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
 import {
@@ -12,7 +13,7 @@ interface LogoutProps {
 
 const LogOut = ({ children }: PropsWithChildren<LogoutProps>) => {
   const [logoutMutation, { data, loading }] = useLogoutMutation();
-
+  const client = useApolloClient();
   const router = useRouter();
   const logout = async () => {
     await logoutMutation({
@@ -23,7 +24,10 @@ const LogOut = ({ children }: PropsWithChildren<LogoutProps>) => {
             data: { getUser: null },
           });
         }
+
         router.push("/login");
+
+        client.clearStore();
       },
     });
   };

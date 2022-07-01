@@ -26,7 +26,7 @@ const ConversationInfoBar = ({
     data?.getConversation?.Conversation?.conversation_member.filter(
       (member) => member.id !== user_profile_id
     );
-  const profile_avatar = buddy_profile && buddy_profile[0].profile_avatar;
+  const profile_avatar = buddy_profile ? buddy_profile[0].profile_avatar : null;
   const username = buddy_profile && buddy_profile[0].user?.username;
 
   if (loading) return <Loading />;

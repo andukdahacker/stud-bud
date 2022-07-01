@@ -1,3 +1,4 @@
+import { Message } from "@prisma/client";
 import { nonNull, queryField } from "nexus";
 import {
   INTERNAL_SERVER_ERROR,
@@ -5,6 +6,7 @@ import {
   UNSUCCESSFUL_QUERY,
 } from "../../constants";
 import {
+  ConversationPageInput,
   ConversationWhereUniqueInput,
   ProfileWhereUniqueInput,
 } from "../inputs";
@@ -47,9 +49,11 @@ export const getConversation = queryField("getConversation", {
   type: getConversationOutput,
   args: {
     where: nonNull(ConversationWhereUniqueInput),
+    page: nonNull(ConversationPageInput),
   },
   resolve: async (_root, args, ctx) => {
     const { conversation_id } = args.where;
+    const { cursor, take } = args.page;
     try {
       const conversation = await ctx.prisma.conversation.findUnique({
         where: {
@@ -57,26 +61,77 @@ export const getConversation = queryField("getConversation", {
         },
       });
 
-      const messages = await ctx.prisma.message.findMany({
-        where: {
-          conversation_id,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
-
-      // const reverseMessageArray = messages.reverse();
-
       if (!conversation)
         return {
           IOutput: UNSUCCESSFUL_QUERY,
         };
 
+      let queryResult: Message[] | null = null;
+      if (cursor) {
+        queryResult = await ctx.prisma.message.findMany({
+          take,
+          skip: 1,
+          cursor: {
+            id: cursor,
+          },
+          where: {
+            conversation_id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      } else {
+        queryResult = await ctx.prisma.message.findMany({
+          take,
+          where: {
+            conversation_id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      }
+
+      if (queryResult?.length > 0) {
+        const lastMessageInResults = queryResult[queryResult.length - 1];
+
+        const myCursor = lastMessageInResults.id;
+        const secondQueryResults = await ctx.prisma.message.findMany({
+          take,
+          skip: 1,
+          cursor: {
+            id: myCursor,
+          },
+          where: {
+            conversation_id,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        if (secondQueryResults.length > 0)
+          return {
+            IOutput: QUERY_SUCCESS,
+            Conversation: conversation,
+            Messages: queryResult,
+            ConversationPageInfo: {
+              endCursor: myCursor,
+              hasNextPage: true,
+              lastTake: secondQueryResults.length,
+            },
+          };
+      }
+
       return {
         IOutput: QUERY_SUCCESS,
         Conversation: conversation,
-        Messages: messages,
+        Messages: queryResult,
+        ConversationPageInfo: {
+          endCursor: null,
+          hasNextPage: false,
+        },
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

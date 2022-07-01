@@ -5,5 +5,6 @@ export const PageInfo = objectType({
   definition(t) {
     t.date("endCursor");
     t.boolean("hasNextPage");
+    t.nullable.int("lastTake");
   },
 });

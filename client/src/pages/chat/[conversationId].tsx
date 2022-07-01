@@ -7,13 +7,15 @@ import ConversationListBar from "../../components/ConversationListBar";
 import Layout from "../../components/Layout";
 import {
   GetConversationSubDocument,
-  GetManyConversationsSubDocument,
+  GetManyConversationsSubsDocument,
   useGetConversationLazyQuery,
   useGetManyConversationsLazyQuery,
   useGetUserQuery,
 } from "../../generated/graphql";
 import merge from "deepmerge";
 import Loading from "../../components/Loading";
+
+import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
 
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
@@ -26,6 +28,7 @@ const ChatWithChatBox = () => {
     {
       data: ManyConversationsData,
       loading: ManyConversationsLoading,
+      fetchMore: getMoreManyConversationsData,
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();
@@ -35,6 +38,7 @@ const ChatWithChatBox = () => {
     {
       data: getConversationData,
       loading: getConversationLoading,
+      fetchMore: getMoreConversationData,
       subscribeToMore: subsGetConversationData,
     },
   ] = useGetConversationLazyQuery();
@@ -48,18 +52,18 @@ const ChatWithChatBox = () => {
         },
       });
 
-      // subsGetManyConversation({
-      //   document: GetManyConversationsSubDocument,
-      //   variables: {
-      //     where: {
-      //       profile_id: user_profile_id,
-      //     },
-      //   },
-      //   updateQuery: (prev, { subscriptionData }) => {
-      //     if (!subscriptionData.data) return prev;
-      //     return subscriptionData.data;
-      //   },
-      // });
+      subsGetManyConversation({
+        document: GetManyConversationsSubsDocument,
+        variables: {
+          where: {
+            profile_id: user_profile_id,
+          },
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev;
+          return subscriptionData.data;
+        },
+      });
     }
 
     if (user_profile_id) fetchData();
@@ -72,6 +76,9 @@ const ChatWithChatBox = () => {
         variables: {
           where: {
             conversation_id,
+          },
+          page: {
+            take: MESSAGES_TAKE_LIMIT,
           },
         },
       });
@@ -86,8 +93,7 @@ const ChatWithChatBox = () => {
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
           const incoming = subscriptionData.data;
-          const merged = merge(prev, incoming);
-
+          const merged = merge(incoming, prev);
           return merged;
         },
       });

@@ -27,6 +27,15 @@ export const getManyConversationsOutput = objectType({
   },
 });
 
+export const ConversationPageInfo = objectType({
+  name: "ConversationPageInfo",
+  definition(t) {
+    t.nullable.string("endCursor");
+    t.nonNull.boolean("hasNextPage");
+    t.nullable.int("lastTake");
+  },
+});
+
 export const getConversationOutput = objectType({
   name: "getConversationOutput",
   definition(t) {
@@ -40,6 +49,10 @@ export const getConversationOutput = objectType({
 
     t.nullable.list.nonNull.field("Messages", {
       type: Message,
+    });
+
+    t.nullable.field("ConversationPageInfo", {
+      type: ConversationPageInfo,
     });
   },
 });

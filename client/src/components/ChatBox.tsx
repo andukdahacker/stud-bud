@@ -5,6 +5,7 @@ import {
   GetConversationQuery,
   GetUserDocument,
   GetUserQuery,
+  useGetConversationLazyQuery,
   useSendMessageMutation,
 } from "../generated/graphql";
 import { useCheckAuth } from "../utils/useCheckAuth";
@@ -32,9 +33,12 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
     setMessageContent(e.target.value);
   };
 
-  const [sendMessage, { data: sendMessageData, loading: sendMessageLoading }] =
-    useSendMessageMutation();
+  const [sendMessage, {}] = useSendMessageMutation();
+  const [_, { fetchMore }] = useGetConversationLazyQuery();
   const messages = data?.getConversation?.Messages;
+  const hasNextPage = data?.getConversation?.ConversationPageInfo?.hasNextPage;
+  const cursor = data?.getConversation?.ConversationPageInfo?.endCursor;
+  const lastTake = data?.getConversation?.ConversationPageInfo?.lastTake;
 
   const initialValues = {
     message_content: "",
@@ -59,33 +63,53 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
     setMessageContent("");
   };
 
+  const loadMore = async () => {
+    fetchMore({
+      variables: {
+        where: {
+          conversation_id,
+        },
+        page: {
+          take: 5,
+          cursor,
+        },
+      },
+    });
+  };
+
   if (loading) return <Loading />;
 
   return (
     <div className="w-1/2 bg-white">
       <div className="max-h-[calc(100vh_-_8rem)] overflow-y-auto">
-        {messages?.map((message, index) => {
-          if (message.author.id !== user_profile_id)
-            return (
-              <div key={index} className="flex justify-start">
-                <Avatar
-                  img_url={message.author.profile_avatar}
-                  width={40}
-                  height={40}
-                />
-                <div className="bg-gray-200 rounded-md">
-                  {message.message_content}
+        {hasNextPage ? <div onClick={loadMore}>Load more</div> : null}
+        <div>
+          {messages
+            ?.slice()
+            .reverse()
+            .map((message, index) => {
+              if (message.author.id !== user_profile_id)
+                return (
+                  <div key={index} className="flex justify-start">
+                    <Avatar
+                      img_url={message.author.profile_avatar}
+                      width={40}
+                      height={40}
+                    />
+                    <div className="bg-gray-200 rounded-md">
+                      {message.message_content}
+                    </div>
+                  </div>
+                );
+              return (
+                <div key={index} className="flex justify-end">
+                  <div className="bg-blue-500 rounded-md">
+                    {message.message_content}
+                  </div>
                 </div>
-              </div>
-            );
-          return (
-            <div key={index} className="flex justify-end">
-              <div className="bg-blue-500 rounded-md">
-                {message.message_content}
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+        </div>
       </div>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         <Form className="">

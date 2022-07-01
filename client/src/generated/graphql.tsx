@@ -65,6 +65,18 @@ export type ConversationGroupWhereUniqueInput = {
   profile_id: Scalars['String'];
 };
 
+export type ConversationPageInfo = {
+  __typename?: 'ConversationPageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  lastTake?: Maybe<Scalars['Int']>;
+};
+
+export type ConversationPageInput = {
+  cursor?: InputMaybe<Scalars['String']>;
+  take: Scalars['Int'];
+};
+
 export type ConversationWhereUniqueInput = {
   conversation_id: Scalars['String'];
 };
@@ -257,6 +269,7 @@ export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['Date']>;
   hasNextPage?: Maybe<Scalars['Boolean']>;
+  lastTake?: Maybe<Scalars['Int']>;
 };
 
 export type Profile = {
@@ -311,6 +324,7 @@ export type QueryGetBuddyNotificationsArgs = {
 
 
 export type QueryGetConversationArgs = {
+  page: ConversationPageInput;
   where: ConversationWhereUniqueInput;
 };
 
@@ -427,6 +441,7 @@ export type VerifyEmailInput = {
 export type GetConversationOutput = {
   __typename?: 'getConversationOutput';
   Conversation?: Maybe<Conversation>;
+  ConversationPageInfo?: Maybe<ConversationPageInfo>;
   IOutput: IOutput;
   Messages?: Maybe<Array<Message>>;
 };
@@ -532,7 +547,7 @@ export type SendMessageMutationVariables = Exact<{
 }>;
 
 
-export type SendMessageMutation = { __typename?: 'Mutation', sendMessage?: { __typename?: 'SendMessageOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Message?: { __typename?: 'Message', id: string, message_author_id: string, conversation_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } } | null } | null };
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage?: { __typename?: 'SendMessageOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string } } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -572,17 +587,18 @@ export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotific
 
 export type GetConversationQueryVariables = Exact<{
   where: ConversationWhereUniqueInput;
+  page: ConversationPageInput;
 }>;
 
 
-export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, ConversationPageInfo?: { __typename?: 'ConversationPageInfo', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
 
 export type GetManyConversationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
+export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null }>, conversation_latest_message?: { __typename?: 'Message', message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -622,14 +638,14 @@ export type GetConversationSubSubscriptionVariables = Exact<{
 }>;
 
 
-export type GetConversationSubSubscription = { __typename?: 'Subscription', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null } }> | null } | null };
+export type GetConversationSubSubscription = { __typename?: 'Subscription', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, message_author_id: string, message_content: string, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, ConversationPageInfo?: { __typename?: 'ConversationPageInfo', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
 
-export type GetManyConversationsSubSubscriptionVariables = Exact<{
+export type GetManyConversationsSubsSubscriptionVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsSubSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_member_id: string, conversation_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', message_content: string, message_author_id: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', username: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_avatar?: string | null, user?: { __typename?: 'User', username: string } | null }> } }> | null } | null };
+export type GetManyConversationsSubsSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, success: boolean, message: string }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, createdAt?: any | null, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest: { __typename?: 'Interest', interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null }>, conversation_latest_message?: { __typename?: 'Message', message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null } }> | null } | null };
 
 
 export const ChangePasswordDocument = gql`
@@ -1132,19 +1148,6 @@ export const SendMessageDocument = gql`
       success
       message
     }
-    Message {
-      id
-      message_author_id
-      author {
-        id
-        profile_avatar
-        user {
-          username
-        }
-      }
-      conversation_id
-      message_content
-    }
   }
 }
     `;
@@ -1394,8 +1397,8 @@ export type GetBuddyNotificationsQueryHookResult = ReturnType<typeof useGetBuddy
 export type GetBuddyNotificationsLazyQueryHookResult = ReturnType<typeof useGetBuddyNotificationsLazyQuery>;
 export type GetBuddyNotificationsQueryResult = Apollo.QueryResult<GetBuddyNotificationsQuery, GetBuddyNotificationsQueryVariables>;
 export const GetConversationDocument = gql`
-    query getConversation($where: ConversationWhereUniqueInput!) {
-  getConversation(where: $where) {
+    query GetConversation($where: ConversationWhereUniqueInput!, $page: ConversationPageInput!) {
+  getConversation(where: $where, page: $page) {
     IOutput {
       code
       success
@@ -1407,9 +1410,18 @@ export const GetConversationDocument = gql`
       conversation_avatar
       conversation_member {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
     }
@@ -1419,11 +1431,25 @@ export const GetConversationDocument = gql`
       message_content
       author {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
+    }
+    ConversationPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
     }
   }
 }
@@ -1442,6 +1468,7 @@ export const GetConversationDocument = gql`
  * const { data, loading, error } = useGetConversationQuery({
  *   variables: {
  *      where: // value for 'where'
+ *      page: // value for 'page'
  *   },
  * });
  */
@@ -1457,7 +1484,7 @@ export type GetConversationQueryHookResult = ReturnType<typeof useGetConversatio
 export type GetConversationLazyQueryHookResult = ReturnType<typeof useGetConversationLazyQuery>;
 export type GetConversationQueryResult = Apollo.QueryResult<GetConversationQuery, GetConversationQueryVariables>;
 export const GetManyConversationsDocument = gql`
-    query getManyConversations($where: ProfileWhereUniqueInput!) {
+    query GetManyConversations($where: ProfileWhereUniqueInput!) {
   getManyConversations(where: $where) {
     IOutput {
       code
@@ -1465,32 +1492,38 @@ export const GetManyConversationsDocument = gql`
       message
     }
     Conversations {
-      conversation_member_id
-      conversation_id
       conversation {
         id
         conversation_name
         conversation_avatar
+        conversation_member {
+          id
+          profile_bio
+          profile_avatar
+          profile_interests {
+            interest {
+              interest_name
+            }
+          }
+          createdAt
+          user {
+            id
+            username
+            email
+          }
+        }
         conversation_latest_message {
           message_content
-          message_author_id
           author {
             user {
+              id
               username
+              email
             }
           }
           createdAt
         }
-        conversation_member {
-          id
-          profile_avatar
-          user {
-            username
-          }
-        }
       }
-      joined_at
-      left_at
     }
     countNotViewedConversation
   }
@@ -1856,9 +1889,18 @@ export const GetConversationSubDocument = gql`
       conversation_avatar
       conversation_member {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
     }
@@ -1868,11 +1910,25 @@ export const GetConversationSubDocument = gql`
       message_content
       author {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
+    }
+    ConversationPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
     }
   }
 }
@@ -1900,8 +1956,8 @@ export function useGetConversationSubSubscription(baseOptions: Apollo.Subscripti
       }
 export type GetConversationSubSubscriptionHookResult = ReturnType<typeof useGetConversationSubSubscription>;
 export type GetConversationSubSubscriptionResult = Apollo.SubscriptionResult<GetConversationSubSubscription>;
-export const GetManyConversationsSubDocument = gql`
-    subscription getManyConversationsSub($where: ProfileWhereUniqueInput!) {
+export const GetManyConversationsSubsDocument = gql`
+    subscription GetManyConversationsSubs($where: ProfileWhereUniqueInput!) {
   getManyConversations(where: $where) {
     IOutput {
       code
@@ -1909,34 +1965,38 @@ export const GetManyConversationsSubDocument = gql`
       message
     }
     Conversations {
-      conversation_member_id
-      conversation_id
       conversation {
         id
         conversation_name
         conversation_avatar
+        conversation_member {
+          id
+          profile_bio
+          profile_avatar
+          profile_interests {
+            interest {
+              interest_name
+            }
+          }
+          createdAt
+          user {
+            id
+            username
+            email
+          }
+        }
         conversation_latest_message {
           message_content
-          message_author_id
           author {
             user {
+              id
               username
+              email
             }
           }
           createdAt
         }
-        conversation_member {
-          id
-          profile_avatar
-          user {
-            username
-          }
-        }
       }
-      isRead
-      isViewed
-      joined_at
-      left_at
     }
     countNotViewedConversation
   }
@@ -1944,24 +2004,24 @@ export const GetManyConversationsSubDocument = gql`
     `;
 
 /**
- * __useGetManyConversationsSubSubscription__
+ * __useGetManyConversationsSubsSubscription__
  *
- * To run a query within a React component, call `useGetManyConversationsSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetManyConversationsSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetManyConversationsSubsSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetManyConversationsSubsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetManyConversationsSubSubscription({
+ * const { data, loading, error } = useGetManyConversationsSubsSubscription({
  *   variables: {
  *      where: // value for 'where'
  *   },
  * });
  */
-export function useGetManyConversationsSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetManyConversationsSubSubscription, GetManyConversationsSubSubscriptionVariables>) {
+export function useGetManyConversationsSubsSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetManyConversationsSubsSubscription, GetManyConversationsSubsSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetManyConversationsSubSubscription, GetManyConversationsSubSubscriptionVariables>(GetManyConversationsSubDocument, options);
+        return Apollo.useSubscription<GetManyConversationsSubsSubscription, GetManyConversationsSubsSubscriptionVariables>(GetManyConversationsSubsDocument, options);
       }
-export type GetManyConversationsSubSubscriptionHookResult = ReturnType<typeof useGetManyConversationsSubSubscription>;
-export type GetManyConversationsSubSubscriptionResult = Apollo.SubscriptionResult<GetManyConversationsSubSubscription>;
+export type GetManyConversationsSubsSubscriptionHookResult = ReturnType<typeof useGetManyConversationsSubsSubscription>;
+export type GetManyConversationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetManyConversationsSubsSubscription>;

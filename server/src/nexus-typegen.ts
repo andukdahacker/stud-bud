@@ -45,6 +45,10 @@ export interface NexusGenInputs {
     conversation_id: string; // String!
     profile_id: string; // String!
   }
+  ConversationPageInput: { // input type
+    cursor?: string | null; // String
+    take: number; // Int!
+  }
   ConversationWhereUniqueInput: { // input type
     conversation_id: string; // String!
   }
@@ -142,6 +146,11 @@ export interface NexusGenObjects {
     joined_at: NexusGenScalars['Date']; // Date!
     left_at?: NexusGenScalars['Date'] | null; // Date
   }
+  ConversationPageInfo: { // root type
+    endCursor?: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    lastTake?: number | null; // Int
+  }
   ErrorFieldOutput: { // root type
     field: string; // String!
     message: string; // String!
@@ -175,6 +184,7 @@ export interface NexusGenObjects {
   PageInfo: { // root type
     endCursor?: NexusGenScalars['Date'] | null; // Date
     hasNextPage?: boolean | null; // Boolean
+    lastTake?: number | null; // Int
   }
   Profile: { // root type
     createdAt?: NexusGenScalars['Date'] | null; // Date
@@ -221,6 +231,7 @@ export interface NexusGenObjects {
   }
   getConversationOutput: { // root type
     Conversation?: NexusGenRootTypes['Conversation'] | null; // Conversation
+    ConversationPageInfo?: NexusGenRootTypes['ConversationPageInfo'] | null; // ConversationPageInfo
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Messages?: NexusGenRootTypes['Message'][] | null; // [Message!]
   }
@@ -269,6 +280,11 @@ export interface NexusGenFieldTypes {
     isViewed: boolean; // Boolean!
     joined_at: NexusGenScalars['Date']; // Date!
     left_at: NexusGenScalars['Date'] | null; // Date
+  }
+  ConversationPageInfo: { // field return type
+    endCursor: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    lastTake: number | null; // Int
   }
   ErrorFieldOutput: { // field return type
     field: string; // String!
@@ -324,6 +340,7 @@ export interface NexusGenFieldTypes {
   PageInfo: { // field return type
     endCursor: NexusGenScalars['Date'] | null; // Date
     hasNextPage: boolean | null; // Boolean
+    lastTake: number | null; // Int
   }
   Profile: { // field return type
     buddies: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
@@ -392,6 +409,7 @@ export interface NexusGenFieldTypes {
   }
   getConversationOutput: { // field return type
     Conversation: NexusGenRootTypes['Conversation'] | null; // Conversation
+    ConversationPageInfo: NexusGenRootTypes['ConversationPageInfo'] | null; // ConversationPageInfo
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     Messages: NexusGenRootTypes['Message'][] | null; // [Message!]
   }
@@ -430,6 +448,11 @@ export interface NexusGenFieldTypeNames {
     isViewed: 'Boolean'
     joined_at: 'Date'
     left_at: 'Date'
+  }
+  ConversationPageInfo: { // field return type name
+    endCursor: 'String'
+    hasNextPage: 'Boolean'
+    lastTake: 'Int'
   }
   ErrorFieldOutput: { // field return type name
     field: 'String'
@@ -485,6 +508,7 @@ export interface NexusGenFieldTypeNames {
   PageInfo: { // field return type name
     endCursor: 'Date'
     hasNextPage: 'Boolean'
+    lastTake: 'Int'
   }
   Profile: { // field return type name
     buddies: 'Relationship'
@@ -553,6 +577,7 @@ export interface NexusGenFieldTypeNames {
   }
   getConversationOutput: { // field return type name
     Conversation: 'Conversation'
+    ConversationPageInfo: 'ConversationPageInfo'
     IOutput: 'IOutput'
     Messages: 'Message'
   }
@@ -626,6 +651,7 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
     getConversation: { // args
+      page: NexusGenInputs['ConversationPageInput']; // ConversationPageInput!
       where: NexusGenInputs['ConversationWhereUniqueInput']; // ConversationWhereUniqueInput!
     }
     getManyConversations: { // args

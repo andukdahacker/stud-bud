@@ -7,25 +7,21 @@ import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
-import BuddyNotificationBar from "./BuddyNotificationBar";
-import NotificationBar from "./NotificationBar";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   GetBuddyNotificationsSubsDocument,
-  GetManyConversationsSubDocument,
-  GetUserDocument,
-  GetUserQuery,
+  GetManyConversationsSubsDocument,
   useGetBuddyNotificationsLazyQuery,
   useGetManyConversationsLazyQuery,
   useGetProfileLazyQuery,
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
 } from "../generated/graphql";
-import { useApolloClient } from "@apollo/client";
 import merge from "deepmerge";
-import NewNotiCount from "./NewNotiCount";
-import ChatBar from "./ChatBar";
-import ConversationList from "./ConversationList";
+
+import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
+import ChatNotiNavBarButton from "./ChatNotiNavBarButton";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -33,6 +29,85 @@ const NavBar = () => {
   const username = authData?.getUser?.username;
   const profile = authData?.getUser?.profile;
   const user_profile_id = authData?.getUser?.profile?.id;
+
+  const [viewBuddyNoti, {}] = useViewBuddyNotificationsMutation();
+  const [viewChatNoti, {}] = useViewMessageMutation();
+  const [_, { refetch: refetchBuddyNoti }] =
+    useGetBuddyNotificationsLazyQuery();
+  const [__, { refetch: refetchChatNoti }] = useGetManyConversationsLazyQuery();
+  const [newBuddyNotiCount, setNewBuddyNotiCount] = useState<number>(0);
+  const [newChatNotiCount, setNewChatNotiCount] = useState<number>(0);
+  const [hiddenBuddyNotification, setHiddenBuddyNotification] = useState<
+    string | undefined
+  >("hidden");
+
+  const [hiddenChatNotification, setHiddenChatNotification] = useState<
+    string | undefined
+  >("hidden");
+
+  const toggleBuddyNotification = async (
+    countNotViewedBuddyNotifications: number | null | undefined
+  ) => {
+    if (hiddenBuddyNotification === "hidden")
+      setHiddenBuddyNotification(undefined);
+    if (hiddenBuddyNotification === undefined)
+      setHiddenBuddyNotification("hidden");
+    if (
+      countNotViewedBuddyNotifications &&
+      countNotViewedBuddyNotifications > 0
+    ) {
+      await viewBuddyNoti({
+        variables: {
+          where: {
+            profile_id: user_profile_id as string,
+          },
+        },
+      });
+
+      await refetchBuddyNoti({
+        where: {
+          profile_id: user_profile_id as string,
+        },
+      });
+    }
+
+    setNewBuddyNotiCount(0);
+
+    // setHiddenNotification("hidden");
+    setHiddenChatNotification("hidden");
+  };
+
+  const toggleChatNotification = async (
+    countNotViewedChatNotifications: number | null | undefined
+  ) => {
+    if (hiddenChatNotification === "hidden")
+      setHiddenChatNotification(undefined);
+    if (hiddenChatNotification === undefined)
+      setHiddenChatNotification("hidden");
+
+    if (
+      countNotViewedChatNotifications &&
+      countNotViewedChatNotifications > 0
+    ) {
+      await viewChatNoti({
+        variables: {
+          where: {
+            profile_id: user_profile_id as string,
+          },
+        },
+      });
+
+      await refetchChatNoti({
+        where: {
+          profile_id: user_profile_id as string,
+        },
+      });
+    }
+
+    setNewChatNotiCount(0);
+
+    setHiddenBuddyNotification("hidden");
+  };
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const openModal = () => {
@@ -42,205 +117,6 @@ const NavBar = () => {
   const closeModal = () => {
     setShowModal(false);
   };
-  const [viewBuddyNoti, {}] = useViewBuddyNotificationsMutation();
-  const [viewChatNoti, {}] = useViewMessageMutation();
-
-  const [
-    getBuddyNotifications,
-    {
-      data: getBuddyNotificationsData,
-      loading: getBuddyNotificationsLoading,
-      refetch: refetchBuddyNoti,
-      subscribeToMore: subsGetBuddyNotifications,
-    },
-  ] = useGetBuddyNotificationsLazyQuery();
-  const [getProfile, {}] = useGetProfileLazyQuery();
-  const [
-    getManyConversations,
-    {
-      data: getManyConversationsData,
-      loading: getManyConversationsLoading,
-      refetch: refetchChatData,
-      subscribeToMore: subsGetManyConversation,
-    },
-  ] = useGetManyConversationsLazyQuery();
-
-  const countNotViewedBuddyNotifications =
-    getBuddyNotificationsData?.getBuddyNotifications
-      ?.countNotViewedBuddyNotifications;
-  const countNotViewedChatNotifications =
-    getManyConversationsData?.getManyConversations?.countNotViewedConversation;
-  const [newBuddyNotiCount, setNewBuddyNotiCount] = useState<number>(0);
-  const [newChatNotiCount, setNewChatNotiCount] = useState<number>(0);
-  const [hiddenNotification, setHiddenNotification] = useState<
-    string | undefined
-  >("hidden");
-  const [hiddenBuddyNotification, setHiddenBuddyNotification] = useState<
-    string | undefined
-  >("hidden");
-  const [hiddenChatNotification, setHiddenChatNotification] = useState<
-    string | undefined
-  >("hidden");
-  const toggleNotification = async () => {
-    if (hiddenNotification === "hidden") setHiddenNotification(undefined);
-    if (hiddenNotification === undefined) setHiddenNotification("hidden");
-
-    setHiddenBuddyNotification("hidden");
-    setHiddenChatNotification("hidden");
-  };
-
-  const toggleBuddyNotification = async () => {
-    if (hiddenBuddyNotification === "hidden")
-      setHiddenBuddyNotification(undefined);
-    if (hiddenBuddyNotification === undefined)
-      setHiddenBuddyNotification("hidden");
-    if (countNotViewedBuddyNotifications) {
-      if (countNotViewedBuddyNotifications > 0) {
-        await viewBuddyNoti({
-          variables: {
-            where: {
-              profile_id: user_profile_id as string,
-            },
-          },
-        });
-
-        refetchBuddyNoti({
-          where: {
-            profile_id: user_profile_id as string,
-          },
-        });
-      }
-    }
-
-    setNewBuddyNotiCount(0);
-
-    setHiddenNotification("hidden");
-    setHiddenChatNotification("hidden");
-  };
-
-  const toggleChatNotification = async () => {
-    if (hiddenChatNotification === "hidden")
-      setHiddenChatNotification(undefined);
-    if (hiddenChatNotification === undefined)
-      setHiddenChatNotification("hidden");
-
-    if (countNotViewedChatNotifications) {
-      if (countNotViewedChatNotifications > 0) {
-        await viewChatNoti({
-          variables: {
-            where: {
-              profile_id: user_profile_id as string,
-            },
-          },
-        });
-
-        refetchChatData({
-          where: {
-            profile_id: user_profile_id as string,
-          },
-        });
-      }
-    }
-
-    setNewChatNotiCount(0);
-
-    setHiddenBuddyNotification("hidden");
-    setHiddenNotification("hidden");
-  };
-
-  useEffect(() => {
-    async function fetchData() {
-      await getBuddyNotifications({
-        variables: {
-          where: {
-            profile_id: user_profile_id as string,
-          },
-        },
-      });
-
-      subsGetBuddyNotifications({
-        document: GetBuddyNotificationsSubsDocument,
-        variables: {
-          where: {
-            profile_id: user_profile_id,
-          },
-        },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) return prev;
-          const merged = merge(prev, subscriptionData.data);
-          const buddyAccepts_subs =
-            subscriptionData.data.getBuddyNotifications?.buddyAccepts;
-          const buddyRequests_subs =
-            subscriptionData.data.getBuddyNotifications?.buddyRequests;
-          if (buddyRequests_subs) {
-            if (buddyRequests_subs.length > 0) {
-              const requester_id = buddyRequests_subs[0].requester_id;
-              getProfile({
-                variables: {
-                  where: {
-                    profile_id: requester_id,
-                  },
-                },
-              });
-            }
-          }
-
-          if (buddyAccepts_subs) {
-            if (buddyAccepts_subs.length > 0) {
-              const requester_id = buddyAccepts_subs[0].requester_id;
-              getProfile({
-                variables: {
-                  where: {
-                    profile_id: requester_id,
-                  },
-                },
-              });
-            }
-          }
-          return merged;
-        },
-      });
-    }
-
-    if (user_profile_id) fetchData();
-  }, [user_profile_id]);
-
-  useEffect(() => {
-    async function fetchData() {
-      await getManyConversations({
-        variables: {
-          where: {
-            profile_id: user_profile_id as string,
-          },
-        },
-      });
-
-      subsGetManyConversation({
-        document: GetManyConversationsSubDocument,
-        variables: {
-          where: {
-            profile_id: user_profile_id,
-          },
-        },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) return prev;
-          console.log("subData", subscriptionData.data);
-          return subscriptionData.data;
-        },
-      });
-    }
-
-    if (user_profile_id) fetchData();
-  }, [user_profile_id]);
-
-  useEffect(() => {
-    if (countNotViewedBuddyNotifications)
-      setNewBuddyNotiCount(countNotViewedBuddyNotifications);
-  }, [countNotViewedBuddyNotifications]);
-  useEffect(() => {
-    if (countNotViewedChatNotifications)
-      setNewChatNotiCount(countNotViewedChatNotifications);
-  }, [countNotViewedChatNotifications]);
 
   return (
     <div className="flex items-center justify-between h-20 px-5 py-5 bg-white ">
@@ -275,78 +151,24 @@ const NavBar = () => {
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
         <div className="flex justify-around">
-          <div
-            className="relative flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full cursor-pointer"
-            onClick={
-              router.pathname === "/buddies"
-                ? () => {}
-                : toggleBuddyNotification
-            }
-          >
-            <FontAwesomeIcon
-              icon="user-group"
-              size="lg"
-              className={
-                router.pathname === "/buddies"
-                  ? " bg-blue-400"
-                  : "cursor-pointer "
-              }
-            />
-            <NewNotiCount count={newBuddyNotiCount} />
-          </div>
-
-          <BuddyNotificationBar
-            data={getBuddyNotificationsData}
-            loading={getBuddyNotificationsLoading}
+          <BuddyNotiNavBarButton
+            user_profile_id={user_profile_id}
+            newBuddyNotiCount={newBuddyNotiCount}
+            setNewBuddyNotiCount={setNewBuddyNotiCount}
+            toggle={toggleBuddyNotification}
             hidden={hiddenBuddyNotification}
           />
 
-          <div
-            className="relative flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full cursor-pointer"
-            onClick={
-              router.pathname === "/notifications"
-                ? () => {}
-                : toggleNotification
-            }
-          >
-            <FontAwesomeIcon
-              icon="bell"
-              size="lg"
-              className={
-                router.pathname === "/notifications"
-                  ? " bg-blue-400"
-                  : "cursor-pointer "
-              }
-            />
-          </div>
-
-          <NotificationBar hidden={hiddenNotification} />
-
-          <div
-            className="relative flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full cursor-pointer"
-            onClick={toggleChatNotification}
-          >
-            <FontAwesomeIcon
-              icon="message"
-              size="lg"
-              className={
-                router.pathname === "/chat" ? " bg-blue-400" : "cursor-pointer "
-              }
-            />
-
-            <NewNotiCount count={newChatNotiCount} />
-          </div>
-
-          <ChatBar hidden={hiddenChatNotification}>
-            <ConversationList
-              data={getManyConversationsData}
-              loading={getManyConversationsLoading}
+          {router.route === "/chat" ||
+          router.route === "/chat/[conversationId]" ? null : (
+            <ChatNotiNavBarButton
               user_profile_id={user_profile_id}
+              newChatNotiCount={newChatNotiCount}
+              setNewChatNotiCount={setNewChatNotiCount}
+              toggle={toggleChatNotification}
+              hidden={hiddenChatNotification}
             />
-            <Link href={"/chat"}>
-              <a className="">Go to Chat</a>
-            </Link>
-          </ChatBar>
+          )}
 
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a

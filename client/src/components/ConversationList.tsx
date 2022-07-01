@@ -41,7 +41,7 @@ const ConversationList = ({
 
         const username =
           buddy_profile.length === 1 ? buddy_profile[0].user?.username : null;
-        const conversation_id = conversation.conversation_id;
+        const conversation_id = conversation.conversation.id;
         const conversation_name = conversation.conversation.conversation_name;
         const conversation_avatar =
           conversation.conversation.conversation_avatar;

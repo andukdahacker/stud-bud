@@ -34,7 +34,7 @@ const BuddyNotification = ({
     query: GetUserDocument,
   })?.getUser?.profile?.id;
 
-  const [getProfile, {}] = useGetProfileLazyQuery();
+  const [_, { refetch: refetchGetProfile }] = useGetProfileLazyQuery();
   const [read, {}] = useReadBuddyNotificationsMutation();
 
   const readBuddyNoti = async () => {
@@ -61,11 +61,9 @@ const BuddyNotification = ({
         },
       });
 
-      await getProfile({
-        variables: {
-          where: {
-            profile_id,
-          },
+      await refetchGetProfile({
+        where: {
+          profile_id,
         },
       });
     } else if (option === BuddyRespondOptions.DECLINE) {
@@ -80,11 +78,9 @@ const BuddyNotification = ({
         },
       });
 
-      await getProfile({
-        variables: {
-          where: {
-            profile_id,
-          },
+      await refetchGetProfile({
+        where: {
+          profile_id,
         },
       });
     }

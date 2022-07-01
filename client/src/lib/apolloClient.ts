@@ -1,14 +1,11 @@
 import {
+  ApolloCache,
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
   split,
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
-import {
-  GetConversationOutput,
-  GetManyProfilesOutput,
-} from "../generated/graphql";
 import merge from "deepmerge";
 import { IncomingHttpHeaders } from "http";
 import { useMemo } from "react";
@@ -16,6 +13,13 @@ import { isEqual } from "lodash";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import fetch from "isomorphic-unfetch";
+import {
+  GetConversationOutput,
+  GetConversationQuery,
+  GetManyProfilesOutput,
+  GetManyProfilesQuery,
+} from "../generated/graphql";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -24,6 +28,38 @@ let apolloClient: ApolloClient<NormalizedCacheObject>;
 interface IApolloStateProps {
   [APOLLO_STATE_PROP_NAME]?: NormalizedCacheObject;
 }
+
+export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        getManyProfiles: {
+          keyArgs: [],
+          merge: (
+            prev: GetManyProfilesOutput,
+            incoming: GetManyProfilesOutput
+          ) => {
+            if (!prev) return incoming;
+            if (!incoming) return prev;
+            const merged = merge(prev, incoming);
+            return merged;
+          },
+        },
+        getConversation: {
+          keyArgs: ["where"],
+          merge: (
+            prev: GetConversationOutput,
+            incoming: GetConversationOutput
+          ) => {
+            console.log("prev", prev);
+            console.log("incoming", incoming);
+            return incoming;
+          },
+        },
+      },
+    },
+  },
+});
 
 export const createApolloClient = (
   headers: IncomingHttpHeaders | null = null
@@ -71,32 +107,9 @@ export const createApolloClient = (
       : uploadLink;
 
   return new ApolloClient({
+    ssrMode: typeof window === "undefined",
     link,
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            getManyProfiles: {
-              keyArgs: [],
-              merge: (
-                existing: GetManyProfilesOutput,
-                incoming: GetManyProfilesOutput
-              ) => {
-                if (existing) {
-                  if (!incoming.IOutput.success) {
-                    return existing;
-                  }
-                  const merged = merge(existing, incoming);
-                  return merged;
-                }
-
-                return incoming;
-              },
-            },
-          },
-        },
-      },
-    }),
+    cache,
   });
 };
 

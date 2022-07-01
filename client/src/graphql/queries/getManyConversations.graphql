@@ -1,4 +1,4 @@
-query getManyConversations($where: ProfileWhereUniqueInput!) {
+query GetManyConversations($where: ProfileWhereUniqueInput!) {
   getManyConversations(where: $where) {
     IOutput {
       code
@@ -6,32 +6,38 @@ query getManyConversations($where: ProfileWhereUniqueInput!) {
       message
     }
     Conversations {
-      conversation_member_id
-      conversation_id
       conversation {
         id
         conversation_name
         conversation_avatar
+        conversation_member {
+          id
+          profile_bio
+          profile_avatar
+          profile_interests {
+            interest {
+              interest_name
+            }
+          }
+          createdAt
+          user {
+            id
+            username
+            email
+          }
+        }
         conversation_latest_message {
           message_content
-          message_author_id
           author {
             user {
+              id
               username
+              email
             }
           }
           createdAt
         }
-        conversation_member {
-          id
-          profile_avatar
-          user {
-            username
-          }
-        }
       }
-      joined_at
-      left_at
     }
     countNotViewedConversation
   }

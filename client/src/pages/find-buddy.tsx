@@ -1,17 +1,21 @@
-import { NetworkStatus } from "@apollo/client";
+import { NetworkStatus, useApolloClient } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import ProfileCard from "../components/ProfileCard";
 import SuggestionCard from "../components/SuggestionCard";
 import {
   GetManyInterestsInput,
+  GetManyProfilesDocument,
   GetManyProfilesInput,
+  GetManyProfilesQuery,
   useGetManyInterestsLazyQuery,
+  useGetManyProfilesLazyQuery,
   useGetManyProfilesQuery,
 } from "../generated/graphql";
+import { cache } from "../lib/apolloClient";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import useDebounce from "../utils/useDebounce";
 
@@ -54,15 +58,15 @@ const FindBuddy = () => {
     router.push(`/find-buddy?search_input=${values.search_input}`);
     refetch({
       where: {
-        search_input: values.search_input,
+        search_input: router.query ? (router.query.search_input as string) : "",
         take: PROFILES_TAKE_LIMIT,
       },
     });
   };
 
   const {
-    data: getManyProfilesData,
-    loading: getManyProfilesLoading,
+    data: GetManyProfilesData,
+    loading: GetManyProfilesLoading,
     fetchMore,
     refetch,
     networkStatus,
@@ -73,17 +77,16 @@ const FindBuddy = () => {
         take: PROFILES_TAKE_LIMIT,
       },
     },
-    notifyOnNetworkStatusChange: true,
   });
-  const getManyProfilesSuccess =
-    getManyProfilesData?.getManyProfiles?.IOutput.success;
 
-  const getManyProfilesMessage =
-    getManyProfilesData?.getManyProfiles?.IOutput.message;
-  const profiles = getManyProfilesData?.getManyProfiles?.Profile;
+  const profiles = GetManyProfilesData?.getManyProfiles?.Profile;
+  const noProfilesFound = profiles?.length == 0;
 
-  const getManyProfilesPageInfo =
-    getManyProfilesData?.getManyProfiles?.PageInfo;
+  const hasNextPage =
+    GetManyProfilesData?.getManyProfiles?.PageInfo?.hasNextPage;
+  const cursor = GetManyProfilesData?.getManyProfiles?.PageInfo?.endCursor;
+  const fetchMoreProfilesLoading = networkStatus == NetworkStatus.fetchMore;
+  const refetchProfilesLoading = networkStatus == NetworkStatus.refetch;
 
   const loadMore = () => {
     fetchMore({
@@ -92,8 +95,8 @@ const FindBuddy = () => {
           search_input: router.query
             ? (router.query.search_input as string)
             : "",
+          cursor,
           take: PROFILES_TAKE_LIMIT,
-          cursor: profiles![profiles!.length - 1]?.createdAt,
         },
       },
     });
@@ -116,7 +119,7 @@ const FindBuddy = () => {
             />
           </div>
           <div className="flex content-center h-14">
-            {getManyInterestsLoading ? (
+            {getManyInterestsLoading && !fetchMoreProfilesLoading ? (
               <Loading />
             ) : !getManyInterestsSuccess ? (
               <div>{getManyInterestMessage}</div>
@@ -136,12 +139,12 @@ const FindBuddy = () => {
       </Formik>
 
       <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
-        {!getManyProfilesSuccess ? (
-          <div>{getManyProfilesMessage}</div>
-        ) : profiles!.length == 0 ? (
-          <div>Sorry, we found no result for your search</div>
+        {GetManyProfilesLoading ? (
+          <Loading />
+        ) : noProfilesFound ? (
+          <div>Sorry, we found no result</div>
         ) : (
-          profiles!.map((profile, index) => {
+          profiles?.map((profile, index) => {
             const interests = profile?.profile_interests?.map((obj) => {
               return { interest_name: obj?.interest.interest_name as string };
             });
@@ -160,16 +163,13 @@ const FindBuddy = () => {
           })
         )}
       </div>
-      {getManyProfilesPageInfo?.hasNextPage ? (
-        <button onClick={loadMore} type="button">
-          {getManyProfilesLoading ||
-          networkStatus == NetworkStatus.fetchMore ||
-          networkStatus == NetworkStatus.loading ? (
-            <Loading />
-          ) : (
-            <div>Load more</div>
-          )}
-        </button>
+
+      {fetchMoreProfilesLoading ? (
+        <Loading />
+      ) : hasNextPage ? (
+        <div onClick={loadMore} className="cursor-pointer">
+          Load more
+        </div>
       ) : (
         <div>End of list</div>
       )}

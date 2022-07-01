@@ -1,9 +1,11 @@
 import type { AppProps } from "next/app";
-import { ApolloProvider } from "@apollo/client";
+
 import "../styles/index.css";
 import "../utils/fontAwesome";
-import { useApollo } from "../lib/apolloClient";
+
 import ReactModal from "react-modal";
+import { ApolloProvider } from "@apollo/client";
+import { useApollo } from "../lib/apolloClient";
 
 ReactModal.setAppElement("#__next");
 

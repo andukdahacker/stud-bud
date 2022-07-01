@@ -1,5 +1,8 @@
-query getConversation($where: ConversationWhereUniqueInput!) {
-  getConversation(where: $where) {
+query GetConversation(
+  $where: ConversationWhereUniqueInput!
+  $page: ConversationPageInput!
+) {
+  getConversation(where: $where, page: $page) {
     IOutput {
       code
       success
@@ -11,9 +14,18 @@ query getConversation($where: ConversationWhereUniqueInput!) {
       conversation_avatar
       conversation_member {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
     }
@@ -23,11 +35,25 @@ query getConversation($where: ConversationWhereUniqueInput!) {
       message_content
       author {
         id
+        profile_bio
         profile_avatar
+        profile_interests {
+          interest {
+            interest_name
+          }
+        }
+        createdAt
         user {
+          id
           username
+          email
         }
       }
+    }
+    ConversationPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
     }
   }
 }

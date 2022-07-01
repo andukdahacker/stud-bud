@@ -44,6 +44,17 @@ input ConversationGroupWhereUniqueInput {
   profile_id: String!
 }
 
+type ConversationPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  lastTake: Int
+}
+
+input ConversationPageInput {
+  cursor: String
+  take: Int!
+}
+
 input ConversationWhereUniqueInput {
   conversation_id: String!
 }
@@ -142,6 +153,7 @@ type Mutation {
 type PageInfo {
   endCursor: Date
   hasNextPage: Boolean
+  lastTake: Int
 }
 
 type Profile {
@@ -177,7 +189,7 @@ input ProfileWhereUniqueInput {
 
 type Query {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
-  getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
+  getConversation(page: ConversationPageInput!, where: ConversationWhereUniqueInput!): getConversationOutput
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
@@ -260,6 +272,7 @@ input VerifyEmailInput {
 
 type getConversationOutput {
   Conversation: Conversation
+  ConversationPageInfo: ConversationPageInfo
   IOutput: IOutput!
   Messages: [Message!]
 }

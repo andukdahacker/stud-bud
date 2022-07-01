@@ -22,3 +22,11 @@ export const ConversationGroupWhereUniqueInput = inputObjectType({
     t.nonNull.string("profile_id");
   },
 });
+
+export const ConversationPageInput = inputObjectType({
+  name: "ConversationPageInput",
+  definition(t) {
+    t.nullable.string("cursor");
+    t.nonNull.int("take");
+  },
+});
