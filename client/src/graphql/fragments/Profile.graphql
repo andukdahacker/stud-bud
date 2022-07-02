@@ -1,0 +1,12 @@
+fragment Profile on Profile {
+  id
+  profile_bio
+  profile_avatar
+  profile_avatar_public_id
+  profile_wallpaper
+  profile_wallpaper_public_id
+
+  user {
+    ...User
+  }
+}

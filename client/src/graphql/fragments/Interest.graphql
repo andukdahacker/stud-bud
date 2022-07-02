@@ -1,0 +1,4 @@
+fragment Interest on Interest {
+  id
+  interest_name
+}

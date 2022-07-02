@@ -1,14 +1,11 @@
 mutation verifyEmail($input: VerifyEmailInput!) {
   verifyEmail(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     User {
-      id
+      ...User
       isVerified
-      email
     }
   }
 }

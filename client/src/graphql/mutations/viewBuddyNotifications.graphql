@@ -1,9 +1,7 @@
 mutation ViewBuddyNotifications($where: ProfileWhereUniqueInput!) {
   viewBuddyNotifications(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

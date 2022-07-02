@@ -1,0 +1,11 @@
+fragment Conversation on Conversation {
+  id
+  conversation_name
+  conversation_avatar
+  conversation_latest_message {
+    ...Message
+  }
+  conversation_member {
+    ...Profile
+  }
+}

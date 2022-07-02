@@ -1,0 +1,16 @@
+fragment Relationship on Relationship {
+  addressee_id
+  addressee {
+    ...Profile
+  }
+  requester_id
+  requester {
+    ...Profile
+  }
+  specifier_id
+  status
+  isRead
+  isViewed
+  createdAt
+  updatedAt
+}

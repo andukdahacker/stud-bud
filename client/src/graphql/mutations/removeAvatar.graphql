@@ -4,9 +4,7 @@ mutation removeAvatar(
 ) {
   removeAvatar(where: $where, input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

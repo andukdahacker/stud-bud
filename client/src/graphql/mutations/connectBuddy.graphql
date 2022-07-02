@@ -1,9 +1,7 @@
 mutation connectBuddy($input: RelationshipInput!) {
   connectBuddy(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

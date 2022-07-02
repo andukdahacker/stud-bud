@@ -1,24 +1,12 @@
 query getManyProfiles($where: GetManyProfilesInput!) {
   getManyProfiles(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     Profile {
-      id
-      profile_bio
-      profile_avatar
+      ...Profile
       profile_interests {
-        interest {
-          interest_name
-        }
-      }
-      createdAt
-      user {
-        id
-        username
-        email
+        ...ProfileInterest
       }
     }
     PageInfo {

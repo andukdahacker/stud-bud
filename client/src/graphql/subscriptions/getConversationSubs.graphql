@@ -1,51 +1,13 @@
 subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
   getConversation(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     Conversation {
-      id
-      conversation_name
-      conversation_avatar
-      conversation_member {
-        id
-        profile_bio
-        profile_avatar
-        profile_interests {
-          interest {
-            interest_name
-          }
-        }
-        createdAt
-        user {
-          id
-          username
-          email
-        }
-      }
+      ...Conversation
     }
     Messages {
-      id
-      message_author_id
-      message_content
-      author {
-        id
-        profile_bio
-        profile_avatar
-        profile_interests {
-          interest {
-            interest_name
-          }
-        }
-        createdAt
-        user {
-          id
-          username
-          email
-        }
-      }
+      ...Message
     }
     ConversationPageInfo {
       endCursor

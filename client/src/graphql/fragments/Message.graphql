@@ -1,0 +1,10 @@
+fragment Message on Message {
+  id
+  conversation_id
+  message_author_id
+  author {
+    ...Profile
+  }
+  message_content
+  createdAt
+}

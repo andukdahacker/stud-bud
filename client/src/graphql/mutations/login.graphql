@@ -1,17 +1,12 @@
 mutation login($input: LoginInput!) {
   login(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     User {
-      id
-      email
-      username
+      ...User
       profile {
-        id
-        profile_avatar
+        ...Profile
       }
     }
     ErrorFieldOutput {

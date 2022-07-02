@@ -1,0 +1,10 @@
+fragment ProfileInterest on ProfileInterest {
+  interest_id
+  interest {
+    ...Interest
+  }
+  profile_id
+  profile {
+    ...Profile
+  }
+}

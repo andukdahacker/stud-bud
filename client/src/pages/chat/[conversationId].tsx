@@ -14,7 +14,6 @@ import {
 } from "../../generated/graphql";
 import merge from "deepmerge";
 import Loading from "../../components/Loading";
-
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
 
 const ChatWithChatBox = () => {
@@ -93,6 +92,7 @@ const ChatWithChatBox = () => {
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
           const incoming = subscriptionData.data;
+
           const merged = merge(incoming, prev);
           return merged;
         },

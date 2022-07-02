@@ -1,43 +1,10 @@
 query GetManyConversations($where: ProfileWhereUniqueInput!) {
   getManyConversations(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     Conversations {
-      conversation {
-        id
-        conversation_name
-        conversation_avatar
-        conversation_member {
-          id
-          profile_bio
-          profile_avatar
-          profile_interests {
-            interest {
-              interest_name
-            }
-          }
-          createdAt
-          user {
-            id
-            username
-            email
-          }
-        }
-        conversation_latest_message {
-          message_content
-          author {
-            user {
-              id
-              username
-              email
-            }
-          }
-          createdAt
-        }
-      }
+      ...ConversationGroup
     }
     countNotViewedConversation
   }

@@ -1,19 +1,14 @@
 mutation createProfile($input: CreateProfileInput!) {
   createProfile(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     Profile {
-      id
-      profile_bio
-      profile_avatar
-      profile_wallpaper
+      ...Profile
       profile_interests {
+        ...ProfileInterest
         interest {
-          id
-          interest_name
+          ...Interest
         }
       }
     }

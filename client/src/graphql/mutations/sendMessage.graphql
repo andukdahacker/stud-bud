@@ -4,9 +4,7 @@ mutation sendMessage(
 ) {
   sendMessage(input: $input, where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

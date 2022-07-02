@@ -1,0 +1,11 @@
+fragment ConversationGroup on ConversationGroup {
+  conversation_id
+  conversation_member_id
+  conversation {
+    ...Conversation
+  }
+  isRead
+  isViewed
+  joined_at
+  left_at
+}

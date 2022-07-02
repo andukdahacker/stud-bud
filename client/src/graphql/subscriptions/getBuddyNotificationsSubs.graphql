@@ -1,35 +1,13 @@
 subscription getBuddyNotificationsSubs($where: ProfileWhereUniqueInput!) {
   getBuddyNotifications(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     buddyRequests {
-      requester_id
-      requester {
-        profile_avatar
-        user {
-          username
-        }
-      }
-      status
-      isRead
-      isViewed
-      createdAt
+      ...Relationship
     }
     buddyAccepts {
-      requester_id
-      requester {
-        profile_avatar
-        user {
-          username
-        }
-      }
-      status
-      isRead
-      isViewed
-      createdAt
+      ...Relationship
     }
     countNotViewedBuddyNotifications
   }

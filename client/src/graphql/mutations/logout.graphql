@@ -1,9 +1,7 @@
 mutation logout {
   logout {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

@@ -1,9 +1,7 @@
 mutation respondBuddy($input: RelationshipInput!) {
   respondBuddy(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }

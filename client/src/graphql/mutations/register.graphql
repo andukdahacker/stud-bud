@@ -1,14 +1,10 @@
 mutation register($input: RegisterInput!) {
   register(input: $input) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
     User {
-      id
-      username
-      email
+      ...User
     }
     ErrorFieldOutput {
       field

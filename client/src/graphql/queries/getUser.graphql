@@ -1,11 +1,8 @@
 query getUser {
   getUser {
-    id
-    username
-    email
+    ...User
     profile {
-      id
-      profile_avatar
+      ...Profile
     }
   }
 }

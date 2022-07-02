@@ -1,9 +1,7 @@
 mutation ReadBuddyNotifications($where: ReadBuddyNotificationsInput!) {
   readBuddyNotifications(where: $where) {
     IOutput {
-      code
-      success
-      message
+      ...IOutput
     }
   }
 }
