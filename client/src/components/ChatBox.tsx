@@ -8,9 +8,9 @@ import {
   useGetConversationLazyQuery,
   useSendMessageMutation,
 } from "../generated/graphql";
-import { useCheckAuth } from "../utils/useCheckAuth";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
+import produce from "immer";
 
 interface ChatBoxProps {
   data?: GetConversationQuery;
@@ -64,7 +64,8 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
   };
 
   const loadMore = async () => {
-    fetchMore({
+    console.log(conversation_id);
+    await fetchMore({
       variables: {
         where: {
           conversation_id,

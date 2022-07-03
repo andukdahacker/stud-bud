@@ -63,11 +63,26 @@ input CreateInterestInput {
   interest_name: String!
 }
 
+input CreateNotificationInput {
+  entity_id: String!
+  notifier_id: String!
+  receiver_id: [String!]!
+  type_id: Int!
+}
+
 input CreateProfileInput {
   profile_avatar: Upload
   profile_bio: String
   profile_interest: [CreateInterestInput]!
   profile_wallpaper: Upload
+}
+
+input CreateTutorOrderInput {
+  problem: String!
+  student_id: String!
+  tutor_id: String
+  tutor_order_interests: [CreateInterestInput]!
+  tutor_requirements: String!
 }
 
 """Date custom scalar type"""
@@ -103,6 +118,11 @@ type GetManyProfilesOutput {
   Profile: [Profile]
 }
 
+type GetNotificationOutput {
+  IOutput: IOutput!
+  notifications: [Notification]
+}
+
 type IOutput {
   code: Int!
   message: String!
@@ -130,14 +150,19 @@ type Message {
 }
 
 type Mutation {
+  acceptTutor(where_1: ProfileWhereUniqueInput!, where_2: TutorOrderWhereUniqueInput!): TutorOrderOutput
   changePassword(input: ChangePasswordInput!): AuthOutput
   connectBuddy(input: RelationshipInput!): RelationshipOutput
+  createNotification(input: CreateNotificationInput!): NotificationMutationOutput
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
+  createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
+  deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   forgotPassword(input: ForgotPasswordInput!): AuthOutput
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   readBuddyNotifications(where: ReadBuddyNotificationsInput!): BuddyNotificationOutput
   readMessage(where: ConversationGroupWhereUniqueInput!): IOutput
+  readNotification(where: NotificationWhereUniqueInput!): NotificationMutationOutput
   register(input: RegisterInput!): AuthOutput!
   removeAvatar(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   removeBuddy(input: RelationshipInput!): RelationshipOutput
@@ -145,9 +170,31 @@ type Mutation {
   respondBuddy(input: RelationshipInput!): RelationshipOutput
   sendMessage(input: SendMessageInput!, where: ProfileWhereUniqueInput!): SendMessageOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  updateTutorOrder(input: CreateTutorOrderInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
   viewBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   viewMessage(where: ProfileWhereUniqueInput!): IOutput
+  viewNotification(where: ProfileWhereUniqueInput!): NotificationMutationOutput
+}
+
+type Notification {
+  createdAt: Date!
+  entity_id: String
+  id: String!
+  isRead: Boolean!
+  message: String
+  notifier: Profile
+  notifier_id: String!
+  receiver_id: String!
+  type_id: Int!
+}
+
+type NotificationMutationOutput {
+  IOutput: IOutput!
+}
+
+input NotificationWhereUniqueInput {
+  id: String!
 }
 
 type PageInfo {
@@ -168,6 +215,7 @@ type Profile {
   profile_interests: [ProfileInterest]
   profile_wallpaper: String
   profile_wallpaper_public_id: String
+  tutor_mode: Boolean!
   user: User
 }
 
@@ -193,6 +241,7 @@ type Query {
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getUser: User
 }
@@ -253,6 +302,34 @@ type Subscription {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
+}
+
+type TutorOrder {
+  createdAt: Date!
+  id: String!
+  isCompleted: Boolean!
+  problem: String!
+  student_id: String!
+  tutor_id: String
+  tutor_order_interest: [TutorOrderInterests!]
+  tutor_requirements: String!
+  updatedAt: Date!
+}
+
+type TutorOrderInterests {
+  interest: Interest!
+  interest_id: String!
+  tutor_order: TutorOrder!
+  tutor_order_id: String!
+}
+
+type TutorOrderOutput {
+  IOutput: IOutput!
+  tutor_order: TutorOrder
+}
+
+input TutorOrderWhereUniqueInput {
+  id: String!
 }
 
 """The `Upload` scalar type represents a file upload."""

@@ -5,7 +5,7 @@ fragment Profile on Profile {
   profile_avatar_public_id
   profile_wallpaper
   profile_wallpaper_public_id
-
+  tutor_mode
   user {
     ...User
   }

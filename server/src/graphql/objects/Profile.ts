@@ -13,6 +13,7 @@ export const Profile = objectType({
     t.nullable.string("profile_avatar_public_id");
     t.nullable.string("profile_wallpaper");
     t.nullable.string("profile_wallpaper_public_id");
+    t.nonNull.boolean("tutor_mode");
     t.nullable.list.nullable.field("profile_interests", {
       type: ProfileInterest,
       resolve: async (root, _args, ctx) => {

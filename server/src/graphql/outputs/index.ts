@@ -4,3 +4,4 @@ export * from "./ProfileOutput";
 export * from "./InterestOutput";
 export * from "./RelationshipOutput";
 export * from "./MessageOutput";
+export * from "./TutorOrderOutput";

@@ -2,19 +2,23 @@ import { objectType } from "nexus";
 import { Notification } from "../objects/Notification";
 import { IOutput } from "./IOutput";
 
-export const NotificationOutput = objectType({
-  name: "NotificationOutput",
+export const NotificationMutationOutput = objectType({
+  name: "NotificationMutationOutput",
   definition(t) {
     t.nonNull.field("IOutput", {
       type: IOutput,
     });
-    t.nullable.list.nonNull.field("Notifications", {
-      type: Notification,
+  },
+});
+
+export const GetNotificationOutput = objectType({
+  name: "GetNotificationOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
     });
-    t.nullable.list.nonNull.field("BuddyNotifications", {
+    t.nullable.list.nullable.field("notifications", {
       type: Notification,
     });
   },
 });
-
-// split into 2 queries and subs

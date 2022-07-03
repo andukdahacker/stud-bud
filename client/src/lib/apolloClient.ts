@@ -16,10 +16,9 @@ import { createClient } from "graphql-ws";
 import fetch from "isomorphic-unfetch";
 import {
   GetConversationOutput,
-  GetConversationQuery,
   GetManyProfilesOutput,
-  GetManyProfilesQuery,
 } from "../generated/graphql";
+import produce from "immer";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -32,6 +31,7 @@ interface IApolloStateProps {
 export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
   typePolicies: {
     Query: {
+      keyFields: [],
       fields: {
         getManyProfiles: {
           keyArgs: [],
@@ -51,13 +51,42 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
             prev: GetConversationOutput,
             incoming: GetConversationOutput
           ) => {
-            console.log("prev", prev);
-            console.log("incoming", incoming);
-            return incoming;
+            if (!prev) return incoming;
+            if (prev.Messages && incoming.Messages) {
+              if (incoming.Messages.length - prev.Messages.length === 1) {
+                return incoming; //subscription data
+              }
+
+              const mergedPagiData = produce(incoming, (draft) => {
+                if (draft.Messages && prev.Messages) {
+                  draft.Messages = [...prev.Messages, ...draft.Messages];
+                }
+              });
+
+              console.log("Pagi data", mergedPagiData);
+              return mergedPagiData;
+            }
+            return prev;
+          },
+          read: (existing) => {
+            console.log("read existing", existing);
+            return existing;
           },
         },
       },
     },
+    // Subscription: {
+    //   fields: {
+    //     getConversationSub: {
+    //       keyArgs: ["where"],
+    //       merge: (prev, incoming) => {
+    //         console.log("subPrev", prev);
+    //         console.log("sub", incoming);
+    //         return incoming;
+    //       },
+    //     },
+    //   },
+    // },
   },
 });
 

@@ -158,7 +158,6 @@ const NavBar = () => {
             toggle={toggleBuddyNotification}
             hidden={hiddenBuddyNotification}
           />
-
           {router.route === "/chat" ||
           router.route === "/chat/[conversationId]" ? null : (
             <ChatNotiNavBarButton

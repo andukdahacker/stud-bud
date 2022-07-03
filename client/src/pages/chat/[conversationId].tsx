@@ -15,7 +15,7 @@ import {
 import merge from "deepmerge";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
-
+import produce from "immer";
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
   const user_profile_id = userData?.getUser?.profile?.id;
@@ -90,10 +90,22 @@ const ChatWithChatBox = () => {
           },
         },
         updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) return prev;
           const incoming = subscriptionData.data;
 
-          const merged = merge(incoming, prev);
+          if (!incoming) return prev;
+          if (!prev) return incoming;
+
+          const merged = produce(prev, (draft) => {
+            if (
+              draft.getConversation?.Messages &&
+              incoming.getConversation?.Messages
+            ) {
+              draft.getConversation.Messages = [
+                ...incoming.getConversation.Messages,
+                ...draft.getConversation.Messages,
+              ];
+            }
+          });
           return merged;
         },
       });

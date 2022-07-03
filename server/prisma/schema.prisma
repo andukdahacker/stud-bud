@@ -28,6 +28,7 @@ model Profile {
   profile_avatar_public_id    String?             @db.VarChar
   profile_wallpaper           String?             @db.VarChar
   profile_wallpaper_public_id String?             @db.VarChar
+  tutor_mode                  Boolean             @default(false)
   profile_interests           ProfileInterests[]
   requester                   Relationship[]      @relation("requester")
   addressee                   Relationship[]      @relation("addressee")
@@ -36,6 +37,8 @@ model Profile {
   noti_receiver               Notification[]      @relation("receiver")
   message_author              Message[]
   conversation_member         ConversationGroup[]
+  student                     TutorOrder[]        @relation("student")
+  tutor                       TutorOrder[]        @relation("tutor")
   user                        User                @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id                     String              @unique
   createdAt                   DateTime            @unique @default(now())
@@ -44,11 +47,12 @@ model Profile {
 }
 
 model Interest {
-  id                String             @id @default(cuid())
-  interest_name     String             @unique @db.VarChar
-  profile_interests ProfileInterests[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  id                     String                @id @default(cuid())
+  interest_name          String                @unique @db.VarChar
+  profile_interests      ProfileInterests[]
+  tutor_order_interestes TutorOrderInterests[]
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
 }
 
 model ProfileInterests {
@@ -136,4 +140,28 @@ model ConversationGroup {
   left_at                DateTime?
 
   @@id([conversation_member_id, conversation_id])
+}
+
+model TutorOrder {
+  id                    String                @id @default(cuid())
+  student               Profile               @relation("student", fields: [student_id], references: [id], onDelete: Cascade)
+  student_id            String
+  tutor                 Profile?              @relation("tutor", fields: [tutor_id], references: [id], onDelete: Cascade)
+  tutor_id              String?
+  tutor_order_interests TutorOrderInterests[]
+  problem               String                @db.Text
+  tutor_requirements    String                @db.VarChar(200)
+  isCompleted           Boolean               @default(false)
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+}
+
+model TutorOrderInterests {
+  tutor_order    TutorOrder @relation(fields: [tutor_order_id], references: [id], onDelete: Cascade)
+  tutor_order_id String
+  interest       Interest   @relation(fields: [interest_id], references: [id], onDelete: Cascade)
+  interest_id    String
+  createdAt      DateTime   @default(now())
+
+  @@id([tutor_order_id, interest_id])
 }
