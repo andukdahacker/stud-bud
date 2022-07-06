@@ -1,0 +1,10 @@
+mutation updateTutorOrder(
+  $input: CreateTutorOrderInput!
+  $where: TutorOrderWhereUniqueInput!
+) {
+  updateTutorOrder(input: $input, where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

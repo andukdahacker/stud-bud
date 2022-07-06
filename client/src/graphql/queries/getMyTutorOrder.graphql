@@ -1,0 +1,10 @@
+query getMyTutorOrder($where: ProfileWhereUniqueInput!) {
+  getMyTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}

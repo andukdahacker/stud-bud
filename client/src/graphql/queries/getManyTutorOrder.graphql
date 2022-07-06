@@ -1,0 +1,10 @@
+query GetManyTutorOrders($where: GetManyTutorOrdersInput!) {
+  getManyTutorOrders(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}

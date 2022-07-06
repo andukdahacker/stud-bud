@@ -1,0 +1,7 @@
+mutation createNotification($input: CreateNotificationInput!) {
+  createNotification(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

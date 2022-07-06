@@ -1,5 +1,5 @@
 import { objectType } from "nexus";
-import { PageInfo } from "../objects";
+import { PageInfoIDCursor } from "../objects";
 import { Relationship } from "../objects/Relationship";
 import { IOutput } from "./IOutput";
 
@@ -31,7 +31,7 @@ export const BuddyNotificationsOutput = objectType({
     });
     t.nullable.int("countNotViewedBuddyNotifications");
     t.nullable.field("PageInfo", {
-      type: PageInfo,
+      type: PageInfoIDCursor,
     });
   },
 });

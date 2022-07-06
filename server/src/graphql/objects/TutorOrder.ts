@@ -1,12 +1,37 @@
 import { objectType } from "nexus";
 import { Interest } from "./Interest";
+import { Profile } from "./Profile";
 
 export const TutorOrder = objectType({
   name: "TutorOrder",
   definition(t) {
     t.nonNull.string("id");
     t.nonNull.string("student_id");
+    t.nonNull.field("student", {
+      type: Profile,
+      resolve: async (root, _args, ctx) => {
+        return await ctx.prisma.profile.findUnique({
+          where: {
+            id: root.student_id,
+          },
+          rejectOnNotFound: true,
+        });
+      },
+    });
     t.nullable.string("tutor_id");
+    t.nullable.field("tutor", {
+      type: Profile,
+      resolve: async (root, _args, ctx) => {
+        if (root.tutor_id) {
+          return await ctx.prisma.profile.findUnique({
+            where: {
+              id: root.tutor_id,
+            },
+          });
+        }
+        return null;
+      },
+    });
     t.nullable.list.nonNull.field("tutor_order_interest", {
       type: TutorOrderInterests,
       resolve: async (root, _args, ctx) => {

@@ -1,0 +1,14 @@
+fragment Notification on Notification {
+  id
+  entity_id
+  receiver_id
+  notifier_id
+  notifier {
+    ...Profile
+  }
+  type_id
+  message
+  isViewed
+  isRead
+  createdAt
+}

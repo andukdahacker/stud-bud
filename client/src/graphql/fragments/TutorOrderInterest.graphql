@@ -1,0 +1,5 @@
+fragment TutorOrderInterests on TutorOrderInterests {
+  interest {
+    ...Interest
+  }
+}

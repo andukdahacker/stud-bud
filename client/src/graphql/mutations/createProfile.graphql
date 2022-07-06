@@ -7,9 +7,9 @@ mutation createProfile($input: CreateProfileInput!) {
       ...Profile
       profile_interests {
         ...ProfileInterest
-        interest {
-          ...Interest
-        }
+        # interest {
+        #   ...Interest
+        # }
       }
     }
   }

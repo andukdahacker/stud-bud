@@ -1,12 +1,9 @@
-import { useApolloClient } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   GetManyConversationsSubsDocument,
-  GetUserDocument,
-  GetUserQuery,
   useGetManyConversationsLazyQuery,
 } from "../generated/graphql";
 import ChatBar from "./ChatBar";
@@ -35,7 +32,7 @@ const ChatNotiNavBarButton = ({
     {
       data: getManyConversationsData,
       loading: getManyConversationsLoading,
-      refetch: refetchChatData,
+
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();

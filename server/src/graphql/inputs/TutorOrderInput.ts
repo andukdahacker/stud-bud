@@ -20,3 +20,12 @@ export const TutorOrderWhereUniqueInput = inputObjectType({
     t.nonNull.string("id");
   },
 });
+
+export const GetManyTutorOrdersInput = inputObjectType({
+  name: "GetManyTutorOrdersInput",
+  definition(t) {
+    t.nullable.string("search_input");
+    t.nonNull.int("take");
+    t.nullable.string("cursor");
+  },
+});

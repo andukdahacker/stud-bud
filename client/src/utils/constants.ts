@@ -2,6 +2,7 @@ import { RelationshipStatusCode } from "../generated/graphql";
 
 export const PROFILES_TAKE_LIMIT = 1;
 export const MESSAGES_TAKE_LIMIT = 5;
+export const TUTOR_ORDER_TAKE_LIMIT = 5;
 export enum BuddyStatus {
   BUDDY,
   REQUESTED,
@@ -22,3 +23,10 @@ export interface BuddyNotificationProps {
   status: RelationshipStatusCode;
   isRead: boolean;
 }
+
+export type findOptions =
+  | "buddies"
+  | "tutor orders"
+  | "tutors"
+  | "roadmaps"
+  | null;

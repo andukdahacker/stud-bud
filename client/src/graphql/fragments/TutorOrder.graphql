@@ -1,0 +1,19 @@
+fragment TutorOrder on TutorOrder {
+  id
+  student_id
+  student {
+    ...Profile
+  }
+  tutor_id
+  tutor {
+    ...Profile
+  }
+  tutor_order_interest {
+    ...TutorOrderInterests
+  }
+  problem
+  tutor_requirements
+  isCompleted
+  createdAt
+  updatedAt
+}

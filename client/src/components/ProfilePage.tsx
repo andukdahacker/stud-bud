@@ -12,7 +12,7 @@ import BuddyButton from "./BuddyButton";
 
 interface ProfilePageProps {
   data: GetProfileQuery | undefined;
-  loading?: boolean;
+  loading: boolean;
 }
 
 const ProfilePage = (props: ProfilePageProps) => {
@@ -65,14 +65,19 @@ const ProfilePage = (props: ProfilePageProps) => {
       </Link>
       <h2>Bio: {profile_bio}</h2>
       <h2>Interest</h2>
-      {profileData?.profile_interests &&
-        profileData.profile_interests.map((profile, index) => {
-          return (
-            <div key={index}>
-              <span>{profile?.interest.interest_name}</span>
-            </div>
-          );
-        })}
+      <div>
+        {profileData?.profile_interests &&
+          profileData.profile_interests.map((profile, index) => {
+            return (
+              <div key={index}>
+                <span>{profile?.interest.interest_name}</span>
+              </div>
+            );
+          })}
+      </div>
+      <Link href={"/one-hour-tutor"}>
+        <a>Need a tutor?</a>
+      </Link>
     </div>
   );
 };

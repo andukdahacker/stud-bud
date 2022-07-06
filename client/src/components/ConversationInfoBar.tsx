@@ -1,9 +1,4 @@
-import { useApolloClient } from "@apollo/client";
-import {
-  GetConversationQuery,
-  GetUserDocument,
-  GetUserQuery,
-} from "../generated/graphql";
+import { GetConversationQuery } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
 

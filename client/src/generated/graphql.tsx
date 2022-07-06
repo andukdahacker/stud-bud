@@ -29,7 +29,7 @@ export type AuthOutput = {
 export type BuddyNotificationOutput = {
   __typename?: 'BuddyNotificationOutput';
   IOutput: IOutput;
-  PageInfo?: Maybe<PageInfo>;
+  PageInfo?: Maybe<PageInfoIdCursor>;
   buddyAccepts?: Maybe<Array<Relationship>>;
   buddyRequests?: Maybe<Array<Relationship>>;
   countNotViewedBuddyNotifications?: Maybe<Scalars['Int']>;
@@ -65,13 +65,6 @@ export type ConversationGroupWhereUniqueInput = {
   profile_id: Scalars['String'];
 };
 
-export type ConversationPageInfo = {
-  __typename?: 'ConversationPageInfo';
-  endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
-  lastTake?: Maybe<Scalars['Int']>;
-};
-
 export type ConversationPageInput = {
   cursor?: InputMaybe<Scalars['String']>;
   take: Scalars['Int'];
@@ -85,11 +78,26 @@ export type CreateInterestInput = {
   interest_name: Scalars['String'];
 };
 
+export type CreateNotificationInput = {
+  entity_id: Scalars['String'];
+  notifier_id: Scalars['String'];
+  receiver_id: Array<Scalars['String']>;
+  type_id: Scalars['Int'];
+};
+
 export type CreateProfileInput = {
   profile_avatar?: InputMaybe<Scalars['Upload']>;
   profile_bio?: InputMaybe<Scalars['String']>;
   profile_interest: Array<InputMaybe<CreateInterestInput>>;
   profile_wallpaper?: InputMaybe<Scalars['Upload']>;
+};
+
+export type CreateTutorOrderInput = {
+  problem: Scalars['String'];
+  student_id: Scalars['String'];
+  tutor_id?: InputMaybe<Scalars['String']>;
+  tutor_order_interests: Array<InputMaybe<CreateInterestInput>>;
+  tutor_requirements: Scalars['String'];
 };
 
 export type DestroyImageInput = {
@@ -121,8 +129,27 @@ export type GetManyProfilesInput = {
 export type GetManyProfilesOutput = {
   __typename?: 'GetManyProfilesOutput';
   IOutput: IOutput;
-  PageInfo?: Maybe<PageInfo>;
+  PageInfo?: Maybe<PageInfoDataCursor>;
   Profile?: Maybe<Array<Maybe<Profile>>>;
+};
+
+export type GetManyTutorOrdersInput = {
+  cursor?: InputMaybe<Scalars['String']>;
+  search_input?: InputMaybe<Scalars['String']>;
+  take: Scalars['Int'];
+};
+
+export type GetManyTutorOrdersOutput = {
+  __typename?: 'GetManyTutorOrdersOutput';
+  IOutput: IOutput;
+  PageInfoIDCursor?: Maybe<PageInfoIdCursor>;
+  tutor_order?: Maybe<Array<TutorOrder>>;
+};
+
+export type GetNotificationOutput = {
+  __typename?: 'GetNotificationOutput';
+  IOutput: IOutput;
+  notifications?: Maybe<Array<Maybe<Notification>>>;
 };
 
 export type IOutput = {
@@ -156,14 +183,19 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptTutor?: Maybe<TutorOrderOutput>;
   changePassword?: Maybe<AuthOutput>;
   connectBuddy?: Maybe<RelationshipOutput>;
+  createNotification?: Maybe<NotificationMutationOutput>;
   createProfile?: Maybe<ProfileMutationOutput>;
+  createTutorOrder?: Maybe<TutorOrderOutput>;
+  deleteTutorOrder?: Maybe<TutorOrderOutput>;
   forgotPassword?: Maybe<AuthOutput>;
   login: AuthOutput;
   logout: AuthOutput;
   readBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   readMessage?: Maybe<IOutput>;
+  readNotification?: Maybe<NotificationMutationOutput>;
   register: AuthOutput;
   removeAvatar?: Maybe<ProfileMutationOutput>;
   removeBuddy?: Maybe<RelationshipOutput>;
@@ -171,9 +203,17 @@ export type Mutation = {
   respondBuddy?: Maybe<RelationshipOutput>;
   sendMessage?: Maybe<SendMessageOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
+  updateTutorOrder?: Maybe<TutorOrderOutput>;
   verifyEmail: AuthOutput;
   viewBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   viewMessage?: Maybe<IOutput>;
+  viewNotification?: Maybe<NotificationMutationOutput>;
+};
+
+
+export type MutationAcceptTutorArgs = {
+  where_1: ProfileWhereUniqueInput;
+  where_2: TutorOrderWhereUniqueInput;
 };
 
 
@@ -187,8 +227,23 @@ export type MutationConnectBuddyArgs = {
 };
 
 
+export type MutationCreateNotificationArgs = {
+  input: CreateNotificationInput;
+};
+
+
 export type MutationCreateProfileArgs = {
   input: CreateProfileInput;
+};
+
+
+export type MutationCreateTutorOrderArgs = {
+  input: CreateTutorOrderInput;
+};
+
+
+export type MutationDeleteTutorOrderArgs = {
+  where: TutorOrderWhereUniqueInput;
 };
 
 
@@ -209,6 +264,11 @@ export type MutationReadBuddyNotificationsArgs = {
 
 export type MutationReadMessageArgs = {
   where: ConversationGroupWhereUniqueInput;
+};
+
+
+export type MutationReadNotificationArgs = {
+  where: NotificationWhereUniqueInput;
 };
 
 
@@ -251,6 +311,12 @@ export type MutationUpdateProfileArgs = {
 };
 
 
+export type MutationUpdateTutorOrderArgs = {
+  input: CreateTutorOrderInput;
+  where: TutorOrderWhereUniqueInput;
+};
+
+
 export type MutationVerifyEmailArgs = {
   input: VerifyEmailInput;
 };
@@ -265,10 +331,45 @@ export type MutationViewMessageArgs = {
   where: ProfileWhereUniqueInput;
 };
 
-export type PageInfo = {
-  __typename?: 'PageInfo';
+
+export type MutationViewNotificationArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  createdAt: Scalars['Date'];
+  entity_id?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isRead: Scalars['Boolean'];
+  isViewed: Scalars['Boolean'];
+  message?: Maybe<Scalars['String']>;
+  notifier?: Maybe<Profile>;
+  notifier_id: Scalars['String'];
+  receiver_id: Scalars['String'];
+  type_id: Scalars['Int'];
+};
+
+export type NotificationMutationOutput = {
+  __typename?: 'NotificationMutationOutput';
+  IOutput: IOutput;
+};
+
+export type NotificationWhereUniqueInput = {
+  id: Scalars['String'];
+};
+
+export type PageInfoDataCursor = {
+  __typename?: 'PageInfoDataCursor';
   endCursor?: Maybe<Scalars['Date']>;
-  hasNextPage?: Maybe<Scalars['Boolean']>;
+  hasNextPage: Scalars['Boolean'];
+  lastTake?: Maybe<Scalars['Int']>;
+};
+
+export type PageInfoIdCursor = {
+  __typename?: 'PageInfoIDCursor';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
   lastTake?: Maybe<Scalars['Int']>;
 };
 
@@ -314,7 +415,11 @@ export type Query = {
   getManyConversations?: Maybe<GetManyConversationPutput>;
   getManyInterests?: Maybe<GetManyInterestOutput>;
   getManyProfiles?: Maybe<GetManyProfilesOutput>;
+  getManyTutorOrders?: Maybe<GetManyTutorOrdersOutput>;
+  getMyTutorOrder?: Maybe<GetManyTutorOrdersOutput>;
+  getNotifications?: Maybe<GetNotificationOutput>;
   getProfile?: Maybe<ProfileMutationOutput>;
+  getTutorOrder?: Maybe<TutorOrderOutput>;
   getUser?: Maybe<User>;
 };
 
@@ -345,8 +450,28 @@ export type QueryGetManyProfilesArgs = {
 };
 
 
+export type QueryGetManyTutorOrdersArgs = {
+  where: GetManyTutorOrdersInput;
+};
+
+
+export type QueryGetMyTutorOrderArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type QueryGetNotificationsArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
 export type QueryGetProfileArgs = {
   where: ProfileWhereUniqueInput;
+};
+
+
+export type QueryGetTutorOrderArgs = {
+  where: TutorOrderWhereUniqueInput;
 };
 
 export type ReadBuddyNotificationsInput = {
@@ -426,6 +551,39 @@ export type SubscriptionGetManyConversationsArgs = {
   where: ProfileWhereUniqueInput;
 };
 
+export type TutorOrder = {
+  __typename?: 'TutorOrder';
+  createdAt: Scalars['Date'];
+  id: Scalars['String'];
+  isCompleted: Scalars['Boolean'];
+  problem: Scalars['String'];
+  student: Profile;
+  student_id: Scalars['String'];
+  tutor?: Maybe<Profile>;
+  tutor_id?: Maybe<Scalars['String']>;
+  tutor_order_interest?: Maybe<Array<TutorOrderInterests>>;
+  tutor_requirements: Scalars['String'];
+  updatedAt: Scalars['Date'];
+};
+
+export type TutorOrderInterests = {
+  __typename?: 'TutorOrderInterests';
+  interest: Interest;
+  interest_id: Scalars['String'];
+  tutor_order: TutorOrder;
+  tutor_order_id: Scalars['String'];
+};
+
+export type TutorOrderOutput = {
+  __typename?: 'TutorOrderOutput';
+  IOutput: IOutput;
+  tutor_order?: Maybe<TutorOrder>;
+};
+
+export type TutorOrderWhereUniqueInput = {
+  id: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
@@ -442,7 +600,7 @@ export type VerifyEmailInput = {
 export type GetConversationOutput = {
   __typename?: 'getConversationOutput';
   Conversation?: Maybe<Conversation>;
-  ConversationPageInfo?: Maybe<ConversationPageInfo>;
+  ConversationPageInfo?: Maybe<PageInfoIdCursor>;
   IOutput: IOutput;
   Messages?: Maybe<Array<Message>>;
 };
@@ -458,30 +616,36 @@ export type GetManyInterestsInput = {
   search_input?: InputMaybe<Scalars['String']>;
 };
 
-export type ConversationFragment = { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> };
+export type ConversationFragment = { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> };
 
-export type ConversationGroupFragment = { __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } };
+export type ConversationGroupFragment = { __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } };
 
 export type IOutputFragment = { __typename?: 'IOutput', code: number, message: string, success: boolean };
 
 export type InterestFragment = { __typename?: 'Interest', id: string, interest_name?: string | null };
 
-export type MessageFragment = { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } };
+export type MessageFragment = { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
 
-export type ProfileFragment = { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null };
+export type NotificationFragment = { __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null };
 
-export type ProfileInterestFragment = { __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } };
+export type ProfileFragment = { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null };
 
-export type RelationshipFragment = { __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } };
+export type ProfileInterestFragment = { __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
 
-export type UserFragment = { __typename?: 'User', id: string, username: string, email: string };
+export type RelationshipFragment = { __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
+
+export type TutorOrderFragment = { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null };
+
+export type TutorOrderInterestsFragment = { __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } };
+
+export type UserFragment = { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean };
 
 export type ChangePasswordMutationVariables = Exact<{
   input: ChangePasswordInput;
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword?: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } | null };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword?: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } | null };
 
 export type ConnectBuddyMutationVariables = Exact<{
   input: RelationshipInput;
@@ -490,12 +654,33 @@ export type ConnectBuddyMutationVariables = Exact<{
 
 export type ConnectBuddyMutation = { __typename?: 'Mutation', connectBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
+export type CreateNotificationMutationVariables = Exact<{
+  input: CreateNotificationInput;
+}>;
+
+
+export type CreateNotificationMutation = { __typename?: 'Mutation', createNotification?: { __typename?: 'NotificationMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
 export type CreateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null };
+
+export type CreateTutorOrderMutationVariables = Exact<{
+  input: CreateTutorOrderInput;
+}>;
+
+
+export type CreateTutorOrderMutation = { __typename?: 'Mutation', createTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null } | null } | null };
+
+export type DeleteTutorOrderMutationVariables = Exact<{
+  where: TutorOrderWhereUniqueInput;
+}>;
+
+
+export type DeleteTutorOrderMutation = { __typename?: 'Mutation', deleteTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
 export type ForgotPasswordMutationVariables = Exact<{
   input: ForgotPasswordInput;
@@ -509,7 +694,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean, profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -528,7 +713,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, User?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null, ErrorFieldOutput?: Array<{ __typename?: 'ErrorFieldOutput', field: string, message: string }> | null } };
 
 export type RemoveAvatarMutationVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -576,6 +761,14 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
+export type UpdateTutorOrderMutationVariables = Exact<{
+  input: CreateTutorOrderInput;
+  where: TutorOrderWhereUniqueInput;
+}>;
+
+
+export type UpdateTutorOrderMutation = { __typename?: 'Mutation', updateTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
 export type VerifyEmailMutationVariables = Exact<{
   input: VerifyEmailInput;
 }>;
@@ -602,7 +795,7 @@ export type GetBuddyNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null } | null };
+export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
 
 export type GetConversationQueryVariables = Exact<{
   where: ConversationWhereUniqueInput;
@@ -610,14 +803,14 @@ export type GetConversationQueryVariables = Exact<{
 }>;
 
 
-export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, ConversationPageInfo?: { __typename?: 'ConversationPageInfo', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
+export type GetConversationQuery = { __typename?: 'Query', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, ConversationPageInfo?: { __typename?: 'PageInfoIDCursor', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
 
 export type GetManyConversationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } }> | null } | null };
+export type GetManyConversationsQuery = { __typename?: 'Query', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } }> | null } | null };
 
 export type GetManyInterestsQueryVariables = Exact<{
   where: GetManyInterestsInput;
@@ -631,46 +824,75 @@ export type GetManyProfilesQueryVariables = Exact<{
 }>;
 
 
-export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null> | null, PageInfo?: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage?: boolean | null } | null } | null };
+export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null> | null, PageInfo?: { __typename?: 'PageInfoDataCursor', endCursor?: any | null, hasNextPage: boolean } | null } | null };
+
+export type GetManyTutorOrdersQueryVariables = Exact<{
+  where: GetManyTutorOrdersInput;
+}>;
+
+
+export type GetManyTutorOrdersQuery = { __typename?: 'Query', getManyTutorOrders?: { __typename?: 'GetManyTutorOrdersOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: Array<{ __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }> | null } | null };
+
+export type GetMyTutorOrderQueryVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetMyTutorOrderQuery = { __typename?: 'Query', getMyTutorOrder?: { __typename?: 'GetManyTutorOrdersOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: Array<{ __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }> | null } | null };
+
+export type GetNotificationsQueryVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetNotificationsQuery = { __typename?: 'Query', getNotifications?: { __typename?: 'GetNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, notifications?: Array<{ __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null> | null } | null };
 
 export type GetProfileQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null };
+
+export type GetTutorOrderQueryVariables = Exact<{
+  where: TutorOrderWhereUniqueInput;
+}>;
+
+
+export type GetTutorOrderQuery = { __typename?: 'Query', getTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean, profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null };
 
 export type GetBuddyNotificationsSubsSubscriptionVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null } | null };
+export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
 
 export type GetConversationSubSubscriptionVariables = Exact<{
   where: ConversationWhereUniqueInput;
 }>;
 
 
-export type GetConversationSubSubscription = { __typename?: 'Subscription', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } }> | null, ConversationPageInfo?: { __typename?: 'ConversationPageInfo', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
+export type GetConversationSubSubscription = { __typename?: 'Subscription', getConversation?: { __typename?: 'getConversationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } | null, Messages?: Array<{ __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, ConversationPageInfo?: { __typename?: 'PageInfoIDCursor', endCursor?: string | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
 
 export type GetManyConversationsSubsSubscriptionVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
 
 
-export type GetManyConversationsSubsSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string } | null }> } }> | null } | null };
+export type GetManyConversationsSubsSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } }> | null } | null };
 
 export const UserFragmentDoc = gql`
     fragment User on User {
   id
   username
   email
+  isVerified
 }
     `;
 export const ProfileFragmentDoc = gql`
@@ -733,6 +955,22 @@ export const IOutputFragmentDoc = gql`
   success
 }
     `;
+export const NotificationFragmentDoc = gql`
+    fragment Notification on Notification {
+  id
+  entity_id
+  receiver_id
+  notifier_id
+  notifier {
+    ...Profile
+  }
+  type_id
+  message
+  isViewed
+  isRead
+  createdAt
+}
+    ${ProfileFragmentDoc}`;
 export const InterestFragmentDoc = gql`
     fragment Interest on Interest {
   id
@@ -770,6 +1008,35 @@ export const RelationshipFragmentDoc = gql`
   updatedAt
 }
     ${ProfileFragmentDoc}`;
+export const TutorOrderInterestsFragmentDoc = gql`
+    fragment TutorOrderInterests on TutorOrderInterests {
+  interest {
+    ...Interest
+  }
+}
+    ${InterestFragmentDoc}`;
+export const TutorOrderFragmentDoc = gql`
+    fragment TutorOrder on TutorOrder {
+  id
+  student_id
+  student {
+    ...Profile
+  }
+  tutor_id
+  tutor {
+    ...Profile
+  }
+  tutor_order_interest {
+    ...TutorOrderInterests
+  }
+  problem
+  tutor_requirements
+  isCompleted
+  createdAt
+  updatedAt
+}
+    ${ProfileFragmentDoc}
+${TutorOrderInterestsFragmentDoc}`;
 export const ChangePasswordDocument = gql`
     mutation changePassword($input: ChangePasswordInput!) {
   changePassword(input: $input) {
@@ -848,6 +1115,41 @@ export function useConnectBuddyMutation(baseOptions?: Apollo.MutationHookOptions
 export type ConnectBuddyMutationHookResult = ReturnType<typeof useConnectBuddyMutation>;
 export type ConnectBuddyMutationResult = Apollo.MutationResult<ConnectBuddyMutation>;
 export type ConnectBuddyMutationOptions = Apollo.BaseMutationOptions<ConnectBuddyMutation, ConnectBuddyMutationVariables>;
+export const CreateNotificationDocument = gql`
+    mutation createNotification($input: CreateNotificationInput!) {
+  createNotification(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type CreateNotificationMutationFn = Apollo.MutationFunction<CreateNotificationMutation, CreateNotificationMutationVariables>;
+
+/**
+ * __useCreateNotificationMutation__
+ *
+ * To run a mutation, you first call `useCreateNotificationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNotificationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNotificationMutation, { data, loading, error }] = useCreateNotificationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNotificationMutation(baseOptions?: Apollo.MutationHookOptions<CreateNotificationMutation, CreateNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNotificationMutation, CreateNotificationMutationVariables>(CreateNotificationDocument, options);
+      }
+export type CreateNotificationMutationHookResult = ReturnType<typeof useCreateNotificationMutation>;
+export type CreateNotificationMutationResult = Apollo.MutationResult<CreateNotificationMutation>;
+export type CreateNotificationMutationOptions = Apollo.BaseMutationOptions<CreateNotificationMutation, CreateNotificationMutationVariables>;
 export const CreateProfileDocument = gql`
     mutation createProfile($input: CreateProfileInput!) {
   createProfile(input: $input) {
@@ -858,17 +1160,13 @@ export const CreateProfileDocument = gql`
       ...Profile
       profile_interests {
         ...ProfileInterest
-        interest {
-          ...Interest
-        }
       }
     }
   }
 }
     ${IOutputFragmentDoc}
 ${ProfileFragmentDoc}
-${ProfileInterestFragmentDoc}
-${InterestFragmentDoc}`;
+${ProfileInterestFragmentDoc}`;
 export type CreateProfileMutationFn = Apollo.MutationFunction<CreateProfileMutation, CreateProfileMutationVariables>;
 
 /**
@@ -895,6 +1193,80 @@ export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
+export const CreateTutorOrderDocument = gql`
+    mutation createTutorOrder($input: CreateTutorOrderInput!) {
+  createTutorOrder(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderFragmentDoc}`;
+export type CreateTutorOrderMutationFn = Apollo.MutationFunction<CreateTutorOrderMutation, CreateTutorOrderMutationVariables>;
+
+/**
+ * __useCreateTutorOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateTutorOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTutorOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTutorOrderMutation, { data, loading, error }] = useCreateTutorOrderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTutorOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateTutorOrderMutation, CreateTutorOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTutorOrderMutation, CreateTutorOrderMutationVariables>(CreateTutorOrderDocument, options);
+      }
+export type CreateTutorOrderMutationHookResult = ReturnType<typeof useCreateTutorOrderMutation>;
+export type CreateTutorOrderMutationResult = Apollo.MutationResult<CreateTutorOrderMutation>;
+export type CreateTutorOrderMutationOptions = Apollo.BaseMutationOptions<CreateTutorOrderMutation, CreateTutorOrderMutationVariables>;
+export const DeleteTutorOrderDocument = gql`
+    mutation deleteTutorOrder($where: TutorOrderWhereUniqueInput!) {
+  deleteTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type DeleteTutorOrderMutationFn = Apollo.MutationFunction<DeleteTutorOrderMutation, DeleteTutorOrderMutationVariables>;
+
+/**
+ * __useDeleteTutorOrderMutation__
+ *
+ * To run a mutation, you first call `useDeleteTutorOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTutorOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTutorOrderMutation, { data, loading, error }] = useDeleteTutorOrderMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useDeleteTutorOrderMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTutorOrderMutation, DeleteTutorOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTutorOrderMutation, DeleteTutorOrderMutationVariables>(DeleteTutorOrderDocument, options);
+      }
+export type DeleteTutorOrderMutationHookResult = ReturnType<typeof useDeleteTutorOrderMutation>;
+export type DeleteTutorOrderMutationResult = Apollo.MutationResult<DeleteTutorOrderMutation>;
+export type DeleteTutorOrderMutationOptions = Apollo.BaseMutationOptions<DeleteTutorOrderMutation, DeleteTutorOrderMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($input: ForgotPasswordInput!) {
   forgotPassword(input: $input) {
@@ -1307,6 +1679,42 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateTutorOrderDocument = gql`
+    mutation updateTutorOrder($input: CreateTutorOrderInput!, $where: TutorOrderWhereUniqueInput!) {
+  updateTutorOrder(input: $input, where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type UpdateTutorOrderMutationFn = Apollo.MutationFunction<UpdateTutorOrderMutation, UpdateTutorOrderMutationVariables>;
+
+/**
+ * __useUpdateTutorOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateTutorOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTutorOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTutorOrderMutation, { data, loading, error }] = useUpdateTutorOrderMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useUpdateTutorOrderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTutorOrderMutation, UpdateTutorOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTutorOrderMutation, UpdateTutorOrderMutationVariables>(UpdateTutorOrderDocument, options);
+      }
+export type UpdateTutorOrderMutationHookResult = ReturnType<typeof useUpdateTutorOrderMutation>;
+export type UpdateTutorOrderMutationResult = Apollo.MutationResult<UpdateTutorOrderMutation>;
+export type UpdateTutorOrderMutationOptions = Apollo.BaseMutationOptions<UpdateTutorOrderMutation, UpdateTutorOrderMutationVariables>;
 export const VerifyEmailDocument = gql`
     mutation verifyEmail($input: VerifyEmailInput!) {
   verifyEmail(input: $input) {
@@ -1643,6 +2051,129 @@ export function useGetManyProfilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetManyProfilesQueryHookResult = ReturnType<typeof useGetManyProfilesQuery>;
 export type GetManyProfilesLazyQueryHookResult = ReturnType<typeof useGetManyProfilesLazyQuery>;
 export type GetManyProfilesQueryResult = Apollo.QueryResult<GetManyProfilesQuery, GetManyProfilesQueryVariables>;
+export const GetManyTutorOrdersDocument = gql`
+    query GetManyTutorOrders($where: GetManyTutorOrdersInput!) {
+  getManyTutorOrders(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderFragmentDoc}`;
+
+/**
+ * __useGetManyTutorOrdersQuery__
+ *
+ * To run a query within a React component, call `useGetManyTutorOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetManyTutorOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManyTutorOrdersQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetManyTutorOrdersQuery(baseOptions: Apollo.QueryHookOptions<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>(GetManyTutorOrdersDocument, options);
+      }
+export function useGetManyTutorOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>(GetManyTutorOrdersDocument, options);
+        }
+export type GetManyTutorOrdersQueryHookResult = ReturnType<typeof useGetManyTutorOrdersQuery>;
+export type GetManyTutorOrdersLazyQueryHookResult = ReturnType<typeof useGetManyTutorOrdersLazyQuery>;
+export type GetManyTutorOrdersQueryResult = Apollo.QueryResult<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>;
+export const GetMyTutorOrderDocument = gql`
+    query getMyTutorOrder($where: ProfileWhereUniqueInput!) {
+  getMyTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderFragmentDoc}`;
+
+/**
+ * __useGetMyTutorOrderQuery__
+ *
+ * To run a query within a React component, call `useGetMyTutorOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyTutorOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyTutorOrderQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetMyTutorOrderQuery(baseOptions: Apollo.QueryHookOptions<GetMyTutorOrderQuery, GetMyTutorOrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyTutorOrderQuery, GetMyTutorOrderQueryVariables>(GetMyTutorOrderDocument, options);
+      }
+export function useGetMyTutorOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyTutorOrderQuery, GetMyTutorOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyTutorOrderQuery, GetMyTutorOrderQueryVariables>(GetMyTutorOrderDocument, options);
+        }
+export type GetMyTutorOrderQueryHookResult = ReturnType<typeof useGetMyTutorOrderQuery>;
+export type GetMyTutorOrderLazyQueryHookResult = ReturnType<typeof useGetMyTutorOrderLazyQuery>;
+export type GetMyTutorOrderQueryResult = Apollo.QueryResult<GetMyTutorOrderQuery, GetMyTutorOrderQueryVariables>;
+export const GetNotificationsDocument = gql`
+    query getNotifications($where: ProfileWhereUniqueInput!) {
+  getNotifications(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    notifications {
+      ...Notification
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${NotificationFragmentDoc}`;
+
+/**
+ * __useGetNotificationsQuery__
+ *
+ * To run a query within a React component, call `useGetNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotificationsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetNotificationsQuery(baseOptions: Apollo.QueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, options);
+      }
+export function useGetNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNotificationsQuery, GetNotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, options);
+        }
+export type GetNotificationsQueryHookResult = ReturnType<typeof useGetNotificationsQuery>;
+export type GetNotificationsLazyQueryHookResult = ReturnType<typeof useGetNotificationsLazyQuery>;
+export type GetNotificationsQueryResult = Apollo.QueryResult<GetNotificationsQuery, GetNotificationsQueryVariables>;
 export const GetProfileDocument = gql`
     query getProfile($where: ProfileWhereUniqueInput!) {
   getProfile(where: $where) {
@@ -1698,6 +2229,47 @@ export function useGetProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
+export const GetTutorOrderDocument = gql`
+    query getTutorOrder($where: TutorOrderWhereUniqueInput!) {
+  getTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderFragmentDoc}`;
+
+/**
+ * __useGetTutorOrderQuery__
+ *
+ * To run a query within a React component, call `useGetTutorOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTutorOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTutorOrderQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetTutorOrderQuery(baseOptions: Apollo.QueryHookOptions<GetTutorOrderQuery, GetTutorOrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTutorOrderQuery, GetTutorOrderQueryVariables>(GetTutorOrderDocument, options);
+      }
+export function useGetTutorOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTutorOrderQuery, GetTutorOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTutorOrderQuery, GetTutorOrderQueryVariables>(GetTutorOrderDocument, options);
+        }
+export type GetTutorOrderQueryHookResult = ReturnType<typeof useGetTutorOrderQuery>;
+export type GetTutorOrderLazyQueryHookResult = ReturnType<typeof useGetTutorOrderLazyQuery>;
+export type GetTutorOrderQueryResult = Apollo.QueryResult<GetTutorOrderQuery, GetTutorOrderQueryVariables>;
 export const GetUserDocument = gql`
     query getUser {
   getUser {

@@ -63,13 +63,11 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
                 }
               });
 
-              console.log("Pagi data", mergedPagiData);
               return mergedPagiData;
             }
             return prev;
           },
           read: (existing) => {
-            console.log("read existing", existing);
             return existing;
           },
         },

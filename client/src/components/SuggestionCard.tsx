@@ -1,24 +1,17 @@
-import { ApolloQueryResult } from "@apollo/client";
 import { useRouter } from "next/router";
-import {
-  Exact,
-  GetManyProfilesInput,
-  GetManyProfilesQuery,
-} from "../generated/graphql";
+import { useGetManyProfilesLazyQuery } from "../generated/graphql";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 
 interface SuggestionCardProps {
   interest_name: string;
-  refetch: (
-    variables?: Partial<Exact<{ where: GetManyProfilesInput }>> | undefined
-  ) => Promise<ApolloQueryResult<GetManyProfilesQuery>>;
 }
 
 const SuggestionCard = (props: SuggestionCardProps) => {
   const router = useRouter();
+  const [_, { refetch }] = useGetManyProfilesLazyQuery();
   const handleClick = (value: string) => {
-    router.push(`/find-buddy?search_input=${value}`);
-    props.refetch({
+    router.push(`/find?search_input=${value}`);
+    refetch({
       where: {
         search_input: value,
         take: PROFILES_TAKE_LIMIT,

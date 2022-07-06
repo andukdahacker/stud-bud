@@ -1,6 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   GetConversationQuery,
   GetUserDocument,
@@ -10,7 +10,6 @@ import {
 } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
-import produce from "immer";
 
 interface ChatBoxProps {
   data?: GetConversationQuery;
@@ -24,9 +23,6 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
   const user_profile_id = client.readQuery<GetUserQuery>({
     query: GetUserDocument,
   })?.getUser?.profile?.id;
-
-  // const {data: userData} = useCheckAuth()
-  // const user_profile_id = userData?.getUser?.id
 
   const [messageContent, setMessageContent] = useState<string>("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +60,6 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
   };
 
   const loadMore = async () => {
-    console.log(conversation_id);
     await fetchMore({
       variables: {
         where: {

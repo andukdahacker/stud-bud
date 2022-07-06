@@ -1,0 +1,10 @@
+mutation createTutorOrder($input: CreateTutorOrderInput!) {
+  createTutorOrder(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}

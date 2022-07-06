@@ -3,25 +3,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCheckAuth } from "../utils/useCheckAuth";
 import logo from "../assets/Mark.jpg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  GetBuddyNotificationsSubsDocument,
-  GetManyConversationsSubsDocument,
   useGetBuddyNotificationsLazyQuery,
   useGetManyConversationsLazyQuery,
-  useGetProfileLazyQuery,
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
 } from "../generated/graphql";
-import merge from "deepmerge";
 
 import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
 import ChatNotiNavBarButton from "./ChatNotiNavBarButton";
+import Loading from "./Loading";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -133,20 +128,20 @@ const NavBar = () => {
             </div>
           </a>
         </Link>
-        <Link href="/find-buddy">
+        <Link href="/find">
           <a
             className={` ml-10 text-sm font-medium ${
-              router.route == "/find-buddy"
+              router.route == "/find"
                 ? `text-blue-700`
                 : `text-gray-800 hover:text-blue-700`
             }`}
           >
-            Find Buddy
+            Find
           </a>
         </Link>
       </div>
       {authLoading ? (
-        <div>Loading</div>
+        <Loading />
       ) : router.route == "/login" ||
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (

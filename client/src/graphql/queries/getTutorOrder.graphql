@@ -1,0 +1,10 @@
+query getTutorOrder($where: TutorOrderWhereUniqueInput!) {
+  getTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}

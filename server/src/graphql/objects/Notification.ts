@@ -21,6 +21,7 @@ export const Notification = objectType({
     t.nonNull.int("type_id");
     t.nullable.string("message");
     t.nullable.string("entity_id");
+    t.nonNull.boolean("isViewed");
     t.nonNull.boolean("isRead");
     t.nonNull.date("createdAt");
   },

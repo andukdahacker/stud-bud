@@ -1,6 +1,6 @@
 import { objectType } from "nexus";
 import { Profile } from "../objects";
-import { PageInfo } from "../objects/dev";
+import { PageInfoDateCursor } from "../objects/dev";
 import { IOutput } from "./IOutput";
 
 export const ProfileMutationOutput = objectType({
@@ -37,7 +37,7 @@ export const GetManyProfilesOutput = objectType({
       type: Profile,
     });
     t.nullable.field("PageInfo", {
-      type: PageInfo,
+      type: PageInfoDateCursor,
     });
   },
 });

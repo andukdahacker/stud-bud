@@ -10,7 +10,7 @@ type AuthOutput {
 
 type BuddyNotificationOutput {
   IOutput: IOutput!
-  PageInfo: PageInfo
+  PageInfo: PageInfoIDCursor
   buddyAccepts: [Relationship!]
   buddyRequests: [Relationship!]
   countNotViewedBuddyNotifications: Int
@@ -42,12 +42,6 @@ type ConversationGroup {
 input ConversationGroupWhereUniqueInput {
   conversation_id: String!
   profile_id: String!
-}
-
-type ConversationPageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  lastTake: Int
 }
 
 input ConversationPageInput {
@@ -114,8 +108,20 @@ input GetManyProfilesInput {
 
 type GetManyProfilesOutput {
   IOutput: IOutput!
-  PageInfo: PageInfo
+  PageInfo: PageInfoDataCursor
   Profile: [Profile]
+}
+
+input GetManyTutorOrdersInput {
+  cursor: String
+  search_input: String
+  take: Int!
+}
+
+type GetManyTutorOrdersOutput {
+  IOutput: IOutput!
+  PageInfoIDCursor: PageInfoIDCursor
+  tutor_order: [TutorOrder!]
 }
 
 type GetNotificationOutput {
@@ -182,6 +188,7 @@ type Notification {
   entity_id: String
   id: String!
   isRead: Boolean!
+  isViewed: Boolean!
   message: String
   notifier: Profile
   notifier_id: String!
@@ -197,9 +204,15 @@ input NotificationWhereUniqueInput {
   id: String!
 }
 
-type PageInfo {
+type PageInfoDataCursor {
   endCursor: Date
-  hasNextPage: Boolean
+  hasNextPage: Boolean!
+  lastTake: Int
+}
+
+type PageInfoIDCursor {
+  endCursor: String
+  hasNextPage: Boolean!
   lastTake: Int
 }
 
@@ -241,8 +254,11 @@ type Query {
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getManyTutorOrders(where: GetManyTutorOrdersInput!): GetManyTutorOrdersOutput
+  getMyTutorOrder(where: ProfileWhereUniqueInput!): GetManyTutorOrdersOutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  getTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   getUser: User
 }
 
@@ -309,7 +325,9 @@ type TutorOrder {
   id: String!
   isCompleted: Boolean!
   problem: String!
+  student: Profile!
   student_id: String!
+  tutor: Profile
   tutor_id: String
   tutor_order_interest: [TutorOrderInterests!]
   tutor_requirements: String!
@@ -349,7 +367,7 @@ input VerifyEmailInput {
 
 type getConversationOutput {
   Conversation: Conversation
-  ConversationPageInfo: ConversationPageInfo
+  ConversationPageInfo: PageInfoIDCursor
   IOutput: IOutput!
   Messages: [Message!]
 }

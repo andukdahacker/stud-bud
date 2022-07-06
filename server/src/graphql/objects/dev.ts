@@ -1,10 +1,19 @@
 import { objectType } from "nexus";
 
-export const PageInfo = objectType({
-  name: "PageInfo",
+export const PageInfoDateCursor = objectType({
+  name: "PageInfoDataCursor",
   definition(t) {
-    t.date("endCursor");
-    t.boolean("hasNextPage");
+    t.nullable.date("endCursor");
+    t.nonNull.boolean("hasNextPage");
+    t.nullable.int("lastTake");
+  },
+});
+
+export const PageInfoIDCursor = objectType({
+  name: "PageInfoIDCursor",
+  definition(t) {
+    t.nullable.string("endCursor");
+    t.nonNull.boolean("hasNextPage");
     t.nullable.int("lastTake");
   },
 });

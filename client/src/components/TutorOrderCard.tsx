@@ -1,33 +1,42 @@
-import Avatar from "./Avatar";
-import ReactModal from "react-modal";
-import { useState } from "react";
-import { useGetProfileLazyQuery } from "../generated/graphql";
-import ProfilePage from "./ProfilePage";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import BuddyButton from "./BuddyButton";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import ReactModal from "react-modal";
+import { useGetTutorOrderLazyQuery } from "../generated/graphql";
+import Avatar from "./Avatar";
 import SuggestionCard from "./SuggestionCard";
+import TutorOrderPage from "./TutorOrderPage";
 
-interface ProfileCardProps {
-  id?: string;
-  username?: string;
-  avatar?: string;
-  interests?: { interest_name: string }[];
+interface TutorOrderCardProps {
+  tutor_order_id: string;
+  username: string | undefined;
+  problem: string;
+  tutor_requirements: string;
+  profile_avatar: string | undefined | null;
+  tutor_order_interests: { interest_name: string }[] | undefined;
 }
 
-const ProfileCard = (props: ProfileCardProps) => {
+const TutorOrderCard = ({
+  tutor_order_id,
+  username,
+  problem,
+  tutor_requirements,
+  profile_avatar,
+  tutor_order_interests,
+}: TutorOrderCardProps) => {
   const router = useRouter();
-  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
-    useGetProfileLazyQuery();
-
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [
+    getTutorOrder,
+    { data: GetTutorOrderData, loading: GetTutorOrderLoading },
+  ] = useGetTutorOrderLazyQuery();
 
-  const openModal = async (profile_id: string) => {
+  const openModal = async (tutor_order_id: string) => {
     setShowModal(true);
-    await getProfile({
+    await getTutorOrder({
       variables: {
         where: {
-          profile_id,
+          id: tutor_order_id,
         },
       },
     });
@@ -37,19 +46,20 @@ const ProfileCard = (props: ProfileCardProps) => {
     setShowModal(false);
     router.push(`/find`, undefined, { shallow: true });
   };
-
   return (
     <div className="flex flex-col w-full p-4 transition duration-300 ease-in-out delay-150 bg-white shadow-xl rounded-xl h-60 hover:bg-blue-800 hover:text-white">
       <div className="flex flex-col items-center h-30">
-        <Avatar img_url={props.avatar} width={50} height={50} />
-        <div className="self-center mx-2 text-xl ">{props.username}</div>
+        <Avatar img_url={profile_avatar} width={50} height={50} />
+        <div className="self-center mx-2 text-xl ">{username}</div>
       </div>
       <div className="flex flex-col items-center h-1/3">
-        <span>Finding buddy for</span>
+        <div>Problem: {problem}</div>
+        <div>Tutor requirements: {tutor_requirements}</div>
+
         <div className="flex">
-          {!props.interests
+          {!tutor_order_interests
             ? null
-            : props.interests.map((interest, index) => {
+            : tutor_order_interests.map((interest, index) => {
                 return (
                   <SuggestionCard
                     key={index}
@@ -60,12 +70,12 @@ const ProfileCard = (props: ProfileCardProps) => {
         </div>
       </div>
       <div className="flex items-center justify-center mt-3 h-1/3">
-        <Link href={`/find`} as={`/profile/${props.id}`}>
+        <Link href={`/find`} as={`/one-hour-tutor/${tutor_order_id}`}>
           <a
             className="h-10 px-3 py-1 text-sm font-medium leading-6 text-gray-700 bg-gray-100 rounded shadow-sm shadow-gray-300"
-            onClick={() => openModal(props.id!)}
+            onClick={() => openModal(tutor_order_id!)}
           >
-            View profile
+            View order
           </a>
         </Link>
         <button
@@ -80,10 +90,13 @@ const ProfileCard = (props: ProfileCardProps) => {
         <button type="button" onClick={closeModal}>
           X
         </button>
-        <ProfilePage data={getProfileData} loading={getProfileLoading} />
+        <TutorOrderPage
+          data={GetTutorOrderData}
+          loading={GetTutorOrderLoading}
+        />
       </ReactModal>
     </div>
   );
 };
 
-export default ProfileCard;
+export default TutorOrderCard;

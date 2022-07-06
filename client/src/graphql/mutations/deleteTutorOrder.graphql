@@ -1,0 +1,7 @@
+mutation deleteTutorOrder($where: TutorOrderWhereUniqueInput!) {
+  deleteTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

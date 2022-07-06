@@ -52,6 +52,32 @@ export const getManyProfiles = queryField("getManyProfiles", {
 
     try {
       if (cursor) {
+        // queryResult = await ctx.prisma.profile.findMany({
+        //   take,
+        //   skip: 1,
+        //   cursor: {
+        //     createdAt: cursor,
+        //   },
+        //   where:
+        //     search_input == null
+        //       ? {}
+        //       : {
+        //           profile_interests: {
+        //             some: {
+        //               interest: {
+        //                 interest_name: {
+        //                   contains: search_input,
+        //                   mode: "insensitive",
+        //                 },
+        //               },
+        //             },
+        //           },
+        //         },
+        //   orderBy: {
+        //     createdAt: "desc",
+        //   },
+        // });
+
         queryResult = await ctx.prisma.profile.findMany({
           take,
           skip: 1,
@@ -62,38 +88,84 @@ export const getManyProfiles = queryField("getManyProfiles", {
             search_input == null
               ? {}
               : {
-                  profile_interests: {
-                    some: {
-                      interest: {
-                        interest_name: {
+                  OR: [
+                    {
+                      user: {
+                        username: {
                           contains: search_input,
                           mode: "insensitive",
                         },
                       },
                     },
-                  },
+                    {
+                      profile_interests: {
+                        some: {
+                          interest: {
+                            interest_name: {
+                              contains: search_input,
+                              mode: "insensitive",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
                 },
           orderBy: {
             createdAt: "desc",
           },
         });
       } else {
+        // queryResult = await ctx.prisma.profile.findMany({
+        //   take,
+        //   where:
+        //     search_input == null
+        //       ? {}
+        //       : {
+        //           profile_interests: {
+        //             some: {
+        //               interest: {
+        //                 interest_name: {
+        //                   contains: search_input,
+        //                   mode: "insensitive",
+        //                 },
+        //               },
+        //             },
+        //           },
+        //         },
+        //   orderBy: {
+        //     createdAt: "desc",
+        //   },
+        // });
+
         queryResult = await ctx.prisma.profile.findMany({
           take,
           where:
             search_input == null
               ? {}
               : {
-                  profile_interests: {
-                    some: {
-                      interest: {
-                        interest_name: {
+                  OR: [
+                    {
+                      user: {
+                        username: {
                           contains: search_input,
                           mode: "insensitive",
                         },
                       },
                     },
-                  },
+                    {
+                      profile_interests: {
+                        some: {
+                          interest: {
+                            interest_name: {
+                              contains: search_input,
+                              mode: "insensitive",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
                 },
           orderBy: {
             createdAt: "desc",

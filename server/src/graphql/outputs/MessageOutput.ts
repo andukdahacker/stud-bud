@@ -1,5 +1,10 @@
 import { objectType } from "nexus";
-import { Conversation, ConversationGroup, Message } from "../objects";
+import {
+  Conversation,
+  ConversationGroup,
+  Message,
+  PageInfoIDCursor,
+} from "../objects";
 import { IOutput } from "./IOutput";
 
 export const SendMessageOutput = objectType({
@@ -27,15 +32,6 @@ export const getManyConversationsOutput = objectType({
   },
 });
 
-export const ConversationPageInfo = objectType({
-  name: "ConversationPageInfo",
-  definition(t) {
-    t.nullable.string("endCursor");
-    t.nonNull.boolean("hasNextPage");
-    t.nullable.int("lastTake");
-  },
-});
-
 export const getConversationOutput = objectType({
   name: "getConversationOutput",
   definition(t) {
@@ -52,7 +48,7 @@ export const getConversationOutput = objectType({
     });
 
     t.nullable.field("ConversationPageInfo", {
-      type: ConversationPageInfo,
+      type: PageInfoIDCursor,
     });
   },
 });
