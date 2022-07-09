@@ -6,5 +6,6 @@ query getNotifications($where: ProfileWhereUniqueInput!) {
     notifications {
       ...Notification
     }
+    countNotViewedNotifications
   }
 }

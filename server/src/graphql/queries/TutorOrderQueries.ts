@@ -10,7 +10,12 @@ import {
   ProfileWhereUniqueInput,
   TutorOrderWhereUniqueInput,
 } from "../inputs";
-import { GetManyTutorOrdersOutput, TutorOrderOutput } from "../outputs";
+import {
+  GetManyTutorOrdersOutput,
+  GetManyTutorOrderTutorConnectOutput,
+  GetTutorOrderTutorConnectOutput,
+  TutorOrderOutput,
+} from "../outputs";
 
 export const getMyTutorOrder = queryField("getMyTutorOrder", {
   type: GetManyTutorOrdersOutput,
@@ -191,3 +196,69 @@ export const getManyTutorOrders = queryField("getManyTutorOrders", {
     }
   },
 });
+
+export const getTutorOrderTutorConnect = queryField(
+  "getTutorOrderTutorConnect",
+  {
+    type: GetTutorOrderTutorConnectOutput,
+    args: {
+      where_1: nonNull(ProfileWhereUniqueInput),
+      where_2: nonNull(TutorOrderWhereUniqueInput),
+    },
+    resolve: async (_root, args, ctx) => {
+      const { profile_id: tutor_id } = args.where_1;
+      const { id: tutor_order_id } = args.where_2;
+      try {
+        const tutor_order_tutor_connect =
+          await ctx.prisma.tutorOrderTutorConnect.findUnique({
+            where: {
+              tutor_id_tutor_order_id: {
+                tutor_id,
+                tutor_order_id,
+              },
+            },
+          });
+
+        return {
+          IOutput: QUERY_SUCCESS,
+          tutor_order_tutor_connect,
+        };
+      } catch (error) {
+        return INTERNAL_SERVER_ERROR;
+      }
+    },
+  }
+);
+
+export const getManyTutorOrderRequests = queryField(
+  "getManyTutorOrderRequests",
+  {
+    type: GetManyTutorOrderTutorConnectOutput,
+    args: {
+      where: nonNull(TutorOrderWhereUniqueInput),
+    },
+    resolve: async (_root, args, ctx) => {
+      const { id } = args.where;
+      try {
+        const tutor_order_tutor_connect =
+          await ctx.prisma.tutorOrderTutorConnect.findMany({
+            where: {
+              tutor_order_id: id,
+            },
+          });
+
+        if (!tutor_order_tutor_connect)
+          return {
+            IOutput: UNSUCCESSFUL_QUERY,
+          };
+
+        return {
+          IOutput: QUERY_SUCCESS,
+          tutor_order_tutor_connect,
+        };
+      } catch (error) {
+        return INTERNAL_SERVER_ERROR;
+      }
+    },
+  }
+);

@@ -1,5 +1,10 @@
 import { objectType } from "nexus";
-import { PageInfoIDCursor, TutorOrder } from "../objects";
+import {
+  PageInfoIDCursor,
+  TutorOrder,
+  TutorOrderTutorConnect,
+} from "../objects";
+
 import { IOutput } from "./IOutput";
 
 export const TutorOrderOutput = objectType({
@@ -25,6 +30,32 @@ export const GetManyTutorOrdersOutput = objectType({
     });
     t.nullable.field("PageInfoIDCursor", {
       type: PageInfoIDCursor,
+    });
+  },
+});
+
+export const GetTutorOrderTutorConnectOutput = objectType({
+  name: "GetTutorOrderTutorConnectOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+
+    t.nullable.field("tutor_order_tutor_connect", {
+      type: TutorOrderTutorConnect,
+    });
+  },
+});
+
+export const GetManyTutorOrderTutorConnectOutput = objectType({
+  name: "GetManyTutorOrderTutorConnect",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+
+    t.nullable.list.nullable.field("tutor_order_tutor_connect", {
+      type: TutorOrderTutorConnect,
     });
   },
 });

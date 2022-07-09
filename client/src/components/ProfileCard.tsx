@@ -5,7 +5,6 @@ import { useGetProfileLazyQuery } from "../generated/graphql";
 import ProfilePage from "./ProfilePage";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import BuddyButton from "./BuddyButton";
 import SuggestionCard from "./SuggestionCard";
 
 interface ProfileCardProps {

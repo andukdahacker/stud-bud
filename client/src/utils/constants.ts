@@ -30,3 +30,9 @@ export type findOptions =
   | "tutors"
   | "roadmaps"
   | null;
+
+export const NotificationType = {
+  TUTOR_ORDER_REQUEST_TO_BE_TUTOR: 1,
+  TUTOR_ORDER_ACCEPT_TUTOR_REQUEST: 2,
+  TUTOR_ORDER_DECLINE_TUTOR_REQUEST: 3,
+};

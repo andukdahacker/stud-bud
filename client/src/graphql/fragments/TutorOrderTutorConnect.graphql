@@ -1,0 +1,11 @@
+fragment TutorOrderTutorConnect on TutorOrderTutorConnect {
+  tutor_order_id
+  tutor_order {
+    ...TutorOrder
+  }
+  tutor_id
+  tutor {
+    ...Profile
+  }
+  status
+}

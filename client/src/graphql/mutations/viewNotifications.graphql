@@ -1,0 +1,7 @@
+mutation viewNotification($where: ProfileWhereUniqueInput!) {
+  viewNotification(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

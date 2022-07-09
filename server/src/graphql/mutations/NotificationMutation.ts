@@ -7,40 +7,8 @@ import {
   UNSUCCESSFUL_QUERY,
 } from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
-import {
-  CreateNotificationInput,
-  NotificationWhereUniqueInput,
-} from "../inputs/NotificationInput";
+import { NotificationWhereUniqueInput } from "../inputs/NotificationInput";
 import { NotificationMutationOutput } from "../outputs/NotificationOutput";
-
-export const createNotification = mutationField("createNotification", {
-  type: NotificationMutationOutput,
-  args: {
-    input: nonNull(CreateNotificationInput),
-  },
-  resolve: async (_root, args, ctx) => {
-    const { entity_id, notifier_id, receiver_id, type_id } = args.input;
-    try {
-      const data = receiver_id.map((obj) => {
-        return { entity_id, notifier_id, type_id, receiver_id: obj };
-      });
-      const notifications = await ctx.prisma.notification.createMany({
-        data,
-      });
-
-      if (!notifications)
-        return {
-          IOutput: UNSUCCESSFUL_MUTATION,
-        };
-
-      return {
-        IOutput: SUCCESSFUL_MUTATION,
-      };
-    } catch (error) {
-      return INTERNAL_SERVER_ERROR;
-    }
-  },
-});
 
 export const viewNotification = mutationField("viewNotification", {
   type: NotificationMutationOutput,

@@ -17,9 +17,17 @@ export const getNotifications = queryField("getNotifications", {
         },
       });
 
+      const countNotViewedNotifications = await ctx.prisma.notification.count({
+        where: {
+          receiver_id: profile_id,
+          isViewed: false,
+        },
+      });
+
       return {
         IOutput: QUERY_SUCCESS,
         notifications,
+        countNotViewedNotifications,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

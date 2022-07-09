@@ -41,6 +41,12 @@ export interface NexusGenInputs {
     password: string; // String!
     token: string; // String!
   }
+  ConnectTutorOrderInput: { // input type
+    message_content?: string | null; // String
+    student_id: string; // String!
+    tutor_id: string; // String!
+    tutor_order_id: string; // String!
+  }
   ConversationGroupWhereUniqueInput: { // input type
     conversation_id: string; // String!
     profile_id: string; // String!
@@ -54,12 +60,6 @@ export interface NexusGenInputs {
   }
   CreateInterestInput: { // input type
     interest_name: string; // String!
-  }
-  CreateNotificationInput: { // input type
-    entity_id: string; // String!
-    notifier_id: string; // String!
-    receiver_id: string[]; // [String!]!
-    type_id: number; // Int!
   }
   CreateProfileInput: { // input type
     profile_avatar?: NexusGenScalars['Upload'] | null; // Upload
@@ -115,6 +115,10 @@ export interface NexusGenInputs {
     specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
   }
+  ResondTutorOrderConnectInput: { // input type
+    status: NexusGenEnums['TutorOrderTutorConnectStatusCode']; // TutorOrderTutorConnectStatusCode!
+    tutor_id: string; // String!
+  }
   SendMessageInput: { // input type
     conversation_id: string; // String!
     message_content: string; // String!
@@ -132,6 +136,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   RelationshipStatusCode: "ACCEPTED" | "DECLINED" | "REQUESTED"
+  TutorOrderTutorConnectStatusCode: "ACCEPTED" | "DECLINED" | "REQUESTED"
 }
 
 export interface NexusGenScalars {
@@ -183,6 +188,10 @@ export interface NexusGenObjects {
     PageInfo?: NexusGenRootTypes['PageInfoDataCursor'] | null; // PageInfoDataCursor
     Profile?: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
+  GetManyTutorOrderTutorConnect: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    tutor_order_tutor_connect?: Array<NexusGenRootTypes['TutorOrderTutorConnect'] | null> | null; // [TutorOrderTutorConnect]
+  }
   GetManyTutorOrdersOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     PageInfoIDCursor?: NexusGenRootTypes['PageInfoIDCursor'] | null; // PageInfoIDCursor
@@ -190,7 +199,12 @@ export interface NexusGenObjects {
   }
   GetNotificationOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    countNotViewedNotifications?: number | null; // Int
     notifications?: Array<NexusGenRootTypes['Notification'] | null> | null; // [Notification]
+  }
+  GetTutorOrderTutorConnectOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    tutor_order_tutor_connect?: NexusGenRootTypes['TutorOrderTutorConnect'] | null; // TutorOrderTutorConnect
   }
   IOutput: { // root type
     code: number; // Int!
@@ -289,6 +303,11 @@ export interface NexusGenObjects {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     tutor_order?: NexusGenRootTypes['TutorOrder'] | null; // TutorOrder
   }
+  TutorOrderTutorConnect: { // root type
+    status: NexusGenEnums['TutorOrderTutorConnectStatusCode']; // TutorOrderTutorConnectStatusCode!
+    tutor_id: string; // String!
+    tutor_order_id: string; // String!
+  }
   User: { // root type
     email: string; // String!
     id: string; // ID!
@@ -360,6 +379,10 @@ export interface NexusGenFieldTypes {
     PageInfo: NexusGenRootTypes['PageInfoDataCursor'] | null; // PageInfoDataCursor
     Profile: Array<NexusGenRootTypes['Profile'] | null> | null; // [Profile]
   }
+  GetManyTutorOrderTutorConnect: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    tutor_order_tutor_connect: Array<NexusGenRootTypes['TutorOrderTutorConnect'] | null> | null; // [TutorOrderTutorConnect]
+  }
   GetManyTutorOrdersOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     PageInfoIDCursor: NexusGenRootTypes['PageInfoIDCursor'] | null; // PageInfoIDCursor
@@ -367,7 +390,12 @@ export interface NexusGenFieldTypes {
   }
   GetNotificationOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    countNotViewedNotifications: number | null; // Int
     notifications: Array<NexusGenRootTypes['Notification'] | null> | null; // [Notification]
+  }
+  GetTutorOrderTutorConnectOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    tutor_order_tutor_connect: NexusGenRootTypes['TutorOrderTutorConnect'] | null; // TutorOrderTutorConnect
   }
   IOutput: { // field return type
     code: number; // Int!
@@ -388,10 +416,9 @@ export interface NexusGenFieldTypes {
     message_content: string; // String!
   }
   Mutation: { // field return type
-    acceptTutor: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     changePassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     connectBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
-    createNotification: NexusGenRootTypes['NotificationMutationOutput'] | null; // NotificationMutationOutput
+    connectTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     createProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     createTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     deleteTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
@@ -406,6 +433,7 @@ export interface NexusGenFieldTypes {
     removeBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     removeWallpaper: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     respondBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
+    respondTutorOrderConnect: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     sendMessage: NexusGenRootTypes['SendMessageOutput'] | null; // SendMessageOutput
     updateProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     updateTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
@@ -470,11 +498,13 @@ export interface NexusGenFieldTypes {
     getManyConversations: NexusGenRootTypes['getManyConversationPutput'] | null; // getManyConversationPutput
     getManyInterests: NexusGenRootTypes['GetManyInterestOutput'] | null; // GetManyInterestOutput
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
+    getManyTutorOrderRequests: NexusGenRootTypes['GetManyTutorOrderTutorConnect'] | null; // GetManyTutorOrderTutorConnect
     getManyTutorOrders: NexusGenRootTypes['GetManyTutorOrdersOutput'] | null; // GetManyTutorOrdersOutput
     getMyTutorOrder: NexusGenRootTypes['GetManyTutorOrdersOutput'] | null; // GetManyTutorOrdersOutput
     getNotifications: NexusGenRootTypes['GetNotificationOutput'] | null; // GetNotificationOutput
     getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     getTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
+    getTutorOrderTutorConnect: NexusGenRootTypes['GetTutorOrderTutorConnectOutput'] | null; // GetTutorOrderTutorConnectOutput
     getUser: NexusGenRootTypes['User'] | null; // User
   }
   Relationship: { // field return type
@@ -524,6 +554,13 @@ export interface NexusGenFieldTypes {
   TutorOrderOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     tutor_order: NexusGenRootTypes['TutorOrder'] | null; // TutorOrder
+  }
+  TutorOrderTutorConnect: { // field return type
+    status: NexusGenEnums['TutorOrderTutorConnectStatusCode']; // TutorOrderTutorConnectStatusCode!
+    tutor: NexusGenRootTypes['Profile']; // Profile!
+    tutor_id: string; // String!
+    tutor_order: NexusGenRootTypes['TutorOrder']; // TutorOrder!
+    tutor_order_id: string; // String!
   }
   User: { // field return type
     email: string; // String!
@@ -587,6 +624,10 @@ export interface NexusGenFieldTypeNames {
     PageInfo: 'PageInfoDataCursor'
     Profile: 'Profile'
   }
+  GetManyTutorOrderTutorConnect: { // field return type name
+    IOutput: 'IOutput'
+    tutor_order_tutor_connect: 'TutorOrderTutorConnect'
+  }
   GetManyTutorOrdersOutput: { // field return type name
     IOutput: 'IOutput'
     PageInfoIDCursor: 'PageInfoIDCursor'
@@ -594,7 +635,12 @@ export interface NexusGenFieldTypeNames {
   }
   GetNotificationOutput: { // field return type name
     IOutput: 'IOutput'
+    countNotViewedNotifications: 'Int'
     notifications: 'Notification'
+  }
+  GetTutorOrderTutorConnectOutput: { // field return type name
+    IOutput: 'IOutput'
+    tutor_order_tutor_connect: 'TutorOrderTutorConnect'
   }
   IOutput: { // field return type name
     code: 'Int'
@@ -615,10 +661,9 @@ export interface NexusGenFieldTypeNames {
     message_content: 'String'
   }
   Mutation: { // field return type name
-    acceptTutor: 'TutorOrderOutput'
     changePassword: 'AuthOutput'
     connectBuddy: 'RelationshipOutput'
-    createNotification: 'NotificationMutationOutput'
+    connectTutorOrder: 'TutorOrderOutput'
     createProfile: 'ProfileMutationOutput'
     createTutorOrder: 'TutorOrderOutput'
     deleteTutorOrder: 'TutorOrderOutput'
@@ -633,6 +678,7 @@ export interface NexusGenFieldTypeNames {
     removeBuddy: 'RelationshipOutput'
     removeWallpaper: 'ProfileMutationOutput'
     respondBuddy: 'RelationshipOutput'
+    respondTutorOrderConnect: 'TutorOrderOutput'
     sendMessage: 'SendMessageOutput'
     updateProfile: 'ProfileMutationOutput'
     updateTutorOrder: 'TutorOrderOutput'
@@ -697,11 +743,13 @@ export interface NexusGenFieldTypeNames {
     getManyConversations: 'getManyConversationPutput'
     getManyInterests: 'GetManyInterestOutput'
     getManyProfiles: 'GetManyProfilesOutput'
+    getManyTutorOrderRequests: 'GetManyTutorOrderTutorConnect'
     getManyTutorOrders: 'GetManyTutorOrdersOutput'
     getMyTutorOrder: 'GetManyTutorOrdersOutput'
     getNotifications: 'GetNotificationOutput'
     getProfile: 'ProfileMutationOutput'
     getTutorOrder: 'TutorOrderOutput'
+    getTutorOrderTutorConnect: 'GetTutorOrderTutorConnectOutput'
     getUser: 'User'
   }
   Relationship: { // field return type name
@@ -752,6 +800,13 @@ export interface NexusGenFieldTypeNames {
     IOutput: 'IOutput'
     tutor_order: 'TutorOrder'
   }
+  TutorOrderTutorConnect: { // field return type name
+    status: 'TutorOrderTutorConnectStatusCode'
+    tutor: 'Profile'
+    tutor_id: 'String'
+    tutor_order: 'TutorOrder'
+    tutor_order_id: 'String'
+  }
   User: { // field return type name
     email: 'String'
     id: 'ID'
@@ -774,18 +829,14 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    acceptTutor: { // args
-      where_1: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
-      where_2: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
-    }
     changePassword: { // args
       input: NexusGenInputs['ChangePasswordInput']; // ChangePasswordInput!
     }
     connectBuddy: { // args
       input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
     }
-    createNotification: { // args
-      input: NexusGenInputs['CreateNotificationInput']; // CreateNotificationInput!
+    connectTutorOrder: { // args
+      where: NexusGenInputs['ConnectTutorOrderInput']; // ConnectTutorOrderInput!
     }
     createProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!
@@ -827,6 +878,10 @@ export interface NexusGenArgTypes {
     }
     respondBuddy: { // args
       input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
+    }
+    respondTutorOrderConnect: { // args
+      input: NexusGenInputs['ResondTutorOrderConnectInput']; // ResondTutorOrderConnectInput!
+      where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
     }
     sendMessage: { // args
       input: NexusGenInputs['SendMessageInput']; // SendMessageInput!
@@ -870,6 +925,9 @@ export interface NexusGenArgTypes {
     getManyProfiles: { // args
       where: NexusGenInputs['GetManyProfilesInput']; // GetManyProfilesInput!
     }
+    getManyTutorOrderRequests: { // args
+      where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
+    }
     getManyTutorOrders: { // args
       where: NexusGenInputs['GetManyTutorOrdersInput']; // GetManyTutorOrdersInput!
     }
@@ -884,6 +942,10 @@ export interface NexusGenArgTypes {
     }
     getTutorOrder: { // args
       where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
+    }
+    getTutorOrderTutorConnect: { // args
+      where_1: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+      where_2: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
     }
   }
   Subscription: {

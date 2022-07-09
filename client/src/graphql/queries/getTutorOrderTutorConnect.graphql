@@ -1,0 +1,14 @@
+query GetTutorOrderTutorConnect(
+  $where1: ProfileWhereUniqueInput!
+  $where2: TutorOrderWhereUniqueInput!
+) {
+  getTutorOrderTutorConnect(where_1: $where1, where_2: $where2) {
+    IOutput {
+      ...IOutput
+    }
+
+    tutor_order_tutor_connect {
+      ...TutorOrderTutorConnect
+    }
+  }
+}

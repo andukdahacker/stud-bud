@@ -1,0 +1,7 @@
+mutation readNotification($where: NotificationWhereUniqueInput!) {
+  readNotification(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

@@ -21,6 +21,13 @@ input ChangePasswordInput {
   token: String!
 }
 
+input ConnectTutorOrderInput {
+  message_content: String
+  student_id: String!
+  tutor_id: String!
+  tutor_order_id: String!
+}
+
 type Conversation {
   conversation_avatar: String
   conversation_latest_message: Message
@@ -55,13 +62,6 @@ input ConversationWhereUniqueInput {
 
 input CreateInterestInput {
   interest_name: String!
-}
-
-input CreateNotificationInput {
-  entity_id: String!
-  notifier_id: String!
-  receiver_id: [String!]!
-  type_id: Int!
 }
 
 input CreateProfileInput {
@@ -112,6 +112,11 @@ type GetManyProfilesOutput {
   Profile: [Profile]
 }
 
+type GetManyTutorOrderTutorConnect {
+  IOutput: IOutput!
+  tutor_order_tutor_connect: [TutorOrderTutorConnect]
+}
+
 input GetManyTutorOrdersInput {
   cursor: String
   search_input: String
@@ -126,7 +131,13 @@ type GetManyTutorOrdersOutput {
 
 type GetNotificationOutput {
   IOutput: IOutput!
+  countNotViewedNotifications: Int
   notifications: [Notification]
+}
+
+type GetTutorOrderTutorConnectOutput {
+  IOutput: IOutput!
+  tutor_order_tutor_connect: TutorOrderTutorConnect
 }
 
 type IOutput {
@@ -156,10 +167,9 @@ type Message {
 }
 
 type Mutation {
-  acceptTutor(where_1: ProfileWhereUniqueInput!, where_2: TutorOrderWhereUniqueInput!): TutorOrderOutput
   changePassword(input: ChangePasswordInput!): AuthOutput
   connectBuddy(input: RelationshipInput!): RelationshipOutput
-  createNotification(input: CreateNotificationInput!): NotificationMutationOutput
+  connectTutorOrder(where: ConnectTutorOrderInput!): TutorOrderOutput
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
   createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
   deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
@@ -174,6 +184,7 @@ type Mutation {
   removeBuddy(input: RelationshipInput!): RelationshipOutput
   removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   respondBuddy(input: RelationshipInput!): RelationshipOutput
+  respondTutorOrderConnect(input: ResondTutorOrderConnectInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   sendMessage(input: SendMessageInput!, where: ProfileWhereUniqueInput!): SendMessageOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   updateTutorOrder(input: CreateTutorOrderInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
@@ -254,11 +265,13 @@ type Query {
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getManyTutorOrderRequests(where: TutorOrderWhereUniqueInput!): GetManyTutorOrderTutorConnect
   getManyTutorOrders(where: GetManyTutorOrdersInput!): GetManyTutorOrdersOutput
   getMyTutorOrder(where: ProfileWhereUniqueInput!): GetManyTutorOrdersOutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
+  getTutorOrderTutorConnect(where_1: ProfileWhereUniqueInput!, where_2: TutorOrderWhereUniqueInput!): GetTutorOrderTutorConnectOutput
   getUser: User
 }
 
@@ -304,6 +317,11 @@ enum RelationshipStatusCode {
   REQUESTED
 }
 
+input ResondTutorOrderConnectInput {
+  status: TutorOrderTutorConnectStatusCode!
+  tutor_id: String!
+}
+
 input SendMessageInput {
   conversation_id: String!
   message_content: String!
@@ -344,6 +362,20 @@ type TutorOrderInterests {
 type TutorOrderOutput {
   IOutput: IOutput!
   tutor_order: TutorOrder
+}
+
+type TutorOrderTutorConnect {
+  status: TutorOrderTutorConnectStatusCode!
+  tutor: Profile!
+  tutor_id: String!
+  tutor_order: TutorOrder!
+  tutor_order_id: String!
+}
+
+enum TutorOrderTutorConnectStatusCode {
+  ACCEPTED
+  DECLINED
+  REQUESTED
 }
 
 input TutorOrderWhereUniqueInput {

@@ -1,0 +1,11 @@
+query GetManyTutorOrderRequests($where: TutorOrderWhereUniqueInput!) {
+  getManyTutorOrderRequests(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+
+    tutor_order_tutor_connect {
+      ...TutorOrderTutorConnect
+    }
+  }
+}

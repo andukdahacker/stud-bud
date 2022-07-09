@@ -1,0 +1,7 @@
+mutation ConnectTutorOrder($where: ConnectTutorOrderInput!) {
+  connectTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

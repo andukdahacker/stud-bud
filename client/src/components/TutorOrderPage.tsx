@@ -3,6 +3,8 @@ import { GetTutorOrderQuery, useGetUserQuery } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
 import SuggestionCard from "./SuggestionCard";
+import TutorOrderConnectButton from "./TutorOrderConnectButton";
+import TutorOrderRequests from "./TutorOrderRequests";
 
 interface TutorOrderPageProps {
   data: GetTutorOrderQuery | undefined;
@@ -27,7 +29,7 @@ const TutorOrderPage = ({
 
   if (GetTutorOrderLoading || GetUserLoading) return <Loading />;
   if (!GetTutorOrderSuccess) return <div>{GetTutorOrderMessage}</div>;
-  if (user_profile_id !== student_id)
+  if (user_profile_id !== student_id) {
     return (
       <div>
         <div>
@@ -36,6 +38,11 @@ const TutorOrderPage = ({
         </div>
 
         <div>
+          <TutorOrderConnectButton
+            user_profile_id={user_profile_id}
+            tutor_order_id={tutor_order_id}
+            student_id={student_id}
+          />
           <div>Problem: {problem}</div>
 
           <div>Tutor requirements: {tutor_requirements}</div>
@@ -53,6 +60,7 @@ const TutorOrderPage = ({
         </div>
       </div>
     );
+  }
   return (
     <div>
       <Link href={`/one-hour-tutor/edit/${tutor_order_id}`}>
@@ -74,6 +82,7 @@ const TutorOrderPage = ({
           })}
         </div>
       </div>
+      <TutorOrderRequests tutor_order_id={tutor_order_id} />
     </div>
   );
 };

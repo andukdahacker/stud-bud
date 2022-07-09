@@ -6,7 +6,7 @@ import {
   GetManyConversationsSubsDocument,
   useGetManyConversationsLazyQuery,
 } from "../generated/graphql";
-import ChatBar from "./ChatBar";
+import NotificationBar from "./NotificationBar";
 import ConversationList from "./ConversationList";
 import NewNotiCount from "./NewNotiCount";
 
@@ -89,7 +89,7 @@ const ChatNotiNavBarButton = ({
         <NewNotiCount count={newChatNotiCount} />
       </div>
 
-      <ChatBar hidden={hidden}>
+      <NotificationBar hidden={hidden}>
         <ConversationList
           data={getManyConversationsData}
           loading={getManyConversationsLoading}
@@ -98,7 +98,7 @@ const ChatNotiNavBarButton = ({
         <Link href={"/chat"}>
           <a className="">Go to Chat</a>
         </Link>
-      </ChatBar>
+      </NotificationBar>
     </div>
   );
 };

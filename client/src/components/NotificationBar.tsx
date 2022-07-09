@@ -1,13 +1,13 @@
 import { PropsWithChildren } from "react";
 
-interface BuddyNotificationBarProps {
+interface NotificationBarProps {
   hidden: string | undefined;
 }
 
-const BuddyNotificationBar = ({
+const NotificationBar = ({
   hidden,
   children,
-}: PropsWithChildren<BuddyNotificationBarProps>) => {
+}: PropsWithChildren<NotificationBarProps>) => {
   return (
     <div className={`${hidden} overflow-auto fixed bg-white top-20 z-10`}>
       {children}
@@ -15,4 +15,4 @@ const BuddyNotificationBar = ({
   );
 };
 
-export default BuddyNotificationBar;
+export default NotificationBar;

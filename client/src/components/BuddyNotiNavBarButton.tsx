@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NewNotiCount from "./NewNotiCount";
 import BuddyNotificationBox from "./BuddyNotificationBox";
-import BuddyNotificationBar from "./BuddyNotificationBar";
+import NotificationBar from "./NotificationBar";
 
 interface BuddyNotiNavBarProps {
   user_profile_id: string | undefined;
@@ -33,7 +33,7 @@ const BuddyNotiNavBarButton = ({
     {
       data: getBuddyNotificationsData,
       loading: getBuddyNotificationsLoading,
-      refetch: refetchBuddyNoti,
+
       subscribeToMore: subsGetBuddyNotifications,
     },
   ] = useGetBuddyNotificationsLazyQuery();
@@ -116,12 +116,12 @@ const BuddyNotiNavBarButton = ({
         <NewNotiCount count={newBuddyNotiCount} />
       </div>
 
-      <BuddyNotificationBar hidden={hidden}>
+      <NotificationBar hidden={hidden}>
         <BuddyNotificationBox
           data={getBuddyNotificationsData}
           loading={getBuddyNotificationsLoading}
         />
-      </BuddyNotificationBar>
+      </NotificationBar>
     </div>
   );
 };

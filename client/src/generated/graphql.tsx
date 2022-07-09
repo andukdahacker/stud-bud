@@ -40,6 +40,13 @@ export type ChangePasswordInput = {
   token: Scalars['String'];
 };
 
+export type ConnectTutorOrderInput = {
+  message_content?: InputMaybe<Scalars['String']>;
+  student_id: Scalars['String'];
+  tutor_id: Scalars['String'];
+  tutor_order_id: Scalars['String'];
+};
+
 export type Conversation = {
   __typename?: 'Conversation';
   conversation_avatar?: Maybe<Scalars['String']>;
@@ -76,13 +83,6 @@ export type ConversationWhereUniqueInput = {
 
 export type CreateInterestInput = {
   interest_name: Scalars['String'];
-};
-
-export type CreateNotificationInput = {
-  entity_id: Scalars['String'];
-  notifier_id: Scalars['String'];
-  receiver_id: Array<Scalars['String']>;
-  type_id: Scalars['Int'];
 };
 
 export type CreateProfileInput = {
@@ -133,6 +133,12 @@ export type GetManyProfilesOutput = {
   Profile?: Maybe<Array<Maybe<Profile>>>;
 };
 
+export type GetManyTutorOrderTutorConnect = {
+  __typename?: 'GetManyTutorOrderTutorConnect';
+  IOutput: IOutput;
+  tutor_order_tutor_connect?: Maybe<Array<Maybe<TutorOrderTutorConnect>>>;
+};
+
 export type GetManyTutorOrdersInput = {
   cursor?: InputMaybe<Scalars['String']>;
   search_input?: InputMaybe<Scalars['String']>;
@@ -149,7 +155,14 @@ export type GetManyTutorOrdersOutput = {
 export type GetNotificationOutput = {
   __typename?: 'GetNotificationOutput';
   IOutput: IOutput;
+  countNotViewedNotifications?: Maybe<Scalars['Int']>;
   notifications?: Maybe<Array<Maybe<Notification>>>;
+};
+
+export type GetTutorOrderTutorConnectOutput = {
+  __typename?: 'GetTutorOrderTutorConnectOutput';
+  IOutput: IOutput;
+  tutor_order_tutor_connect?: Maybe<TutorOrderTutorConnect>;
 };
 
 export type IOutput = {
@@ -183,10 +196,9 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptTutor?: Maybe<TutorOrderOutput>;
   changePassword?: Maybe<AuthOutput>;
   connectBuddy?: Maybe<RelationshipOutput>;
-  createNotification?: Maybe<NotificationMutationOutput>;
+  connectTutorOrder?: Maybe<TutorOrderOutput>;
   createProfile?: Maybe<ProfileMutationOutput>;
   createTutorOrder?: Maybe<TutorOrderOutput>;
   deleteTutorOrder?: Maybe<TutorOrderOutput>;
@@ -201,6 +213,7 @@ export type Mutation = {
   removeBuddy?: Maybe<RelationshipOutput>;
   removeWallpaper?: Maybe<ProfileMutationOutput>;
   respondBuddy?: Maybe<RelationshipOutput>;
+  respondTutorOrderConnect?: Maybe<TutorOrderOutput>;
   sendMessage?: Maybe<SendMessageOutput>;
   updateProfile?: Maybe<ProfileMutationOutput>;
   updateTutorOrder?: Maybe<TutorOrderOutput>;
@@ -208,12 +221,6 @@ export type Mutation = {
   viewBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   viewMessage?: Maybe<IOutput>;
   viewNotification?: Maybe<NotificationMutationOutput>;
-};
-
-
-export type MutationAcceptTutorArgs = {
-  where_1: ProfileWhereUniqueInput;
-  where_2: TutorOrderWhereUniqueInput;
 };
 
 
@@ -227,8 +234,8 @@ export type MutationConnectBuddyArgs = {
 };
 
 
-export type MutationCreateNotificationArgs = {
-  input: CreateNotificationInput;
+export type MutationConnectTutorOrderArgs = {
+  where: ConnectTutorOrderInput;
 };
 
 
@@ -296,6 +303,12 @@ export type MutationRemoveWallpaperArgs = {
 
 export type MutationRespondBuddyArgs = {
   input: RelationshipInput;
+};
+
+
+export type MutationRespondTutorOrderConnectArgs = {
+  input: ResondTutorOrderConnectInput;
+  where: TutorOrderWhereUniqueInput;
 };
 
 
@@ -415,11 +428,13 @@ export type Query = {
   getManyConversations?: Maybe<GetManyConversationPutput>;
   getManyInterests?: Maybe<GetManyInterestOutput>;
   getManyProfiles?: Maybe<GetManyProfilesOutput>;
+  getManyTutorOrderRequests?: Maybe<GetManyTutorOrderTutorConnect>;
   getManyTutorOrders?: Maybe<GetManyTutorOrdersOutput>;
   getMyTutorOrder?: Maybe<GetManyTutorOrdersOutput>;
   getNotifications?: Maybe<GetNotificationOutput>;
   getProfile?: Maybe<ProfileMutationOutput>;
   getTutorOrder?: Maybe<TutorOrderOutput>;
+  getTutorOrderTutorConnect?: Maybe<GetTutorOrderTutorConnectOutput>;
   getUser?: Maybe<User>;
 };
 
@@ -450,6 +465,11 @@ export type QueryGetManyProfilesArgs = {
 };
 
 
+export type QueryGetManyTutorOrderRequestsArgs = {
+  where: TutorOrderWhereUniqueInput;
+};
+
+
 export type QueryGetManyTutorOrdersArgs = {
   where: GetManyTutorOrdersInput;
 };
@@ -472,6 +492,12 @@ export type QueryGetProfileArgs = {
 
 export type QueryGetTutorOrderArgs = {
   where: TutorOrderWhereUniqueInput;
+};
+
+
+export type QueryGetTutorOrderTutorConnectArgs = {
+  where_1: ProfileWhereUniqueInput;
+  where_2: TutorOrderWhereUniqueInput;
 };
 
 export type ReadBuddyNotificationsInput = {
@@ -517,6 +543,11 @@ export enum RelationshipStatusCode {
   Declined = 'DECLINED',
   Requested = 'REQUESTED'
 }
+
+export type ResondTutorOrderConnectInput = {
+  status: TutorOrderTutorConnectStatusCode;
+  tutor_id: Scalars['String'];
+};
 
 export type SendMessageInput = {
   conversation_id: Scalars['String'];
@@ -580,6 +611,21 @@ export type TutorOrderOutput = {
   tutor_order?: Maybe<TutorOrder>;
 };
 
+export type TutorOrderTutorConnect = {
+  __typename?: 'TutorOrderTutorConnect';
+  status: TutorOrderTutorConnectStatusCode;
+  tutor: Profile;
+  tutor_id: Scalars['String'];
+  tutor_order: TutorOrder;
+  tutor_order_id: Scalars['String'];
+};
+
+export enum TutorOrderTutorConnectStatusCode {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Requested = 'REQUESTED'
+}
+
 export type TutorOrderWhereUniqueInput = {
   id: Scalars['String'];
 };
@@ -638,6 +684,8 @@ export type TutorOrderFragment = { __typename?: 'TutorOrder', id: string, studen
 
 export type TutorOrderInterestsFragment = { __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } };
 
+export type TutorOrderTutorConnectFragment = { __typename?: 'TutorOrderTutorConnect', tutor_order_id: string, tutor_id: string, status: TutorOrderTutorConnectStatusCode, tutor_order: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }, tutor: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
+
 export type UserFragment = { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean };
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -654,12 +702,12 @@ export type ConnectBuddyMutationVariables = Exact<{
 
 export type ConnectBuddyMutation = { __typename?: 'Mutation', connectBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
-export type CreateNotificationMutationVariables = Exact<{
-  input: CreateNotificationInput;
+export type ConnectTutorOrderMutationVariables = Exact<{
+  where: ConnectTutorOrderInput;
 }>;
 
 
-export type CreateNotificationMutation = { __typename?: 'Mutation', createNotification?: { __typename?: 'NotificationMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+export type ConnectTutorOrderMutation = { __typename?: 'Mutation', connectTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
 export type CreateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -708,6 +756,13 @@ export type ReadBuddyNotificationsMutationVariables = Exact<{
 
 export type ReadBuddyNotificationsMutation = { __typename?: 'Mutation', readBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
+export type ReadNotificationMutationVariables = Exact<{
+  where: NotificationWhereUniqueInput;
+}>;
+
+
+export type ReadNotificationMutation = { __typename?: 'Mutation', readNotification?: { __typename?: 'NotificationMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
 export type RegisterMutationVariables = Exact<{
   input: RegisterInput;
 }>;
@@ -744,6 +799,14 @@ export type RespondBuddyMutationVariables = Exact<{
 
 
 export type RespondBuddyMutation = { __typename?: 'Mutation', respondBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
+export type RespondTutorOrderConnectMutationVariables = Exact<{
+  where: TutorOrderWhereUniqueInput;
+  input: ResondTutorOrderConnectInput;
+}>;
+
+
+export type RespondTutorOrderConnectMutation = { __typename?: 'Mutation', respondTutorOrderConnect?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
 export type SendMessageMutationVariables = Exact<{
   input: SendMessageInput;
@@ -790,6 +853,13 @@ export type ViewMessageMutationVariables = Exact<{
 
 export type ViewMessageMutation = { __typename?: 'Mutation', viewMessage?: { __typename?: 'IOutput', code: number, message: string, success: boolean } | null };
 
+export type ViewNotificationMutationVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type ViewNotificationMutation = { __typename?: 'Mutation', viewNotification?: { __typename?: 'NotificationMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
 export type GetBuddyNotificationsQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
@@ -833,6 +903,13 @@ export type GetManyTutorOrdersQueryVariables = Exact<{
 
 export type GetManyTutorOrdersQuery = { __typename?: 'Query', getManyTutorOrders?: { __typename?: 'GetManyTutorOrdersOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: Array<{ __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }> | null } | null };
 
+export type GetManyTutorOrderRequestsQueryVariables = Exact<{
+  where: TutorOrderWhereUniqueInput;
+}>;
+
+
+export type GetManyTutorOrderRequestsQuery = { __typename?: 'Query', getManyTutorOrderRequests?: { __typename?: 'GetManyTutorOrderTutorConnect', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order_tutor_connect?: Array<{ __typename?: 'TutorOrderTutorConnect', tutor_order_id: string, tutor_id: string, status: TutorOrderTutorConnectStatusCode, tutor_order: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }, tutor: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null } | null };
+
 export type GetMyTutorOrderQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
 }>;
@@ -845,7 +922,7 @@ export type GetNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationsQuery = { __typename?: 'Query', getNotifications?: { __typename?: 'GetNotificationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, notifications?: Array<{ __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null> | null } | null };
+export type GetNotificationsQuery = { __typename?: 'Query', getNotifications?: { __typename?: 'GetNotificationOutput', countNotViewedNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, notifications?: Array<{ __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null> | null } | null };
 
 export type GetProfileQueryVariables = Exact<{
   where: ProfileWhereUniqueInput;
@@ -860,6 +937,14 @@ export type GetTutorOrderQueryVariables = Exact<{
 
 
 export type GetTutorOrderQuery = { __typename?: 'Query', getTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null } | null } | null };
+
+export type GetTutorOrderTutorConnectQueryVariables = Exact<{
+  where1: ProfileWhereUniqueInput;
+  where2: TutorOrderWhereUniqueInput;
+}>;
+
+
+export type GetTutorOrderTutorConnectQuery = { __typename?: 'Query', getTutorOrderTutorConnect?: { __typename?: 'GetTutorOrderTutorConnectOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order_tutor_connect?: { __typename?: 'TutorOrderTutorConnect', tutor_order_id: string, tutor_id: string, status: TutorOrderTutorConnectStatusCode, tutor_order: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }, tutor: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null } | null };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1037,6 +1122,20 @@ export const TutorOrderFragmentDoc = gql`
 }
     ${ProfileFragmentDoc}
 ${TutorOrderInterestsFragmentDoc}`;
+export const TutorOrderTutorConnectFragmentDoc = gql`
+    fragment TutorOrderTutorConnect on TutorOrderTutorConnect {
+  tutor_order_id
+  tutor_order {
+    ...TutorOrder
+  }
+  tutor_id
+  tutor {
+    ...Profile
+  }
+  status
+}
+    ${TutorOrderFragmentDoc}
+${ProfileFragmentDoc}`;
 export const ChangePasswordDocument = gql`
     mutation changePassword($input: ChangePasswordInput!) {
   changePassword(input: $input) {
@@ -1115,41 +1214,41 @@ export function useConnectBuddyMutation(baseOptions?: Apollo.MutationHookOptions
 export type ConnectBuddyMutationHookResult = ReturnType<typeof useConnectBuddyMutation>;
 export type ConnectBuddyMutationResult = Apollo.MutationResult<ConnectBuddyMutation>;
 export type ConnectBuddyMutationOptions = Apollo.BaseMutationOptions<ConnectBuddyMutation, ConnectBuddyMutationVariables>;
-export const CreateNotificationDocument = gql`
-    mutation createNotification($input: CreateNotificationInput!) {
-  createNotification(input: $input) {
+export const ConnectTutorOrderDocument = gql`
+    mutation ConnectTutorOrder($where: ConnectTutorOrderInput!) {
+  connectTutorOrder(where: $where) {
     IOutput {
       ...IOutput
     }
   }
 }
     ${IOutputFragmentDoc}`;
-export type CreateNotificationMutationFn = Apollo.MutationFunction<CreateNotificationMutation, CreateNotificationMutationVariables>;
+export type ConnectTutorOrderMutationFn = Apollo.MutationFunction<ConnectTutorOrderMutation, ConnectTutorOrderMutationVariables>;
 
 /**
- * __useCreateNotificationMutation__
+ * __useConnectTutorOrderMutation__
  *
- * To run a mutation, you first call `useCreateNotificationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateNotificationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useConnectTutorOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectTutorOrderMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createNotificationMutation, { data, loading, error }] = useCreateNotificationMutation({
+ * const [connectTutorOrderMutation, { data, loading, error }] = useConnectTutorOrderMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      where: // value for 'where'
  *   },
  * });
  */
-export function useCreateNotificationMutation(baseOptions?: Apollo.MutationHookOptions<CreateNotificationMutation, CreateNotificationMutationVariables>) {
+export function useConnectTutorOrderMutation(baseOptions?: Apollo.MutationHookOptions<ConnectTutorOrderMutation, ConnectTutorOrderMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateNotificationMutation, CreateNotificationMutationVariables>(CreateNotificationDocument, options);
+        return Apollo.useMutation<ConnectTutorOrderMutation, ConnectTutorOrderMutationVariables>(ConnectTutorOrderDocument, options);
       }
-export type CreateNotificationMutationHookResult = ReturnType<typeof useCreateNotificationMutation>;
-export type CreateNotificationMutationResult = Apollo.MutationResult<CreateNotificationMutation>;
-export type CreateNotificationMutationOptions = Apollo.BaseMutationOptions<CreateNotificationMutation, CreateNotificationMutationVariables>;
+export type ConnectTutorOrderMutationHookResult = ReturnType<typeof useConnectTutorOrderMutation>;
+export type ConnectTutorOrderMutationResult = Apollo.MutationResult<ConnectTutorOrderMutation>;
+export type ConnectTutorOrderMutationOptions = Apollo.BaseMutationOptions<ConnectTutorOrderMutation, ConnectTutorOrderMutationVariables>;
 export const CreateProfileDocument = gql`
     mutation createProfile($input: CreateProfileInput!) {
   createProfile(input: $input) {
@@ -1422,6 +1521,41 @@ export function useReadBuddyNotificationsMutation(baseOptions?: Apollo.MutationH
 export type ReadBuddyNotificationsMutationHookResult = ReturnType<typeof useReadBuddyNotificationsMutation>;
 export type ReadBuddyNotificationsMutationResult = Apollo.MutationResult<ReadBuddyNotificationsMutation>;
 export type ReadBuddyNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadBuddyNotificationsMutation, ReadBuddyNotificationsMutationVariables>;
+export const ReadNotificationDocument = gql`
+    mutation readNotification($where: NotificationWhereUniqueInput!) {
+  readNotification(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type ReadNotificationMutationFn = Apollo.MutationFunction<ReadNotificationMutation, ReadNotificationMutationVariables>;
+
+/**
+ * __useReadNotificationMutation__
+ *
+ * To run a mutation, you first call `useReadNotificationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadNotificationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readNotificationMutation, { data, loading, error }] = useReadNotificationMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useReadNotificationMutation(baseOptions?: Apollo.MutationHookOptions<ReadNotificationMutation, ReadNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadNotificationMutation, ReadNotificationMutationVariables>(ReadNotificationDocument, options);
+      }
+export type ReadNotificationMutationHookResult = ReturnType<typeof useReadNotificationMutation>;
+export type ReadNotificationMutationResult = Apollo.MutationResult<ReadNotificationMutation>;
+export type ReadNotificationMutationOptions = Apollo.BaseMutationOptions<ReadNotificationMutation, ReadNotificationMutationVariables>;
 export const RegisterDocument = gql`
     mutation register($input: RegisterInput!) {
   register(input: $input) {
@@ -1607,6 +1741,42 @@ export function useRespondBuddyMutation(baseOptions?: Apollo.MutationHookOptions
 export type RespondBuddyMutationHookResult = ReturnType<typeof useRespondBuddyMutation>;
 export type RespondBuddyMutationResult = Apollo.MutationResult<RespondBuddyMutation>;
 export type RespondBuddyMutationOptions = Apollo.BaseMutationOptions<RespondBuddyMutation, RespondBuddyMutationVariables>;
+export const RespondTutorOrderConnectDocument = gql`
+    mutation RespondTutorOrderConnect($where: TutorOrderWhereUniqueInput!, $input: ResondTutorOrderConnectInput!) {
+  respondTutorOrderConnect(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type RespondTutorOrderConnectMutationFn = Apollo.MutationFunction<RespondTutorOrderConnectMutation, RespondTutorOrderConnectMutationVariables>;
+
+/**
+ * __useRespondTutorOrderConnectMutation__
+ *
+ * To run a mutation, you first call `useRespondTutorOrderConnectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRespondTutorOrderConnectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [respondTutorOrderConnectMutation, { data, loading, error }] = useRespondTutorOrderConnectMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRespondTutorOrderConnectMutation(baseOptions?: Apollo.MutationHookOptions<RespondTutorOrderConnectMutation, RespondTutorOrderConnectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RespondTutorOrderConnectMutation, RespondTutorOrderConnectMutationVariables>(RespondTutorOrderConnectDocument, options);
+      }
+export type RespondTutorOrderConnectMutationHookResult = ReturnType<typeof useRespondTutorOrderConnectMutation>;
+export type RespondTutorOrderConnectMutationResult = Apollo.MutationResult<RespondTutorOrderConnectMutation>;
+export type RespondTutorOrderConnectMutationOptions = Apollo.BaseMutationOptions<RespondTutorOrderConnectMutation, RespondTutorOrderConnectMutationVariables>;
 export const SendMessageDocument = gql`
     mutation sendMessage($input: SendMessageInput!, $where: ProfileWhereUniqueInput!) {
   sendMessage(input: $input, where: $where) {
@@ -1823,6 +1993,41 @@ export function useViewMessageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type ViewMessageMutationHookResult = ReturnType<typeof useViewMessageMutation>;
 export type ViewMessageMutationResult = Apollo.MutationResult<ViewMessageMutation>;
 export type ViewMessageMutationOptions = Apollo.BaseMutationOptions<ViewMessageMutation, ViewMessageMutationVariables>;
+export const ViewNotificationDocument = gql`
+    mutation viewNotification($where: ProfileWhereUniqueInput!) {
+  viewNotification(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type ViewNotificationMutationFn = Apollo.MutationFunction<ViewNotificationMutation, ViewNotificationMutationVariables>;
+
+/**
+ * __useViewNotificationMutation__
+ *
+ * To run a mutation, you first call `useViewNotificationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useViewNotificationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [viewNotificationMutation, { data, loading, error }] = useViewNotificationMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useViewNotificationMutation(baseOptions?: Apollo.MutationHookOptions<ViewNotificationMutation, ViewNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ViewNotificationMutation, ViewNotificationMutationVariables>(ViewNotificationDocument, options);
+      }
+export type ViewNotificationMutationHookResult = ReturnType<typeof useViewNotificationMutation>;
+export type ViewNotificationMutationResult = Apollo.MutationResult<ViewNotificationMutation>;
+export type ViewNotificationMutationOptions = Apollo.BaseMutationOptions<ViewNotificationMutation, ViewNotificationMutationVariables>;
 export const GetBuddyNotificationsDocument = gql`
     query getBuddyNotifications($where: ProfileWhereUniqueInput!) {
   getBuddyNotifications(where: $where) {
@@ -2092,6 +2297,47 @@ export function useGetManyTutorOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetManyTutorOrdersQueryHookResult = ReturnType<typeof useGetManyTutorOrdersQuery>;
 export type GetManyTutorOrdersLazyQueryHookResult = ReturnType<typeof useGetManyTutorOrdersLazyQuery>;
 export type GetManyTutorOrdersQueryResult = Apollo.QueryResult<GetManyTutorOrdersQuery, GetManyTutorOrdersQueryVariables>;
+export const GetManyTutorOrderRequestsDocument = gql`
+    query GetManyTutorOrderRequests($where: TutorOrderWhereUniqueInput!) {
+  getManyTutorOrderRequests(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order_tutor_connect {
+      ...TutorOrderTutorConnect
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderTutorConnectFragmentDoc}`;
+
+/**
+ * __useGetManyTutorOrderRequestsQuery__
+ *
+ * To run a query within a React component, call `useGetManyTutorOrderRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetManyTutorOrderRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetManyTutorOrderRequestsQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetManyTutorOrderRequestsQuery(baseOptions: Apollo.QueryHookOptions<GetManyTutorOrderRequestsQuery, GetManyTutorOrderRequestsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetManyTutorOrderRequestsQuery, GetManyTutorOrderRequestsQueryVariables>(GetManyTutorOrderRequestsDocument, options);
+      }
+export function useGetManyTutorOrderRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetManyTutorOrderRequestsQuery, GetManyTutorOrderRequestsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetManyTutorOrderRequestsQuery, GetManyTutorOrderRequestsQueryVariables>(GetManyTutorOrderRequestsDocument, options);
+        }
+export type GetManyTutorOrderRequestsQueryHookResult = ReturnType<typeof useGetManyTutorOrderRequestsQuery>;
+export type GetManyTutorOrderRequestsLazyQueryHookResult = ReturnType<typeof useGetManyTutorOrderRequestsLazyQuery>;
+export type GetManyTutorOrderRequestsQueryResult = Apollo.QueryResult<GetManyTutorOrderRequestsQuery, GetManyTutorOrderRequestsQueryVariables>;
 export const GetMyTutorOrderDocument = gql`
     query getMyTutorOrder($where: ProfileWhereUniqueInput!) {
   getMyTutorOrder(where: $where) {
@@ -2142,6 +2388,7 @@ export const GetNotificationsDocument = gql`
     notifications {
       ...Notification
     }
+    countNotViewedNotifications
   }
 }
     ${IOutputFragmentDoc}
@@ -2270,6 +2517,48 @@ export function useGetTutorOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetTutorOrderQueryHookResult = ReturnType<typeof useGetTutorOrderQuery>;
 export type GetTutorOrderLazyQueryHookResult = ReturnType<typeof useGetTutorOrderLazyQuery>;
 export type GetTutorOrderQueryResult = Apollo.QueryResult<GetTutorOrderQuery, GetTutorOrderQueryVariables>;
+export const GetTutorOrderTutorConnectDocument = gql`
+    query GetTutorOrderTutorConnect($where1: ProfileWhereUniqueInput!, $where2: TutorOrderWhereUniqueInput!) {
+  getTutorOrderTutorConnect(where_1: $where1, where_2: $where2) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order_tutor_connect {
+      ...TutorOrderTutorConnect
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderTutorConnectFragmentDoc}`;
+
+/**
+ * __useGetTutorOrderTutorConnectQuery__
+ *
+ * To run a query within a React component, call `useGetTutorOrderTutorConnectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTutorOrderTutorConnectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTutorOrderTutorConnectQuery({
+ *   variables: {
+ *      where1: // value for 'where1'
+ *      where2: // value for 'where2'
+ *   },
+ * });
+ */
+export function useGetTutorOrderTutorConnectQuery(baseOptions: Apollo.QueryHookOptions<GetTutorOrderTutorConnectQuery, GetTutorOrderTutorConnectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTutorOrderTutorConnectQuery, GetTutorOrderTutorConnectQueryVariables>(GetTutorOrderTutorConnectDocument, options);
+      }
+export function useGetTutorOrderTutorConnectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTutorOrderTutorConnectQuery, GetTutorOrderTutorConnectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTutorOrderTutorConnectQuery, GetTutorOrderTutorConnectQueryVariables>(GetTutorOrderTutorConnectDocument, options);
+        }
+export type GetTutorOrderTutorConnectQueryHookResult = ReturnType<typeof useGetTutorOrderTutorConnectQuery>;
+export type GetTutorOrderTutorConnectLazyQueryHookResult = ReturnType<typeof useGetTutorOrderTutorConnectLazyQuery>;
+export type GetTutorOrderTutorConnectQueryResult = Apollo.QueryResult<GetTutorOrderTutorConnectQuery, GetTutorOrderTutorConnectQueryVariables>;
 export const GetUserDocument = gql`
     query getUser {
   getUser {

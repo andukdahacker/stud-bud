@@ -22,27 +22,27 @@ model User {
 }
 
 model Profile {
-  id                          String              @id @default(cuid())
-  profile_bio                 String?             @db.VarChar(200)
-  profile_avatar              String?             @db.VarChar
-  profile_avatar_public_id    String?             @db.VarChar
-  profile_wallpaper           String?             @db.VarChar
-  profile_wallpaper_public_id String?             @db.VarChar
-  tutor_mode                  Boolean             @default(false)
+  id                          String                   @id @default(cuid())
+  profile_bio                 String?                  @db.VarChar(200)
+  profile_avatar              String?                  @db.VarChar
+  profile_avatar_public_id    String?                  @db.VarChar
+  profile_wallpaper           String?                  @db.VarChar
+  profile_wallpaper_public_id String?                  @db.VarChar
+  tutor_mode                  Boolean                  @default(false)
   profile_interests           ProfileInterests[]
-  requester                   Relationship[]      @relation("requester")
-  addressee                   Relationship[]      @relation("addressee")
-  specifier                   Relationship[]      @relation("specifier")
-  noti_notifier               Notification[]      @relation("notifier")
-  noti_receiver               Notification[]      @relation("receiver")
+  requester                   Relationship[]           @relation("requester")
+  addressee                   Relationship[]           @relation("addressee")
+  specifier                   Relationship[]           @relation("specifier")
+  noti_notifier               Notification[]           @relation("notifier")
+  noti_receiver               Notification[]           @relation("receiver")
   message_author              Message[]
   conversation_member         ConversationGroup[]
-  student                     TutorOrder[]        @relation("student")
-  tutor                       TutorOrder[]        @relation("tutor")
-  user                        User                @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id                     String              @unique
-  createdAt                   DateTime            @unique @default(now())
-  updatedAt                   DateTime            @updatedAt
+  student                     TutorOrder[]             @relation("student")
+  tutor                       TutorOrderTutorConnect[]
+  user                        User                     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id                     String                   @unique
+  createdAt                   DateTime                 @unique @default(now())
+  updatedAt                   DateTime                 @updatedAt
 
 }
 
@@ -143,17 +143,34 @@ model ConversationGroup {
 }
 
 model TutorOrder {
-  id                    String                @id @default(cuid())
-  student               Profile               @relation("student", fields: [student_id], references: [id], onDelete: Cascade)
+  id                    String                   @id @default(cuid())
+  student               Profile                  @relation("student", fields: [student_id], references: [id], onDelete: Cascade)
   student_id            String
-  tutor                 Profile?              @relation("tutor", fields: [tutor_id], references: [id], onDelete: Cascade)
-  tutor_id              String?
+  tutor                 TutorOrderTutorConnect[]
   tutor_order_interests TutorOrderInterests[]
-  problem               String                @db.Text
-  tutor_requirements    String                @db.VarChar(200)
-  isCompleted           Boolean               @default(false)
-  createdAt             DateTime              @default(now())
-  updatedAt             DateTime              @updatedAt
+  problem               String                   @db.Text
+  tutor_requirements    String                   @db.VarChar(200)
+  isCompleted           Boolean                  @default(false)
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+}
+
+model TutorOrderTutorConnect {
+  tutor_order    TutorOrder                       @relation(fields: [tutor_order_id], references: [id], onDelete: Cascade)
+  tutor_order_id String
+  tutor          Profile                          @relation(fields: [tutor_id], references: [id], onDelete: Cascade)
+  tutor_id       String
+  status         TutorOrderTutorConnectStatusCode
+  createdAt      DateTime                         @default(now())
+  updatedAt      DateTime                         @updatedAt
+
+  @@id([tutor_id, tutor_order_id])
+}
+
+enum TutorOrderTutorConnectStatusCode {
+  REQUESTED
+  ACCEPTED
+  DECLINED
 }
 
 model TutorOrderInterests {

@@ -20,5 +20,7 @@ export const GetNotificationOutput = objectType({
     t.nullable.list.nullable.field("notifications", {
       type: Notification,
     });
+
+    t.nullable.int("countNotViewedNotifications");
   },
 });

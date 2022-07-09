@@ -10,13 +10,16 @@ import Avatar from "./Avatar";
 import {
   useGetBuddyNotificationsLazyQuery,
   useGetManyConversationsLazyQuery,
+  useGetNotificationsLazyQuery,
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
+  useViewNotificationMutation,
 } from "../generated/graphql";
 
 import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
 import ChatNotiNavBarButton from "./ChatNotiNavBarButton";
 import Loading from "./Loading";
+import NotiNavBarButton from "./NotiNavBarButton";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -27,16 +30,22 @@ const NavBar = () => {
 
   const [viewBuddyNoti, {}] = useViewBuddyNotificationsMutation();
   const [viewChatNoti, {}] = useViewMessageMutation();
+  const [viewNoti, {}] = useViewNotificationMutation();
   const [_, { refetch: refetchBuddyNoti }] =
     useGetBuddyNotificationsLazyQuery();
   const [__, { refetch: refetchChatNoti }] = useGetManyConversationsLazyQuery();
+  const [___, { refetch: refetchNoti }] = useGetNotificationsLazyQuery();
   const [newBuddyNotiCount, setNewBuddyNotiCount] = useState<number>(0);
   const [newChatNotiCount, setNewChatNotiCount] = useState<number>(0);
+  const [newNotiCount, setNewNotiCount] = useState<number>(0);
   const [hiddenBuddyNotification, setHiddenBuddyNotification] = useState<
     string | undefined
   >("hidden");
 
   const [hiddenChatNotification, setHiddenChatNotification] = useState<
+    string | undefined
+  >("hidden");
+  const [hiddenNotification, setHiddenNotification] = useState<
     string | undefined
   >("hidden");
 
@@ -67,8 +76,7 @@ const NavBar = () => {
     }
 
     setNewBuddyNotiCount(0);
-
-    // setHiddenNotification("hidden");
+    setHiddenNotification("hidden");
     setHiddenChatNotification("hidden");
   };
 
@@ -100,8 +108,33 @@ const NavBar = () => {
     }
 
     setNewChatNotiCount(0);
-
+    setHiddenNotification("hidden");
     setHiddenBuddyNotification("hidden");
+  };
+
+  const toggleNotification = async (
+    countNotViewNotification: number | null | undefined
+  ) => {
+    if (hiddenNotification === "hidden") setHiddenNotification(undefined);
+    if (hiddenNotification === undefined) setHiddenNotification("hidden");
+    if (countNotViewNotification && countNotViewNotification > 0) {
+      await viewNoti({
+        variables: {
+          where: {
+            profile_id: user_profile_id as string,
+          },
+        },
+      });
+
+      await refetchNoti({
+        where: {
+          profile_id: user_profile_id as string,
+        },
+      });
+    }
+    setNewNotiCount(0);
+    setHiddenBuddyNotification("hidden");
+    setHiddenChatNotification("hidden");
   };
 
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -163,6 +196,14 @@ const NavBar = () => {
               hidden={hiddenChatNotification}
             />
           )}
+
+          <NotiNavBarButton
+            user_profile_id={user_profile_id}
+            newNotiCount={newNotiCount}
+            setNewNotiCount={setNewNotiCount}
+            toggle={toggleNotification}
+            hidden={hiddenNotification}
+          />
 
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a
