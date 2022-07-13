@@ -159,6 +159,18 @@ export type GetNotificationOutput = {
   notifications?: Maybe<Array<Maybe<Notification>>>;
 };
 
+export type GetRelationshipInput = {
+  addressee_id: Scalars['String'];
+  requester_id: Scalars['String'];
+};
+
+export type GetRelationshipOutput = {
+  __typename?: 'GetRelationshipOutput';
+  IOutput: IOutput;
+  otherEndRelationship?: Maybe<Relationship>;
+  relationship?: Maybe<Relationship>;
+};
+
 export type GetTutorOrderTutorConnectOutput = {
   __typename?: 'GetTutorOrderTutorConnectOutput';
   IOutput: IOutput;
@@ -388,9 +400,6 @@ export type PageInfoIdCursor = {
 
 export type Profile = {
   __typename?: 'Profile';
-  buddies?: Maybe<Array<Relationship>>;
-  buddyPendings?: Maybe<Array<Relationship>>;
-  buddyRequests?: Maybe<Array<Relationship>>;
   createdAt?: Maybe<Scalars['Date']>;
   id: Scalars['ID'];
   profile_avatar?: Maybe<Scalars['String']>;
@@ -433,6 +442,7 @@ export type Query = {
   getMyTutorOrder?: Maybe<GetManyTutorOrdersOutput>;
   getNotifications?: Maybe<GetNotificationOutput>;
   getProfile?: Maybe<ProfileMutationOutput>;
+  getRelationship?: Maybe<GetRelationshipOutput>;
   getTutorOrder?: Maybe<TutorOrderOutput>;
   getTutorOrderTutorConnect?: Maybe<GetTutorOrderTutorConnectOutput>;
   getUser?: Maybe<User>;
@@ -490,6 +500,11 @@ export type QueryGetProfileArgs = {
 };
 
 
+export type QueryGetRelationshipArgs = {
+  where: GetRelationshipInput;
+};
+
+
 export type QueryGetTutorOrderArgs = {
   where: TutorOrderWhereUniqueInput;
 };
@@ -520,7 +535,6 @@ export type Relationship = {
   isViewed: Scalars['Boolean'];
   requester: Profile;
   requester_id: Scalars['String'];
-  specifier_id: Scalars['String'];
   status: RelationshipStatusCode;
   updatedAt: Scalars['Date'];
 };
@@ -528,7 +542,6 @@ export type Relationship = {
 export type RelationshipInput = {
   addressee_id: Scalars['String'];
   requester_id: Scalars['String'];
-  specifier_id: Scalars['String'];
   status: RelationshipStatusCode;
 };
 
@@ -678,7 +691,7 @@ export type ProfileFragment = { __typename?: 'Profile', id: string, profile_bio?
 
 export type ProfileInterestFragment = { __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
 
-export type RelationshipFragment = { __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
+export type RelationshipFragment = { __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
 
 export type TutorOrderFragment = { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null };
 
@@ -865,7 +878,7 @@ export type GetBuddyNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
+export type GetBuddyNotificationsQuery = { __typename?: 'Query', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
 
 export type GetConversationQueryVariables = Exact<{
   where: ConversationWhereUniqueInput;
@@ -929,7 +942,14 @@ export type GetProfileQueryVariables = Exact<{
 }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null, buddies?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyPendings?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'ProfileMutationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null }, profile: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null };
+
+export type GetRelationshipQueryVariables = Exact<{
+  where: GetRelationshipInput;
+}>;
+
+
+export type GetRelationshipQuery = { __typename?: 'Query', getRelationship?: { __typename?: 'GetRelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, relationship?: { __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, otherEndRelationship?: { __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null } | null };
 
 export type GetTutorOrderQueryVariables = Exact<{
   where: TutorOrderWhereUniqueInput;
@@ -956,7 +976,7 @@ export type GetBuddyNotificationsSubsSubscriptionVariables = Exact<{
 }>;
 
 
-export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, specifier_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
+export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
 
 export type GetConversationSubSubscriptionVariables = Exact<{
   where: ConversationWhereUniqueInput;
@@ -1085,7 +1105,6 @@ export const RelationshipFragmentDoc = gql`
   requester {
     ...Profile
   }
-  specifier_id
   status
   isRead
   isViewed
@@ -2432,22 +2451,12 @@ export const GetProfileDocument = gql`
       profile_interests {
         ...ProfileInterest
       }
-      buddies {
-        ...Relationship
-      }
-      buddyRequests {
-        ...Relationship
-      }
-      buddyPendings {
-        ...Relationship
-      }
     }
   }
 }
     ${IOutputFragmentDoc}
 ${ProfileFragmentDoc}
-${ProfileInterestFragmentDoc}
-${RelationshipFragmentDoc}`;
+${ProfileInterestFragmentDoc}`;
 
 /**
  * __useGetProfileQuery__
@@ -2476,6 +2485,50 @@ export function useGetProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
+export const GetRelationshipDocument = gql`
+    query GetRelationship($where: GetRelationshipInput!) {
+  getRelationship(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    relationship {
+      ...Relationship
+    }
+    otherEndRelationship {
+      ...Relationship
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${RelationshipFragmentDoc}`;
+
+/**
+ * __useGetRelationshipQuery__
+ *
+ * To run a query within a React component, call `useGetRelationshipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRelationshipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRelationshipQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetRelationshipQuery(baseOptions: Apollo.QueryHookOptions<GetRelationshipQuery, GetRelationshipQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRelationshipQuery, GetRelationshipQueryVariables>(GetRelationshipDocument, options);
+      }
+export function useGetRelationshipLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRelationshipQuery, GetRelationshipQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRelationshipQuery, GetRelationshipQueryVariables>(GetRelationshipDocument, options);
+        }
+export type GetRelationshipQueryHookResult = ReturnType<typeof useGetRelationshipQuery>;
+export type GetRelationshipLazyQueryHookResult = ReturnType<typeof useGetRelationshipLazyQuery>;
+export type GetRelationshipQueryResult = Apollo.QueryResult<GetRelationshipQuery, GetRelationshipQueryVariables>;
 export const GetTutorOrderDocument = gql`
     query getTutorOrder($where: TutorOrderWhereUniqueInput!) {
   getTutorOrder(where: $where) {

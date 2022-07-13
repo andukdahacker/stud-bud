@@ -1,9 +1,9 @@
 import { RelationshipStatusCode } from "@prisma/client";
 
-export interface RelationShipInput {
+export interface RelationshipInput {
   addressee_id: string;
   requester_id: string;
-  specifier_id: string;
+
   status: "ACCEPTED" | "DECLINED" | "REQUESTED";
 }
 

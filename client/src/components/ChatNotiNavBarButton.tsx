@@ -32,7 +32,7 @@ const ChatNotiNavBarButton = ({
     {
       data: getManyConversationsData,
       loading: getManyConversationsLoading,
-
+      refetch,
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();
@@ -78,7 +78,14 @@ const ChatNotiNavBarButton = ({
         onClick={
           router.pathname === "/chat"
             ? () => {}
-            : () => toggle(countNotViewedChatNotifications)
+            : async () => {
+                await toggle(countNotViewedChatNotifications);
+                await refetch({
+                  where: {
+                    profile_id: user_profile_id as string,
+                  },
+                });
+              }
         }
       >
         <FontAwesomeIcon

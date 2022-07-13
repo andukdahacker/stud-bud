@@ -1,13 +1,13 @@
-import { RelationShipInput } from "../types";
-import { Context } from "../context";
+import { RelationshipInput } from "../types";
+
 import { INVALID_INPUT } from "../constants";
 
 export const validateRelationshipInput = async (
-  input: RelationShipInput,
-  ctx: Context,
+  input: RelationshipInput,
+
   options: "connectBuddy" | "respondBuddy"
 ) => {
-  const { addressee_id, requester_id, specifier_id, status } = input;
+  const { addressee_id, requester_id, status } = input;
   let result:
     | {
         IOutput: {
@@ -18,14 +18,6 @@ export const validateRelationshipInput = async (
       }
     | undefined;
 
-  const profile = await ctx.prisma.user
-    .findUnique({
-      where: {
-        id: ctx.req.session.userId,
-      },
-    })
-    .profile();
-
   if (options == "connectBuddy") {
     if (status === "ACCEPTED" || status === "DECLINED") {
       result = {
@@ -35,16 +27,6 @@ export const validateRelationshipInput = async (
           message: INVALID_INPUT,
         },
       };
-
-      if (requester_id !== specifier_id) {
-        result = {
-          IOutput: {
-            code: 400,
-            success: false,
-            message: INVALID_INPUT,
-          },
-        };
-      }
     }
   }
 
@@ -59,34 +41,14 @@ export const validateRelationshipInput = async (
       };
     }
 
-    if (requester_id === specifier_id && status === "ACCEPTED") {
+    if (requester_id === addressee_id)
       result = {
         IOutput: {
           code: 400,
           success: false,
-          message: "2",
+          message: "3",
         },
       };
-    }
-  }
-
-  if (requester_id === addressee_id)
-    result = {
-      IOutput: {
-        code: 400,
-        success: false,
-        message: "3",
-      },
-    };
-
-  if (profile?.id !== specifier_id) {
-    result = {
-      IOutput: {
-        code: 400,
-        success: false,
-        message: "4",
-      },
-    };
   }
 
   return result;

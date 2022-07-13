@@ -29,7 +29,7 @@ export const Relationship = objectType({
         });
       },
     });
-    t.nonNull.string("specifier_id");
+
     t.nonNull.field("status", {
       type: RelationshipStatusCode,
     });

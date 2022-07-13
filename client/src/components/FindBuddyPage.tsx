@@ -1,6 +1,10 @@
 import { NetworkStatus } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useGetManyProfilesQuery } from "../generated/graphql";
+import { useEffect } from "react";
+import {
+  useGetManyProfilesLazyQuery,
+  useGetManyProfilesQuery,
+} from "../generated/graphql";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";
 import ProfileCard from "./ProfileCard";

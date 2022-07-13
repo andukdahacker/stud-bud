@@ -26,7 +26,7 @@ const NotiNavBarButton = ({
   const router = useRouter();
   const [
     getNotifications,
-    { data: getNotificationsData, loading: getNotificationsLoading },
+    { data: getNotificationsData, loading: getNotificationsLoading, refetch },
   ] = useGetNotificationsLazyQuery();
 
   useEffect(() => {
@@ -57,7 +57,14 @@ const NotiNavBarButton = ({
           onClick={
             router.pathname === "/buddies"
               ? () => {}
-              : () => toggle(countNotViewedNotifications)
+              : async () => {
+                  await toggle(countNotViewedNotifications);
+                  await refetch({
+                    where: {
+                      profile_id: user_profile_id as string,
+                    },
+                  });
+                }
           }
         >
           <FontAwesomeIcon

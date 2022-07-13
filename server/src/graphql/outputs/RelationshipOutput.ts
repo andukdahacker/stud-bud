@@ -35,3 +35,20 @@ export const BuddyNotificationsOutput = objectType({
     });
   },
 });
+
+export const GetRelationshipOutput = objectType({
+  name: "GetRelationshipOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+
+    t.nullable.field("relationship", {
+      type: Relationship,
+    });
+
+    t.nullable.field("otherEndRelationship", {
+      type: Relationship,
+    });
+  },
+});

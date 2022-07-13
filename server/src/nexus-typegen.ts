@@ -90,6 +90,10 @@ export interface NexusGenInputs {
     search_input?: string | null; // String
     take: number; // Int!
   }
+  GetRelationshipInput: { // input type
+    addressee_id: string; // String!
+    requester_id: string; // String!
+  }
   LoginInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -112,7 +116,6 @@ export interface NexusGenInputs {
   RelationshipInput: { // input type
     addressee_id: string; // String!
     requester_id: string; // String!
-    specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
   }
   ResondTutorOrderConnectInput: { // input type
@@ -202,6 +205,11 @@ export interface NexusGenObjects {
     countNotViewedNotifications?: number | null; // Int
     notifications?: Array<NexusGenRootTypes['Notification'] | null> | null; // [Notification]
   }
+  GetRelationshipOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    otherEndRelationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
+    relationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
+  }
   GetTutorOrderTutorConnectOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     tutor_order_tutor_connect?: NexusGenRootTypes['TutorOrderTutorConnect'] | null; // TutorOrderTutorConnect
@@ -272,7 +280,6 @@ export interface NexusGenObjects {
     isRead: boolean; // Boolean!
     isViewed: boolean; // Boolean!
     requester_id: string; // String!
-    specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
     updatedAt: NexusGenScalars['Date']; // Date!
   }
@@ -393,6 +400,11 @@ export interface NexusGenFieldTypes {
     countNotViewedNotifications: number | null; // Int
     notifications: Array<NexusGenRootTypes['Notification'] | null> | null; // [Notification]
   }
+  GetRelationshipOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    otherEndRelationship: NexusGenRootTypes['Relationship'] | null; // Relationship
+    relationship: NexusGenRootTypes['Relationship'] | null; // Relationship
+  }
   GetTutorOrderTutorConnectOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     tutor_order_tutor_connect: NexusGenRootTypes['TutorOrderTutorConnect'] | null; // TutorOrderTutorConnect
@@ -468,9 +480,6 @@ export interface NexusGenFieldTypes {
     lastTake: number | null; // Int
   }
   Profile: { // field return type
-    buddies: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
-    buddyPendings: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
-    buddyRequests: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     createdAt: NexusGenScalars['Date'] | null; // Date
     id: string; // ID!
     profile_avatar: string | null; // String
@@ -503,6 +512,7 @@ export interface NexusGenFieldTypes {
     getMyTutorOrder: NexusGenRootTypes['GetManyTutorOrdersOutput'] | null; // GetManyTutorOrdersOutput
     getNotifications: NexusGenRootTypes['GetNotificationOutput'] | null; // GetNotificationOutput
     getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
+    getRelationship: NexusGenRootTypes['GetRelationshipOutput'] | null; // GetRelationshipOutput
     getTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     getTutorOrderTutorConnect: NexusGenRootTypes['GetTutorOrderTutorConnectOutput'] | null; // GetTutorOrderTutorConnectOutput
     getUser: NexusGenRootTypes['User'] | null; // User
@@ -515,7 +525,6 @@ export interface NexusGenFieldTypes {
     isViewed: boolean; // Boolean!
     requester: NexusGenRootTypes['Profile']; // Profile!
     requester_id: string; // String!
-    specifier_id: string; // String!
     status: NexusGenEnums['RelationshipStatusCode']; // RelationshipStatusCode!
     updatedAt: NexusGenScalars['Date']; // Date!
   }
@@ -638,6 +647,11 @@ export interface NexusGenFieldTypeNames {
     countNotViewedNotifications: 'Int'
     notifications: 'Notification'
   }
+  GetRelationshipOutput: { // field return type name
+    IOutput: 'IOutput'
+    otherEndRelationship: 'Relationship'
+    relationship: 'Relationship'
+  }
   GetTutorOrderTutorConnectOutput: { // field return type name
     IOutput: 'IOutput'
     tutor_order_tutor_connect: 'TutorOrderTutorConnect'
@@ -713,9 +727,6 @@ export interface NexusGenFieldTypeNames {
     lastTake: 'Int'
   }
   Profile: { // field return type name
-    buddies: 'Relationship'
-    buddyPendings: 'Relationship'
-    buddyRequests: 'Relationship'
     createdAt: 'Date'
     id: 'ID'
     profile_avatar: 'String'
@@ -748,6 +759,7 @@ export interface NexusGenFieldTypeNames {
     getMyTutorOrder: 'GetManyTutorOrdersOutput'
     getNotifications: 'GetNotificationOutput'
     getProfile: 'ProfileMutationOutput'
+    getRelationship: 'GetRelationshipOutput'
     getTutorOrder: 'TutorOrderOutput'
     getTutorOrderTutorConnect: 'GetTutorOrderTutorConnectOutput'
     getUser: 'User'
@@ -760,7 +772,6 @@ export interface NexusGenFieldTypeNames {
     isViewed: 'Boolean'
     requester: 'Profile'
     requester_id: 'String'
-    specifier_id: 'String'
     status: 'RelationshipStatusCode'
     updatedAt: 'Date'
   }
@@ -939,6 +950,9 @@ export interface NexusGenArgTypes {
     }
     getProfile: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    getRelationship: { // args
+      where: NexusGenInputs['GetRelationshipInput']; // GetRelationshipInput!
     }
     getTutorOrder: { // args
       where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!

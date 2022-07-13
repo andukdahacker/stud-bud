@@ -5,6 +5,8 @@ import {
   CONNECT_BUDDY_EVENT,
   INTERNAL_SERVER_ERROR,
   QUERY_SUCCESS,
+  SUCCESSFUL_MUTATION,
+  UNSUCCESSFUL_MUTATION,
   UNSUCCESSFUL_QUERY,
 } from "../../constants";
 import {
@@ -24,17 +26,56 @@ export const connectBuddy = mutationField("connectBuddy", {
     input: nonNull(RelationshipInput),
   },
   resolve: async (_root, args, ctx) => {
-    const { requester_id, addressee_id, specifier_id, status } = args.input;
+    const { requester_id, addressee_id, status } = args.input;
 
     const validateInputErrors = await validateRelationshipInput(
       args.input,
-      ctx,
+
       "connectBuddy"
     );
 
     if (validateInputErrors) return validateInputErrors;
 
     try {
+      const existingRelationship = await ctx.prisma.relationship.findUnique({
+        where: {
+          requester_id_addressee_id: {
+            requester_id,
+            addressee_id,
+          },
+        },
+      });
+
+      if (existingRelationship) {
+        const updateExistingRelationship = await ctx.prisma.relationship.update(
+          {
+            where: {
+              requester_id_addressee_id: {
+                requester_id,
+                addressee_id,
+              },
+            },
+            data: {
+              status: "REQUESTED",
+              isViewed: false,
+              isRead: false,
+            },
+          }
+        );
+
+        if (!updateExistingRelationship)
+          return {
+            IOutput: UNSUCCESSFUL_MUTATION,
+          };
+
+        pubsub.publish(CONNECT_BUDDY_EVENT, {
+          data: updateExistingRelationship,
+        });
+
+        return {
+          IOutput: SUCCESSFUL_MUTATION,
+        };
+      }
       const relationship = await ctx.prisma.relationship.create({
         data: {
           requester: {
@@ -47,11 +88,7 @@ export const connectBuddy = mutationField("connectBuddy", {
               id: addressee_id,
             },
           },
-          specifier: {
-            connect: {
-              id: specifier_id,
-            },
-          },
+
           status,
         },
       });
@@ -63,7 +100,6 @@ export const connectBuddy = mutationField("connectBuddy", {
             success: false,
             message: "Request failed",
           },
-          Relationship: relationship,
         };
 
       pubsub.publish(CONNECT_BUDDY_EVENT, { data: relationship });
@@ -87,10 +123,10 @@ export const respondBuddy = mutationField("respondBuddy", {
     input: nonNull(RelationshipInput),
   },
   resolve: async (_root, args, ctx) => {
-    const { requester_id, addressee_id, specifier_id, status } = args.input;
+    const { requester_id, addressee_id, status } = args.input;
     const validateInputErrors = await validateRelationshipInput(
       args.input,
-      ctx,
+
       "respondBuddy"
     );
 
@@ -109,8 +145,19 @@ export const respondBuddy = mutationField("respondBuddy", {
           },
         });
 
-        const otherEndRelationship = ctx.prisma.relationship.create({
-          data: {
+        const otherEndRelationship = ctx.prisma.relationship.upsert({
+          where: {
+            requester_id_addressee_id: {
+              requester_id: addressee_id,
+              addressee_id: requester_id,
+            },
+          },
+          update: {
+            status: "ACCEPTED",
+            isViewed: false,
+            isRead: false,
+          },
+          create: {
             requester: {
               connect: {
                 id: addressee_id,
@@ -121,12 +168,7 @@ export const respondBuddy = mutationField("respondBuddy", {
                 id: requester_id,
               },
             },
-            specifier: {
-              connect: {
-                id: specifier_id,
-              },
-            },
-            status,
+            status: "ACCEPTED",
           },
         });
 
@@ -146,23 +188,6 @@ export const respondBuddy = mutationField("respondBuddy", {
 
         pubsub.publish(ACCEPT_BUDDY_EVENT, {
           data: result[1],
-        });
-
-        await ctx.prisma.conversation.create({
-          data: {
-            conversation_group: {
-              createMany: {
-                data: [
-                  {
-                    conversation_member_id: requester_id,
-                  },
-                  {
-                    conversation_member_id: addressee_id,
-                  },
-                ],
-              },
-            },
-          },
         });
 
         return {
@@ -221,25 +246,32 @@ export const removeBuddy = mutationField("removeBuddy", {
   resolve: async (_root, args, ctx) => {
     const { requester_id, addressee_id } = args.input;
     try {
-      const delete1 = ctx.prisma.relationship.delete({
+      const delete1 = ctx.prisma.relationship.update({
         where: {
           requester_id_addressee_id: {
             requester_id,
             addressee_id,
           },
         },
+        data: {
+          status: "DECLINED",
+        },
       });
 
-      const delete2 = ctx.prisma.relationship.delete({
+      const delete2 = ctx.prisma.relationship.update({
         where: {
           requester_id_addressee_id: {
             requester_id: addressee_id,
             addressee_id: requester_id,
           },
         },
+        data: {
+          status: "DECLINED",
+        },
       });
 
       const deleteResult = await ctx.prisma.$transaction([delete1, delete2]);
+
       if (!deleteResult)
         return {
           IOutput: {

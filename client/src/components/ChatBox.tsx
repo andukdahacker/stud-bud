@@ -5,7 +5,6 @@ import {
   GetConversationQuery,
   GetUserDocument,
   GetUserQuery,
-  useGetConversationLazyQuery,
   useSendMessageMutation,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
@@ -16,9 +15,15 @@ interface ChatBoxProps {
   conversation_id?: string;
   user_profile_id: string | undefined;
   loading: boolean;
+  fetchMore: any;
 }
 
-const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
+const ChatBox = ({
+  data,
+  loading,
+  conversation_id,
+  fetchMore,
+}: ChatBoxProps) => {
   const client = useApolloClient();
   const user_profile_id = client.readQuery<GetUserQuery>({
     query: GetUserDocument,
@@ -30,7 +35,7 @@ const ChatBox = ({ data, loading, conversation_id }: ChatBoxProps) => {
   };
 
   const [sendMessage, {}] = useSendMessageMutation();
-  const [_, { fetchMore }] = useGetConversationLazyQuery();
+
   const messages = data?.getConversation?.Messages;
   const hasNextPage = data?.getConversation?.ConversationPageInfo?.hasNextPage;
   const cursor = data?.getConversation?.ConversationPageInfo?.endCursor;

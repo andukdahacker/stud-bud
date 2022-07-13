@@ -3,6 +3,7 @@ import {
   GetBuddyNotificationsSubsDocument,
   useGetBuddyNotificationsLazyQuery,
   useGetProfileLazyQuery,
+  useGetRelationshipLazyQuery,
 } from "../generated/graphql";
 import merge from "deepmerge";
 import { useRouter } from "next/router";
@@ -33,12 +34,11 @@ const BuddyNotiNavBarButton = ({
     {
       data: getBuddyNotificationsData,
       loading: getBuddyNotificationsLoading,
-
+      refetch,
       subscribeToMore: subsGetBuddyNotifications,
     },
   ] = useGetBuddyNotificationsLazyQuery();
 
-  const [_, { refetch: refetchGetProfile }] = useGetProfileLazyQuery();
   const countNotViewedBuddyNotifications =
     getBuddyNotificationsData?.getBuddyNotifications
       ?.countNotViewedBuddyNotifications;
@@ -62,27 +62,7 @@ const BuddyNotiNavBarButton = ({
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
           const merged = merge(prev, subscriptionData.data);
-          const buddyAccepts_subs =
-            subscriptionData.data.getBuddyNotifications?.buddyAccepts;
-          const buddyRequests_subs =
-            subscriptionData.data.getBuddyNotifications?.buddyRequests;
-          if (buddyRequests_subs && buddyRequests_subs.length > 0) {
-            const requester_id = buddyRequests_subs[0].requester_id;
-            refetchGetProfile({
-              where: {
-                profile_id: requester_id,
-              },
-            });
-          }
 
-          if (buddyAccepts_subs && buddyAccepts_subs.length > 0) {
-            const requester_id = buddyAccepts_subs[0].requester_id;
-            refetchGetProfile({
-              where: {
-                profile_id: requester_id,
-              },
-            });
-          }
           return merged;
         },
       });
@@ -103,7 +83,14 @@ const BuddyNotiNavBarButton = ({
         onClick={
           router.pathname === "/buddies"
             ? () => {}
-            : () => toggle(countNotViewedBuddyNotifications)
+            : async () => {
+                await toggle(countNotViewedBuddyNotifications);
+                await refetch({
+                  where: {
+                    profile_id: user_profile_id as string,
+                  },
+                });
+              }
         }
       >
         <FontAwesomeIcon

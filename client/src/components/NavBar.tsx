@@ -31,10 +31,7 @@ const NavBar = () => {
   const [viewBuddyNoti, {}] = useViewBuddyNotificationsMutation();
   const [viewChatNoti, {}] = useViewMessageMutation();
   const [viewNoti, {}] = useViewNotificationMutation();
-  const [_, { refetch: refetchBuddyNoti }] =
-    useGetBuddyNotificationsLazyQuery();
-  const [__, { refetch: refetchChatNoti }] = useGetManyConversationsLazyQuery();
-  const [___, { refetch: refetchNoti }] = useGetNotificationsLazyQuery();
+
   const [newBuddyNotiCount, setNewBuddyNotiCount] = useState<number>(0);
   const [newChatNotiCount, setNewChatNotiCount] = useState<number>(0);
   const [newNotiCount, setNewNotiCount] = useState<number>(0);
@@ -67,12 +64,6 @@ const NavBar = () => {
           },
         },
       });
-
-      await refetchBuddyNoti({
-        where: {
-          profile_id: user_profile_id as string,
-        },
-      });
     }
 
     setNewBuddyNotiCount(0);
@@ -99,12 +90,6 @@ const NavBar = () => {
           },
         },
       });
-
-      await refetchChatNoti({
-        where: {
-          profile_id: user_profile_id as string,
-        },
-      });
     }
 
     setNewChatNotiCount(0);
@@ -123,12 +108,6 @@ const NavBar = () => {
           where: {
             profile_id: user_profile_id as string,
           },
-        },
-      });
-
-      await refetchNoti({
-        where: {
-          profile_id: user_profile_id as string,
         },
       });
     }

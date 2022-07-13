@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import {
   TutorOrderTutorConnectFragment,
-  TutorOrderTutorConnectStatusCode,
   useGetProfileLazyQuery,
-  useRespondTutorOrderConnectMutation,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
-import Loading from "./Loading";
 import ProfilePage from "./ProfilePage";
+import TutorOrderRespondButton from "./TutorOrderRespondButton";
 
 interface TutorOrderRequestCardProps {
   data: TutorOrderTutorConnectFragment | undefined | null;
@@ -20,41 +17,13 @@ const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
   const tutor = data?.tutor;
   const tutor_order_id = data?.tutor_order_id;
   const profile_id = tutor?.id;
+  const status = data?.status;
 
   const profile_avatar = tutor?.profile_avatar;
   const username = tutor?.user?.username;
 
   const [getProfile, { data: GetProfileData, loading: GetProfileLoading }] =
     useGetProfileLazyQuery();
-
-  const [
-    respond,
-    {
-      data: RespondTutorOrderRequestData,
-      loading: RespondTutorOrderRequestLoading,
-    },
-  ] = useRespondTutorOrderConnectMutation();
-
-  const respondSuccess =
-    RespondTutorOrderRequestData?.respondTutorOrderConnect?.IOutput.success;
-  const respondMessage =
-    RespondTutorOrderRequestData?.respondTutorOrderConnect?.IOutput.message;
-
-  const respondTutorOrderRequest = async (
-    option: TutorOrderTutorConnectStatusCode
-  ) => {
-    await respond({
-      variables: {
-        where: {
-          id: tutor_order_id as string,
-        },
-        input: {
-          tutor_id: profile_id as string,
-          status: option,
-        },
-      },
-    });
-  };
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -83,34 +52,11 @@ const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
         <Avatar img_url={profile_avatar} width={40} height={40} />
         <div>{username}</div>
       </div>
-      {RespondTutorOrderRequestLoading ? (
-        <Loading />
-      ) : respondSuccess ? (
-        <div>{respondMessage}</div>
-      ) : (
-        <div>
-          <button
-            type="button"
-            onClick={() =>
-              respondTutorOrderRequest(
-                TutorOrderTutorConnectStatusCode.Accepted
-              )
-            }
-          >
-            Accept
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              respondTutorOrderRequest(
-                TutorOrderTutorConnectStatusCode.Declined
-              )
-            }
-          >
-            Decline
-          </button>
-        </div>
-      )}
+      <TutorOrderRespondButton
+        status={status}
+        tutor_order_id={tutor_order_id}
+        profile_id={profile_id}
+      />
 
       <ReactModal isOpen={showModal} onRequestClose={closeModal}>
         <button type="button" onClick={closeModal}>

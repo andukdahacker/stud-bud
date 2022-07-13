@@ -37,7 +37,7 @@ const ProfilePage = (props: ProfilePageProps) => {
       <div>
         <Wallpaper img_url={profile_wallpaper} />
         <Avatar img_url={profile_avatar} width={70} height={70} />
-        <BuddyButton data={props.data} />
+        <BuddyButton profile_id={profile_id} />
         <h1>{username}</h1>
         <h2>Bio: {profile_bio}</h2>
         <h2>Interest</h2>

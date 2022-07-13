@@ -1,63 +1,86 @@
-import { useApolloClient } from "@apollo/client";
+import { NetworkStatus } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import {
   GetProfileQuery,
-  GetUserDocument,
-  GetUserQuery,
   RelationshipStatusCode,
   useConnectBuddyMutation,
+  useGetRelationshipLazyQuery,
+  useGetUserQuery,
   useRemoveBuddyMutation,
   useRespondBuddyMutation,
 } from "../generated/graphql";
-import { BuddyRespondOptions, BuddyStatus } from "../utils/constants";
+import { BuddyRespondOptions } from "../utils/constants";
+import Loading from "./Loading";
 
 interface BuddyButtonProps {
-  data: GetProfileQuery | undefined;
+  profile_id: string | undefined;
 }
-const BuddyButton = ({ data }: BuddyButtonProps) => {
-  const [connectBuddy, {}] = useConnectBuddyMutation();
-  const [respondBuddy, {}] = useRespondBuddyMutation();
-  const [removeBuddy, {}] = useRemoveBuddyMutation();
+const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
+  const [
+    connectBuddy,
+    { data: ConnectBuddyData, loading: ConnectBuddyLoading },
+  ] = useConnectBuddyMutation();
+  const [
+    respondBuddy,
+    { data: RespondBuddyData, loading: RespondBuddyLoading },
+  ] = useRespondBuddyMutation();
+  const [removeBuddy, { data: RemoveBuddyData, loading: RemoveBuddyLoading }] =
+    useRemoveBuddyMutation();
+
+  const [
+    getRelationship,
+    {
+      data: GetRelationshipData,
+      loading: GetRelationshipLoading,
+      refetch: refetchRelationship,
+      networkStatus,
+    },
+  ] = useGetRelationshipLazyQuery();
+
+  const { data: GetUserData, loading: GetUserLoading } = useGetUserQuery();
+  const user_profile_id = GetUserData?.getUser?.profile?.id;
+
   const router = useRouter();
-  const client = useApolloClient();
-  const user_profile_id = client.readQuery<GetUserQuery>({
-    query: GetUserDocument,
-  })?.getUser?.profile?.id;
-
-  const [status, setStatus] = useState<BuddyStatus>();
-
   const [hideButton, setHideButton] = useState<string>("hidden");
   const respondButtonHandleClick = () => {
     if (hideButton === "hidden") setHideButton("");
     if (hideButton === "") setHideButton("hidden");
   };
-  const profileData = data?.getProfile?.Profile;
-  const profile_id = data?.getProfile?.Profile?.id;
-  const buddies = profileData?.buddies;
-  const isBuddy = buddies?.find(
-    (buddy) => buddy?.addressee_id === user_profile_id
-  );
-  const buddiesRequests = profileData?.buddyRequests;
-  const isRequested = buddiesRequests?.find(
-    (request) => request?.requester_id === user_profile_id
-  );
-  const buddiesPendings = profileData?.buddyPendings;
-  const isPending = buddiesPendings?.find(
-    (pending) => pending?.addressee_id === user_profile_id
-  );
 
   useEffect(() => {
-    if (isBuddy) {
-      setStatus(BuddyStatus.BUDDY);
-    } else if (isRequested) {
-      setStatus(BuddyStatus.REQUESTED);
-    } else if (isPending) {
-      setStatus(BuddyStatus.PENDING);
-    } else {
-      setStatus(undefined);
+    async function fetchData() {
+      await getRelationship({
+        variables: {
+          where: {
+            requester_id: user_profile_id as string,
+            addressee_id: profile_id as string,
+          },
+        },
+        notifyOnNetworkStatusChange: true,
+      });
     }
-  }, [isBuddy, isRequested, isPending]);
+
+    if (user_profile_id && profile_id) fetchData();
+  }, [user_profile_id, profile_id]);
+
+  const refetchRelationshipLoading = networkStatus === NetworkStatus.refetch;
+
+  const getRelationshipSuccess =
+    GetRelationshipData?.getRelationship?.IOutput.success;
+  const getRelationshipMessage =
+    GetRelationshipData?.getRelationship?.IOutput.message;
+
+  const relationship = GetRelationshipData?.getRelationship?.relationship;
+  const otherEndRelationship =
+    GetRelationshipData?.getRelationship?.otherEndRelationship;
+
+  const isRequested = relationship?.status === RelationshipStatusCode.Requested;
+  const isRespond =
+    otherEndRelationship?.status === RelationshipStatusCode.Requested;
+  const isBuddy =
+    relationship?.status === RelationshipStatusCode.Accepted &&
+    otherEndRelationship?.status === RelationshipStatusCode.Accepted;
 
   const connect = async () => {
     if (!user_profile_id) {
@@ -68,13 +91,19 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
           input: {
             requester_id: user_profile_id as string,
             addressee_id: profile_id as string,
-            specifier_id: user_profile_id as string,
+
             status: RelationshipStatusCode.Requested,
           },
         },
       });
 
-      setStatus(BuddyStatus.REQUESTED);
+      await refetchRelationship({
+        where: {
+          requester_id: user_profile_id as string,
+          addressee_id: profile_id as string,
+        },
+      });
+
       setHideButton("hidden");
     }
   };
@@ -87,11 +116,17 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
             requester_id: profile_id as string,
             addressee_id: user_profile_id as string,
             status: RelationshipStatusCode.Accepted,
-            specifier_id: user_profile_id as string,
           },
         },
       });
-      setStatus(BuddyStatus.BUDDY);
+
+      await refetchRelationship({
+        where: {
+          requester_id: user_profile_id as string,
+          addressee_id: profile_id as string,
+        },
+      });
+
       setHideButton("hidden");
     } else if (option === BuddyRespondOptions.DECLINE) {
       await respondBuddy({
@@ -100,11 +135,17 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
             requester_id: profile_id as string,
             addressee_id: user_profile_id as string,
             status: RelationshipStatusCode.Declined,
-            specifier_id: user_profile_id as string,
           },
         },
       });
-      setStatus(undefined);
+
+      await refetchRelationship({
+        where: {
+          requester_id: user_profile_id as string,
+          addressee_id: profile_id as string,
+        },
+      });
+
       setHideButton("hidden");
     } else if (option === BuddyRespondOptions.UNDO) {
       await respondBuddy({
@@ -113,11 +154,17 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
             requester_id: user_profile_id as string,
             addressee_id: profile_id as string,
             status: RelationshipStatusCode.Declined,
-            specifier_id: user_profile_id as string,
           },
         },
       });
-      setStatus(undefined);
+
+      await refetchRelationship({
+        where: {
+          requester_id: user_profile_id as string,
+          addressee_id: profile_id as string,
+        },
+      });
+
       setHideButton("hidden");
     } else if (option === BuddyRespondOptions.REMOVE) {
       await removeBuddy({
@@ -125,18 +172,33 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
           input: {
             requester_id: user_profile_id as string,
             addressee_id: profile_id as string,
-            specifier_id: user_profile_id as string,
             status: RelationshipStatusCode.Declined,
           },
         },
       });
 
-      setStatus(undefined);
+      await refetchRelationship({
+        where: {
+          requester_id: user_profile_id as string,
+          addressee_id: profile_id as string,
+        },
+      });
+
       setHideButton("hidden");
     }
   };
 
-  if (status === BuddyStatus.BUDDY)
+  if (
+    GetUserLoading ||
+    GetRelationshipLoading ||
+    ConnectBuddyLoading ||
+    RespondBuddyLoading ||
+    RemoveBuddyLoading ||
+    refetchRelationshipLoading
+  )
+    return <Loading />;
+  if (!getRelationshipSuccess) return <div>{getRelationshipMessage}</div>;
+  if (isBuddy)
     return (
       <div>
         <button type="button" onClick={respondButtonHandleClick}>
@@ -152,7 +214,7 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
       </div>
     );
 
-  if (status === BuddyStatus.REQUESTED)
+  if (isRequested)
     return (
       <div>
         <button type="button" onClick={respondButtonHandleClick}>
@@ -168,7 +230,7 @@ const BuddyButton = ({ data }: BuddyButtonProps) => {
       </div>
     );
 
-  if (status === BuddyStatus.PENDING)
+  if (isRespond)
     return (
       <div>
         <button type="button" onClick={respondButtonHandleClick}>

@@ -12,7 +12,6 @@ import {
   useGetManyConversationsLazyQuery,
   useGetUserQuery,
 } from "../../generated/graphql";
-import merge from "deepmerge";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
 import produce from "immer";
@@ -27,7 +26,7 @@ const ChatWithChatBox = () => {
     {
       data: ManyConversationsData,
       loading: ManyConversationsLoading,
-      fetchMore: getMoreManyConversationsData,
+      fetchMore: fetchMoreManyConversationsData,
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();
@@ -37,7 +36,7 @@ const ChatWithChatBox = () => {
     {
       data: getConversationData,
       loading: getConversationLoading,
-      fetchMore: getMoreConversationData,
+      fetchMore: fetchMoreConversationData,
       subscribeToMore: subsGetConversationData,
     },
   ] = useGetConversationLazyQuery();
@@ -137,6 +136,7 @@ const ChatWithChatBox = () => {
           conversation_id={conversation_id}
           user_profile_id={user_profile_id}
           loading={getConversationLoading}
+          fetchMore={fetchMoreConversationData}
         />
         <ConversationInfoBar
           data={getConversationData}

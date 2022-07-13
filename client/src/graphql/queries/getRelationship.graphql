@@ -1,0 +1,15 @@
+query GetRelationship($where: GetRelationshipInput!) {
+  getRelationship(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+
+    relationship {
+      ...Relationship
+    }
+
+    otherEndRelationship {
+      ...Relationship
+    }
+  }
+}

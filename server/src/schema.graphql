@@ -135,6 +135,17 @@ type GetNotificationOutput {
   notifications: [Notification]
 }
 
+input GetRelationshipInput {
+  addressee_id: String!
+  requester_id: String!
+}
+
+type GetRelationshipOutput {
+  IOutput: IOutput!
+  otherEndRelationship: Relationship
+  relationship: Relationship
+}
+
 type GetTutorOrderTutorConnectOutput {
   IOutput: IOutput!
   tutor_order_tutor_connect: TutorOrderTutorConnect
@@ -228,9 +239,6 @@ type PageInfoIDCursor {
 }
 
 type Profile {
-  buddies: [Relationship!]
-  buddyPendings: [Relationship!]
-  buddyRequests: [Relationship!]
   createdAt: Date
   id: ID!
   profile_avatar: String
@@ -270,6 +278,7 @@ type Query {
   getMyTutorOrder(where: ProfileWhereUniqueInput!): GetManyTutorOrdersOutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  getRelationship(where: GetRelationshipInput!): GetRelationshipOutput
   getTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   getTutorOrderTutorConnect(where_1: ProfileWhereUniqueInput!, where_2: TutorOrderWhereUniqueInput!): GetTutorOrderTutorConnectOutput
   getUser: User
@@ -294,7 +303,6 @@ type Relationship {
   isViewed: Boolean!
   requester: Profile!
   requester_id: String!
-  specifier_id: String!
   status: RelationshipStatusCode!
   updatedAt: Date!
 }
@@ -302,7 +310,6 @@ type Relationship {
 input RelationshipInput {
   addressee_id: String!
   requester_id: String!
-  specifier_id: String!
   status: RelationshipStatusCode!
 }
 

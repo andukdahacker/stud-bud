@@ -5,6 +5,7 @@ import {
   GetUserQuery,
   RelationshipStatusCode,
   useGetProfileLazyQuery,
+  useGetRelationshipLazyQuery,
   useReadBuddyNotificationsMutation,
   useRespondBuddyMutation,
 } from "../generated/graphql";
@@ -34,7 +35,6 @@ const BuddyNotification = ({
     query: GetUserDocument,
   })?.getUser?.profile?.id;
 
-  const [_, { refetch: refetchGetProfile }] = useGetProfileLazyQuery();
   const [read, {}] = useReadBuddyNotificationsMutation();
 
   const readBuddyNoti = async () => {
@@ -56,14 +56,7 @@ const BuddyNotification = ({
             requester_id: profile_id,
             addressee_id: user_profile_id as string,
             status: RelationshipStatusCode.Accepted,
-            specifier_id: user_profile_id as string,
           },
-        },
-      });
-
-      await refetchGetProfile({
-        where: {
-          profile_id,
         },
       });
     } else if (option === BuddyRespondOptions.DECLINE) {
@@ -73,14 +66,7 @@ const BuddyNotification = ({
             requester_id: profile_id,
             addressee_id: user_profile_id as string,
             status: RelationshipStatusCode.Declined,
-            specifier_id: user_profile_id as string,
           },
-        },
-      });
-
-      await refetchGetProfile({
-        where: {
-          profile_id,
         },
       });
     }
@@ -105,42 +91,45 @@ const BuddyNotification = ({
     );
 
   return (
-    <Link href={`/profile/${profile_id}`}>
-      <a className="flex items-center justify-center" onClick={readBuddyNoti}>
-        <div className="flex items-center justify-center">
-          <Avatar img_url={profile_avatar} width={40} height={40} />
-          <div>
-            <div>{username} sent you a buddy request!</div>
-            {respondSuccess ? (
-              <div>{respondMessage}</div>
-            ) : (
-              <div>
-                <button
-                  className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
-                  type="button"
-                  disabled={respondBuddyLoading ? true : false}
-                  onClick={() => respond(BuddyRespondOptions.ACCEPT)}
-                >
-                  Accept
-                </button>
-                <button
-                  className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-black bg-gray-300 rounded shadow-sm shadow-blue-300"
-                  type="button"
-                  disabled={respondBuddyLoading ? true : false}
-                  onClick={() => respond(BuddyRespondOptions.DECLINE)}
-                >
-                  Decline
-                </button>
-              </div>
-            )}
-          </div>
+    <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
+        <Link href={`/profile/${profile_id}`}>
+          <a
+            className="flex items-center justify-center"
+            onClick={readBuddyNoti}
+          >
+            <Avatar img_url={profile_avatar} width={40} height={40} />
+          </a>
+        </Link>
+        <div>
+          <div>{username} sent you a buddy request!</div>
+          {respondSuccess ? (
+            <div>{respondMessage}</div>
+          ) : (
+            <div>
+              <button
+                className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
+                type="button"
+                disabled={respondBuddyLoading ? true : false}
+                onClick={() => respond(BuddyRespondOptions.ACCEPT)}
+              >
+                Accept
+              </button>
+              <button
+                className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-black bg-gray-300 rounded shadow-sm shadow-blue-300"
+                type="button"
+                disabled={respondBuddyLoading ? true : false}
+                onClick={() => respond(BuddyRespondOptions.DECLINE)}
+              >
+                Decline
+              </button>
+            </div>
+          )}
         </div>
+      </div>
 
-        {isRead ? null : (
-          <div className="w-2 h-2 bg-blue-700 rounded-full"></div>
-        )}
-      </a>
-    </Link>
+      {isRead ? null : <div className="w-2 h-2 bg-blue-700 rounded-full"></div>}
+    </div>
   );
 };
 

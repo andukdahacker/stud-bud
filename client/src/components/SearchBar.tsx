@@ -55,24 +55,29 @@ const SearchBar = ({ findOption }: SearchBarProps) => {
     search_input: router.query ? (router.query.search_input as string) : "",
     take: PROFILES_TAKE_LIMIT,
   };
-  const [_, { refetch: refetchManyProfiles }] = useGetManyProfilesLazyQuery();
-  const [__, { refetch: refetchManyTutorOrders }] =
+  const [getManyProfiles, { refetch: refetchManyProfiles }] =
+    useGetManyProfilesLazyQuery();
+  const [getManyTutorOrders, { refetch: refetchManyTutorOrders }] =
     useGetManyTutorOrdersLazyQuery();
   const onSubmit = (values: GetManyProfilesInput) => {
     router.push(`/find?search_input=${values.search_input}`);
 
     if (findOption === "buddies") {
-      refetchManyProfiles({
-        where: {
-          search_input: values.search_input,
-          take: PROFILES_TAKE_LIMIT,
+      getManyProfiles({
+        variables: {
+          where: {
+            search_input: values.search_input,
+            take: PROFILES_TAKE_LIMIT,
+          },
         },
       });
     } else if (findOption === "tutor orders") {
-      refetchManyTutorOrders({
-        where: {
-          search_input: values.search_input,
-          take: TUTOR_ORDER_TAKE_LIMIT,
+      getManyTutorOrders({
+        variables: {
+          where: {
+            search_input: values.search_input,
+            take: TUTOR_ORDER_TAKE_LIMIT,
+          },
         },
       });
     }
@@ -111,6 +116,9 @@ const SearchBar = ({ findOption }: SearchBarProps) => {
                   <SuggestionCard
                     key={index}
                     interest_name={interest?.interest_name as string}
+                    findOption={findOption}
+                    refetchManyProfiles={refetchManyProfiles}
+                    refetchManyTutorOrders={refetchManyTutorOrders}
                   />
                 );
               })

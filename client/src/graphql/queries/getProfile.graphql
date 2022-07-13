@@ -8,15 +8,6 @@ query getProfile($where: ProfileWhereUniqueInput!) {
       profile_interests {
         ...ProfileInterest
       }
-      buddies {
-        ...Relationship
-      }
-      buddyRequests {
-        ...Relationship
-      }
-      buddyPendings {
-        ...Relationship
-      }
     }
   }
 }
