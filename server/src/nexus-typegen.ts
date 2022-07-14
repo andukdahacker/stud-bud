@@ -135,6 +135,10 @@ export interface NexusGenInputs {
   getManyInterestsInput: { // input type
     search_input?: string | null; // String
   }
+  initConversationInput: { // input type
+    addressee_id: string; // String!
+    requester_id: string; // String!
+  }
 }
 
 export interface NexusGenEnums {
@@ -276,6 +280,7 @@ export interface NexusGenObjects {
   Query: {};
   Relationship: { // root type
     addressee_id: string; // String!
+    conversation_id?: string | null; // String
     createdAt: NexusGenScalars['Date']; // Date!
     isRead: boolean; // Boolean!
     isViewed: boolean; // Boolean!
@@ -285,7 +290,8 @@ export interface NexusGenObjects {
   }
   RelationshipOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Relationship?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    otherEndRelationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
+    relationship?: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
   SendMessageOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
@@ -331,6 +337,10 @@ export interface NexusGenObjects {
     Conversations?: NexusGenRootTypes['ConversationGroup'][] | null; // [ConversationGroup!]
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     countNotViewedConversation?: number | null; // Int
+  }
+  initConversationOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    conversation?: NexusGenRootTypes['Conversation'] | null; // Conversation
   }
 }
 
@@ -435,6 +445,7 @@ export interface NexusGenFieldTypes {
     createTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     deleteTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     forgotPassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
+    initConversation: NexusGenRootTypes['initConversationOutput'] | null; // initConversationOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     readBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
@@ -520,6 +531,7 @@ export interface NexusGenFieldTypes {
   Relationship: { // field return type
     addressee: NexusGenRootTypes['Profile']; // Profile!
     addressee_id: string; // String!
+    conversation_id: string | null; // String
     createdAt: NexusGenScalars['Date']; // Date!
     isRead: boolean; // Boolean!
     isViewed: boolean; // Boolean!
@@ -530,7 +542,8 @@ export interface NexusGenFieldTypes {
   }
   RelationshipOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
-    Relationship: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
+    otherEndRelationship: NexusGenRootTypes['Relationship'] | null; // Relationship
+    relationship: NexusGenRootTypes['Relationship'] | null; // Relationship
   }
   SendMessageOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
@@ -588,6 +601,10 @@ export interface NexusGenFieldTypes {
     Conversations: NexusGenRootTypes['ConversationGroup'][] | null; // [ConversationGroup!]
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     countNotViewedConversation: number | null; // Int
+  }
+  initConversationOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    conversation: NexusGenRootTypes['Conversation'] | null; // Conversation
   }
 }
 
@@ -682,6 +699,7 @@ export interface NexusGenFieldTypeNames {
     createTutorOrder: 'TutorOrderOutput'
     deleteTutorOrder: 'TutorOrderOutput'
     forgotPassword: 'AuthOutput'
+    initConversation: 'initConversationOutput'
     login: 'AuthOutput'
     logout: 'AuthOutput'
     readBuddyNotifications: 'BuddyNotificationOutput'
@@ -767,6 +785,7 @@ export interface NexusGenFieldTypeNames {
   Relationship: { // field return type name
     addressee: 'Profile'
     addressee_id: 'String'
+    conversation_id: 'String'
     createdAt: 'Date'
     isRead: 'Boolean'
     isViewed: 'Boolean'
@@ -777,7 +796,8 @@ export interface NexusGenFieldTypeNames {
   }
   RelationshipOutput: { // field return type name
     IOutput: 'IOutput'
-    Relationship: 'Relationship'
+    otherEndRelationship: 'Relationship'
+    relationship: 'Relationship'
   }
   SendMessageOutput: { // field return type name
     IOutput: 'IOutput'
@@ -836,6 +856,10 @@ export interface NexusGenFieldTypeNames {
     IOutput: 'IOutput'
     countNotViewedConversation: 'Int'
   }
+  initConversationOutput: { // field return type name
+    IOutput: 'IOutput'
+    conversation: 'Conversation'
+  }
 }
 
 export interface NexusGenArgTypes {
@@ -860,6 +884,9 @@ export interface NexusGenArgTypes {
     }
     forgotPassword: { // args
       input: NexusGenInputs['ForgotPasswordInput']; // ForgotPasswordInput!
+    }
+    initConversation: { // args
+      input: NexusGenInputs['initConversationInput']; // initConversationInput!
     }
     login: { // args
       input: NexusGenInputs['LoginInput']; // LoginInput!

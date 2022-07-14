@@ -185,6 +185,7 @@ type Mutation {
   createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
   deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   forgotPassword(input: ForgotPasswordInput!): AuthOutput
+  initConversation(input: initConversationInput!): initConversationOutput
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
   readBuddyNotifications(where: ReadBuddyNotificationsInput!): BuddyNotificationOutput
@@ -298,6 +299,7 @@ input RegisterInput {
 type Relationship {
   addressee: Profile!
   addressee_id: String!
+  conversation_id: String
   createdAt: Date!
   isRead: Boolean!
   isViewed: Boolean!
@@ -315,7 +317,8 @@ input RelationshipInput {
 
 type RelationshipOutput {
   IOutput: IOutput!
-  Relationship: [Relationship!]
+  otherEndRelationship: Relationship
+  relationship: Relationship
 }
 
 enum RelationshipStatusCode {
@@ -419,4 +422,14 @@ type getManyConversationPutput {
 
 input getManyInterestsInput {
   search_input: String
+}
+
+input initConversationInput {
+  addressee_id: String!
+  requester_id: String!
+}
+
+type initConversationOutput {
+  IOutput: IOutput!
+  conversation: Conversation
 }

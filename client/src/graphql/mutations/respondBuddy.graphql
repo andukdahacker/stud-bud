@@ -3,5 +3,11 @@ mutation respondBuddy($input: RelationshipInput!) {
     IOutput {
       ...IOutput
     }
+    relationship {
+      ...Relationship
+    }
+    otherEndRelationship {
+      ...Relationship
+    }
   }
 }

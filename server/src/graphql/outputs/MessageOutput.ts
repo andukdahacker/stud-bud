@@ -52,3 +52,15 @@ export const getConversationOutput = objectType({
     });
   },
 });
+
+export const initConversationOutput = objectType({
+  name: "initConversationOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+    t.nullable.field("conversation", {
+      type: Conversation,
+    });
+  },
+});

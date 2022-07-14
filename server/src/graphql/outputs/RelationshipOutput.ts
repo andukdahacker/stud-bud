@@ -9,7 +9,10 @@ export const RelationshipOutput = objectType({
     t.nonNull.field("IOutput", {
       type: IOutput,
     });
-    t.nullable.list.nonNull.field("Relationship", {
+    t.nullable.field("relationship", {
+      type: Relationship,
+    });
+    t.nullable.field("otherEndRelationship", {
       type: Relationship,
     });
   },

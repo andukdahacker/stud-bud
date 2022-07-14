@@ -4,6 +4,7 @@ import {
   GetProfileQuery,
   GetUserDocument,
   GetUserQuery,
+  useGetRelationshipLazyQuery,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
@@ -32,12 +33,13 @@ const ProfilePage = (props: ProfilePageProps) => {
 
   if (props.loading) return <Loading />;
 
-  if (user_profile_id !== profile_id)
+  if (user_profile_id !== profile_id) {
     return (
       <div>
         <Wallpaper img_url={profile_wallpaper} />
         <Avatar img_url={profile_avatar} width={70} height={70} />
         <BuddyButton profile_id={profile_id} />
+
         <h1>{username}</h1>
         <h2>Bio: {profile_bio}</h2>
         <h2>Interest</h2>
@@ -52,6 +54,7 @@ const ProfilePage = (props: ProfilePageProps) => {
         {success ? null : <div>{props.data?.getProfile?.IOutput?.message}</div>}
       </div>
     );
+  }
 
   return (
     <div>

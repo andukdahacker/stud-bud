@@ -1,0 +1,11 @@
+mutation InitConversation($input: initConversationInput!) {
+  initConversation(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    conversation {
+      ...Conversation
+    }
+  }
+}

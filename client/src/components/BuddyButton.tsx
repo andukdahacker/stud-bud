@@ -1,4 +1,5 @@
 import { NetworkStatus } from "@apollo/client";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import {
@@ -12,6 +13,7 @@ import {
 } from "../generated/graphql";
 import { BuddyRespondOptions } from "../utils/constants";
 import Loading from "./Loading";
+import MessageButton from "./MessageButton";
 
 interface BuddyButtonProps {
   profile_id: string | undefined;
@@ -81,6 +83,9 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
   const isBuddy =
     relationship?.status === RelationshipStatusCode.Accepted &&
     otherEndRelationship?.status === RelationshipStatusCode.Accepted;
+
+  const conversation_id =
+    GetRelationshipData?.getRelationship?.relationship?.conversation_id;
 
   const connect = async () => {
     if (!user_profile_id) {
@@ -211,6 +216,12 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
         >
           Remove from your buddies list?
         </button>
+
+        <MessageButton
+          conversation_id={conversation_id}
+          requester_id={user_profile_id}
+          addressee_id={profile_id}
+        />
       </div>
     );
 
@@ -227,6 +238,12 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
         >
           Undo Request
         </button>
+
+        <MessageButton
+          conversation_id={conversation_id}
+          requester_id={user_profile_id}
+          addressee_id={profile_id}
+        />
       </div>
     );
 
@@ -250,13 +267,26 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
         >
           Decline
         </button>
+
+        <MessageButton
+          conversation_id={conversation_id}
+          requester_id={user_profile_id}
+          addressee_id={profile_id}
+        />
       </div>
     );
 
   return (
-    <button type="button" onClick={() => connect()}>
-      Connect
-    </button>
+    <div>
+      <button type="button" onClick={() => connect()}>
+        Connect
+      </button>
+      <MessageButton
+        conversation_id={conversation_id}
+        requester_id={user_profile_id}
+        addressee_id={profile_id}
+      />
+    </div>
   );
 };
 

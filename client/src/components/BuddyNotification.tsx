@@ -1,11 +1,11 @@
 import { useApolloClient } from "@apollo/client";
 import Link from "next/link";
 import {
+  GetRelationshipDocument,
+  GetRelationshipQuery,
   GetUserDocument,
   GetUserQuery,
   RelationshipStatusCode,
-  useGetProfileLazyQuery,
-  useGetRelationshipLazyQuery,
   useReadBuddyNotificationsMutation,
   useRespondBuddyMutation,
 } from "../generated/graphql";
@@ -38,14 +38,15 @@ const BuddyNotification = ({
   const [read, {}] = useReadBuddyNotificationsMutation();
 
   const readBuddyNoti = async () => {
-    await read({
-      variables: {
-        where: {
-          requester_id: profile_id,
-          addressee_id: user_profile_id as string,
+    if (!isRead)
+      await read({
+        variables: {
+          where: {
+            requester_id: profile_id,
+            addressee_id: user_profile_id as string,
+          },
         },
-      },
-    });
+      });
   };
 
   const respond = async (option: BuddyRespondOptions) => {

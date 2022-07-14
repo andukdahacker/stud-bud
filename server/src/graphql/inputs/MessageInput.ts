@@ -30,3 +30,11 @@ export const ConversationPageInput = inputObjectType({
     t.nonNull.int("take");
   },
 });
+
+export const initConversationInput = inputObjectType({
+  name: "initConversationInput",
+  definition(t) {
+    t.nonNull.string("requester_id");
+    t.nonNull.string("addressee_id");
+  },
+});

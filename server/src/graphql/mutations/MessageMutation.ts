@@ -10,10 +10,124 @@ import {
 import { ProfileWhereUniqueInput } from "../inputs";
 import {
   ConversationGroupWhereUniqueInput,
+  initConversationInput,
   SendMessageInput,
 } from "../inputs/MessageInput";
-import { IOutput, SendMessageOutput } from "../outputs";
+import { initConversationOutput, IOutput, SendMessageOutput } from "../outputs";
 import { pubsub } from "../subscriptions";
+
+export const initConversation = mutationField("initConversation", {
+  type: initConversationOutput,
+  args: {
+    input: nonNull(initConversationInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { requester_id, addressee_id } = args.input;
+    try {
+      const conversation = await ctx.prisma.conversation.create({
+        data: {
+          conversation_group: {
+            createMany: {
+              data: [
+                {
+                  conversation_member_id: requester_id,
+                },
+                {
+                  conversation_member_id: addressee_id,
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      const relationship = ctx.prisma.relationship.upsert({
+        where: {
+          requester_id_addressee_id: {
+            requester_id,
+            addressee_id,
+          },
+        },
+        update: {
+          conversation: {
+            connect: {
+              id: conversation.id,
+            },
+          },
+        },
+        create: {
+          requester: {
+            connect: {
+              id: requester_id,
+            },
+          },
+          addressee: {
+            connect: {
+              id: addressee_id,
+            },
+          },
+          conversation: {
+            connect: {
+              id: conversation.id,
+            },
+          },
+          status: "DECLINED",
+        },
+      });
+
+      const otherEndRelationship = ctx.prisma.relationship.upsert({
+        where: {
+          requester_id_addressee_id: {
+            requester_id: addressee_id,
+            addressee_id: requester_id,
+          },
+        },
+        update: {
+          conversation: {
+            connect: {
+              id: conversation.id,
+            },
+          },
+        },
+        create: {
+          requester: {
+            connect: {
+              id: addressee_id,
+            },
+          },
+          addressee: {
+            connect: {
+              id: requester_id,
+            },
+          },
+          conversation: {
+            connect: {
+              id: conversation.id,
+            },
+          },
+          status: "DECLINED",
+        },
+      });
+
+      const result = await ctx.prisma.$transaction([
+        relationship,
+        otherEndRelationship,
+      ]);
+
+      if (!result)
+        return {
+          IOutput: UNSUCCESSFUL_MUTATION,
+        };
+
+      return {
+        IOutput: SUCCESSFUL_MUTATION,
+        conversation,
+      };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
+    }
+  },
+});
 
 export const sendMessage = mutationField("sendMessage", {
   type: SendMessageOutput,

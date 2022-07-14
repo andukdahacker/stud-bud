@@ -161,27 +161,9 @@ export const connectTutorOrder = mutationField("connectTutorOrder", {
         },
       });
 
-      const conversation = ctx.prisma.conversation.create({
-        data: {
-          conversation_group: {
-            createMany: {
-              data: [
-                {
-                  conversation_member_id: student_id,
-                },
-                {
-                  conversation_member_id: tutor_id,
-                },
-              ],
-            },
-          },
-        },
-      });
-
       const result = await ctx.prisma.$transaction([
         tutor_order_tutor_connect,
         notification,
-        conversation,
       ]);
 
       if (!result)

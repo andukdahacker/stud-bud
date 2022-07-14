@@ -196,6 +196,8 @@ export const respondBuddy = mutationField("respondBuddy", {
             success: true,
             message: "You have become buddies!",
           },
+          relationship: result[1],
+          otherEndRelationship: result[0],
         };
       } else if (status === "DECLINED") {
         const relationship = await ctx.prisma.relationship.delete({
@@ -231,6 +233,8 @@ export const respondBuddy = mutationField("respondBuddy", {
           success: true,
           message: "Unhandled",
         },
+        relationship: null,
+        otherEndRelationship: null,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;
