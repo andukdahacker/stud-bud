@@ -7,13 +7,15 @@ import Loading from "./Loading";
 interface TutorOrderRespondButtonProps {
   status: TutorOrderTutorConnectStatusCode | undefined;
   tutor_order_id: string | undefined;
-  profile_id: string | undefined;
+  tutor_id: string | undefined;
+  student_id: string | undefined;
 }
 
 const TutorOrderRespondButton = ({
   status,
   tutor_order_id,
-  profile_id,
+  tutor_id,
+  student_id,
 }: TutorOrderRespondButtonProps) => {
   if (status === TutorOrderTutorConnectStatusCode.Requested) {
     const [
@@ -32,17 +34,17 @@ const TutorOrderRespondButton = ({
     const respondTutorOrderRequest = async (
       option: TutorOrderTutorConnectStatusCode
     ) => {
-      await respond({
-        variables: {
-          where: {
-            id: tutor_order_id as string,
+      if (tutor_order_id && tutor_id && student_id)
+        await respond({
+          variables: {
+            where: {
+              tutor_order_id,
+              tutor_id,
+              student_id,
+              status: option,
+            },
           },
-          input: {
-            tutor_id: profile_id as string,
-            status: option,
-          },
-        },
-      });
+        });
     };
 
     return (

@@ -47,7 +47,8 @@ export const RespondTutorOrderConnectInput = inputObjectType({
     t.nonNull.field("status", {
       type: TutorOrderTutorConnectStatusCode,
     });
-
+    t.nonNull.string("tutor_order_id");
+    t.nonNull.string("student_id");
     t.nonNull.string("tutor_id");
   },
 });

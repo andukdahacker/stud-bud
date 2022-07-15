@@ -32,6 +32,7 @@ const OneHourTutor = () => {
             profile_id: user_profile_id as string,
           },
         },
+        fetchPolicy: "cache-and-network",
       });
     }
 

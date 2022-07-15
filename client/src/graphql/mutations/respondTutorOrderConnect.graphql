@@ -1,8 +1,5 @@
-mutation RespondTutorOrderConnect(
-  $where: TutorOrderWhereUniqueInput!
-  $input: ResondTutorOrderConnectInput!
-) {
-  respondTutorOrderConnect(where: $where, input: $input) {
+mutation RespondTutorOrderConnect($where: ResondTutorOrderConnectInput!) {
+  respondTutorOrderConnect(where: $where) {
     IOutput {
       ...IOutput
     }

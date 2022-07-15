@@ -15,6 +15,9 @@ export const getNotifications = queryField("getNotifications", {
         where: {
           receiver_id: profile_id,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
 
       const countNotViewedNotifications = await ctx.prisma.notification.count({

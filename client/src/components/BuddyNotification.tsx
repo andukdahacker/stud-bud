@@ -1,8 +1,6 @@
 import { useApolloClient } from "@apollo/client";
 import Link from "next/link";
 import {
-  GetRelationshipDocument,
-  GetRelationshipQuery,
   GetUserDocument,
   GetUserQuery,
   RelationshipStatusCode,
@@ -14,6 +12,7 @@ import {
   BuddyRespondOptions,
 } from "../utils/constants";
 import Avatar from "./Avatar";
+import UnreadNotiMark from "./UnReadNotiMark";
 
 const BuddyNotification = ({
   profile_id,
@@ -129,7 +128,7 @@ const BuddyNotification = ({
         </div>
       </div>
 
-      {isRead ? null : <div className="w-2 h-2 bg-blue-700 rounded-full"></div>}
+      <UnreadNotiMark isRead={isRead} />
     </div>
   );
 };

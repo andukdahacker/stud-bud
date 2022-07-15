@@ -2,7 +2,6 @@ import Link from "next/link";
 import { GetTutorOrderQuery, useGetUserQuery } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
-import SuggestionCard from "./SuggestionCard";
 import TutorOrderConnectButton from "./TutorOrderConnectButton";
 import TutorOrderRequests from "./TutorOrderRequests";
 
@@ -26,6 +25,10 @@ const TutorOrderPage = ({
   const problem = GetTutorOrderData?.problem;
   const tutor_order_interests = GetTutorOrderData?.tutor_order_interest;
   const tutor_requirements = GetTutorOrderData?.tutor_requirements;
+  const tutor = GetTutorOrderData?.tutor;
+  const tutor_id = tutor?.id;
+  const tutor_username = tutor?.user?.username;
+  const tutor_profile_avatar = tutor?.profile_avatar;
 
   if (GetTutorOrderLoading || GetUserLoading) return <Loading />;
   if (!GetTutorOrderSuccess) return <div>{GetTutorOrderMessage}</div>;
@@ -33,16 +36,45 @@ const TutorOrderPage = ({
     return (
       <div>
         <div>
-          <Avatar img_url={student?.profile_avatar} width={40} height={40} />
-          <div>Student: {student?.user?.username}</div>
+          <div>Student:</div>
+          <Link href={`/profile/${student_id}`}>
+            <a>
+              <Avatar
+                img_url={student?.profile_avatar}
+                width={40}
+                height={40}
+              />
+              <div>
+                <b>{student?.user?.username}</b>{" "}
+              </div>
+            </a>
+          </Link>
         </div>
-
-        <div>
+        {tutor_id && tutor_id !== user_profile_id ? null : (
           <TutorOrderConnectButton
             user_profile_id={user_profile_id}
             tutor_order_id={tutor_order_id}
             student_id={student_id}
           />
+        )}
+
+        <div>
+          <div>Tutor:</div>
+          {tutor_id ? (
+            <Link href={`/profile/${tutor_id}`}>
+              <a>
+                <Avatar img_url={tutor_profile_avatar} width={40} height={40} />
+                <div>
+                  <b>{tutor_username}</b>
+                </div>
+              </a>
+            </Link>
+          ) : (
+            <div>No tutor yet</div>
+          )}
+        </div>
+
+        <div>
           <div>Problem: {problem}</div>
 
           <div>Tutor requirements: {tutor_requirements}</div>
@@ -50,10 +82,12 @@ const TutorOrderPage = ({
           <div>
             {tutor_order_interests?.map((interest, index) => {
               return (
-                <SuggestionCard
+                <div
                   key={index}
-                  interest_name={interest.interest.interest_name as string}
-                />
+                  className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl  shadow-sm shadow-gray-500"
+                >
+                  {interest.interest.interest_name}
+                </div>
               );
             })}
           </div>
@@ -66,6 +100,22 @@ const TutorOrderPage = ({
       <Link href={`/one-hour-tutor/edit/${tutor_order_id}`}>
         <a>Edit</a>
       </Link>
+
+      <div>
+        <div>Tutor:</div>
+        {tutor_id ? (
+          <Link href={`/profile/${tutor_id}`}>
+            <a>
+              <Avatar img_url={tutor_profile_avatar} width={40} height={40} />
+              <div>
+                <b>{tutor_username}</b>
+              </div>
+            </a>
+          </Link>
+        ) : (
+          <div>No tutor yet</div>
+        )}
+      </div>
       <div>
         <div>Problem: {problem}</div>
 
@@ -74,10 +124,12 @@ const TutorOrderPage = ({
         <div>
           {tutor_order_interests?.map((interest, index) => {
             return (
-              <SuggestionCard
+              <div
                 key={index}
-                interest_name={interest.interest.interest_name as string}
-              />
+                className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl  shadow-sm shadow-gray-500"
+              >
+                {interest.interest.interest_name}
+              </div>
             );
           })}
         </div>

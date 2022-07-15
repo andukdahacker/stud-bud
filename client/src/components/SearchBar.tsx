@@ -1,12 +1,18 @@
+import { ApolloQueryResult } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import {
+  Exact,
   GetManyInterestsInput,
   GetManyProfilesInput,
+  GetManyProfilesQuery,
+  GetManyTutorOrdersInput,
+  GetManyTutorOrdersQuery,
   useGetManyInterestsLazyQuery,
   useGetManyProfilesLazyQuery,
   useGetManyTutorOrdersLazyQuery,
+  useGetUserQuery,
 } from "../generated/graphql";
 import {
   findOptions,
@@ -19,9 +25,32 @@ import SuggestionCard from "./SuggestionCard";
 
 interface SearchBarProps {
   findOption: findOptions;
+  refetchManyProfiles(
+    variables?:
+      | Partial<
+          Exact<{
+            where: GetManyProfilesInput;
+          }>
+        >
+      | undefined
+  ): Promise<ApolloQueryResult<GetManyProfilesQuery>>;
+
+  refetchManyTutorOrders(
+    variables?:
+      | Partial<
+          Exact<{
+            where: GetManyTutorOrdersInput;
+          }>
+        >
+      | undefined
+  ): Promise<ApolloQueryResult<GetManyTutorOrdersQuery>>;
 }
 
-const SearchBar = ({ findOption }: SearchBarProps) => {
+const SearchBar = ({
+  findOption,
+  refetchManyProfiles,
+  refetchManyTutorOrders,
+}: SearchBarProps) => {
   const [
     getManyInterests,
     { data: getManyInterestsData, loading: getManyInterestsLoading },
@@ -31,6 +60,8 @@ const SearchBar = ({ findOption }: SearchBarProps) => {
   const getManyInterestMessage =
     getManyInterestsData?.getManyInterests?.IOutput.message;
   const suggestions = getManyInterestsData?.getManyInterests?.Interest;
+  const { data: GetUserData, loading: GetUserLoading } = useGetUserQuery();
+  const user_profile_id = GetUserData?.getUser?.profile?.id;
 
   const [search, setSearch] = useState<string | null>(null);
 
@@ -52,38 +83,34 @@ const SearchBar = ({ findOption }: SearchBarProps) => {
   }, [debouncedSearch]);
 
   const initialValues: GetManyInterestsInput & GetManyProfilesInput = {
-    search_input: router.query ? (router.query.search_input as string) : "",
+    search_input: router.query.search_input
+      ? (router.query.search_input as string)
+      : "",
     take: PROFILES_TAKE_LIMIT,
   };
-  const [getManyProfiles, { refetch: refetchManyProfiles }] =
-    useGetManyProfilesLazyQuery();
-  const [getManyTutorOrders, { refetch: refetchManyTutorOrders }] =
-    useGetManyTutorOrdersLazyQuery();
   const onSubmit = (values: GetManyProfilesInput) => {
     router.push(`/find?search_input=${values.search_input}`);
-
-    if (findOption === "buddies") {
-      getManyProfiles({
-        variables: {
+    if (user_profile_id) {
+      if (findOption === "buddies") {
+        refetchManyProfiles({
           where: {
             search_input: values.search_input,
             take: PROFILES_TAKE_LIMIT,
           },
-        },
-      });
-    } else if (findOption === "tutor orders") {
-      getManyTutorOrders({
-        variables: {
+        });
+      } else if (findOption === "tutor orders") {
+        refetchManyTutorOrders({
           where: {
             search_input: values.search_input,
             take: TUTOR_ORDER_TAKE_LIMIT,
           },
-        },
-      });
+        });
+      }
     }
   };
 
   if (findOption === null) return null;
+  if (GetUserLoading) return <Loading />;
 
   return (
     <div>

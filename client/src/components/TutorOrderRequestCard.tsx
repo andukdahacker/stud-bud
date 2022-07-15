@@ -15,13 +15,16 @@ interface TutorOrderRequestCardProps {
 const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
   const router = useRouter();
   const tutor = data?.tutor;
+  const tutor_id = tutor?.id;
   const tutor_order_id = data?.tutor_order_id;
-  const profile_id = tutor?.id;
+
   const status = data?.status;
 
   const profile_avatar = tutor?.profile_avatar;
   const username = tutor?.user?.username;
 
+  const student = data?.tutor_order.student;
+  const student_id = student?.id;
   const [getProfile, { data: GetProfileData, loading: GetProfileLoading }] =
     useGetProfileLazyQuery();
 
@@ -48,14 +51,15 @@ const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
   if (!data) return null;
   return (
     <div>
-      <div className="cursor-pointer" onClick={() => openModal(profile_id!)}>
+      <div className="cursor-pointer" onClick={() => openModal(tutor_id!)}>
         <Avatar img_url={profile_avatar} width={40} height={40} />
         <div>{username}</div>
       </div>
       <TutorOrderRespondButton
         status={status}
         tutor_order_id={tutor_order_id}
-        profile_id={profile_id}
+        tutor_id={tutor_id}
+        student_id={student_id}
       />
 
       <ReactModal isOpen={showModal} onRequestClose={closeModal}>

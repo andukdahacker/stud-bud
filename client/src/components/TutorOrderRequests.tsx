@@ -28,6 +28,7 @@ const TutorOrderRequests = ({ tutor_order_id }: TutorOrderRequestsProps) => {
             id: tutor_order_id as string,
           },
         },
+        fetchPolicy: "cache-and-network",
       });
     }
 

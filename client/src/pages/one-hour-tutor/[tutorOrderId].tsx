@@ -20,6 +20,7 @@ const TutorOrder = () => {
             id: router.query.tutorOrderId as string,
           },
         },
+        fetchPolicy: "cache-and-network",
       });
     }
 

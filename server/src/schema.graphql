@@ -184,6 +184,7 @@ type Mutation {
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
   createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
   deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
+  deleteTutorOrderConnect(where1: TutorOrderWhereUniqueInput!, where2: ProfileWhereUniqueInput!): TutorOrderOutput
   forgotPassword(input: ForgotPasswordInput!): AuthOutput
   initConversation(input: initConversationInput!): initConversationOutput
   login(input: LoginInput!): AuthOutput!
@@ -196,7 +197,7 @@ type Mutation {
   removeBuddy(input: RelationshipInput!): RelationshipOutput
   removeWallpaper(input: DestroyImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   respondBuddy(input: RelationshipInput!): RelationshipOutput
-  respondTutorOrderConnect(input: ResondTutorOrderConnectInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
+  respondTutorOrderConnect(where: ResondTutorOrderConnectInput!): TutorOrderOutput
   sendMessage(input: SendMessageInput!, where: ProfileWhereUniqueInput!): SendMessageOutput
   updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   updateTutorOrder(input: CreateTutorOrderInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
@@ -329,7 +330,9 @@ enum RelationshipStatusCode {
 
 input ResondTutorOrderConnectInput {
   status: TutorOrderTutorConnectStatusCode!
+  student_id: String!
   tutor_id: String!
+  tutor_order_id: String!
 }
 
 input SendMessageInput {
@@ -346,6 +349,7 @@ type Subscription {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
+  getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
 }
 
 type TutorOrder {

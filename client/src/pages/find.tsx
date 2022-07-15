@@ -3,6 +3,10 @@ import FindBuddyPage from "../components/FindBuddyPage";
 import FindTutorOrdersPage from "../components/FindTutorOrdersPage";
 import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
+import {
+  useGetManyProfilesLazyQuery,
+  useGetManyTutorOrdersLazyQuery,
+} from "../generated/graphql";
 import { findOptions } from "../utils/constants";
 
 const FindBuddy = () => {
@@ -11,6 +15,26 @@ const FindBuddy = () => {
   const handleClick = (option: findOptions) => {
     setFindOption(option);
   };
+
+  const [
+    getManyProfiles,
+    {
+      data: GetManyProfilesData,
+      loading: GetManyProfilesLoading,
+      refetch: refetchManyProfiles,
+      fetchMore: fetchMoreManyProfiles,
+      networkStatus: GetManyProfilesNetworkStatus,
+    },
+  ] = useGetManyProfilesLazyQuery();
+  const [
+    getManyTutorOrders,
+    {
+      data: GetManyTutorOrdersData,
+      loading: GetManyTutorOrdersLoading,
+      refetch: refetchManyTutorOrders,
+      networkStatus: GetManyTutorOrdersNetworkStatus,
+    },
+  ] = useGetManyTutorOrdersLazyQuery();
 
   return (
     <Layout>
@@ -50,13 +74,28 @@ const FindBuddy = () => {
           </div>
         </div>
         <div className="w-4/5">
-          <SearchBar findOption={findOption} />
+          <SearchBar
+            findOption={findOption}
+            refetchManyProfiles={refetchManyProfiles}
+            refetchManyTutorOrders={refetchManyTutorOrders}
+          />
           {findOption === null ? (
             <div>What are your looking for? Choose on the left bar</div>
           ) : findOption === "buddies" ? (
-            <FindBuddyPage />
+            <FindBuddyPage
+              getManyProfiles={getManyProfiles}
+              data={GetManyProfilesData}
+              loading={GetManyProfilesLoading}
+              fetchMore={fetchMoreManyProfiles}
+              networkStatus={GetManyProfilesNetworkStatus}
+            />
           ) : findOption === "tutor orders" ? (
-            <FindTutorOrdersPage />
+            <FindTutorOrdersPage
+              getManyTutorOrders={getManyTutorOrders}
+              data={GetManyTutorOrdersData}
+              loading={GetManyTutorOrdersLoading}
+              networkStatus={GetManyTutorOrdersNetworkStatus}
+            />
           ) : null}
         </div>
       </div>

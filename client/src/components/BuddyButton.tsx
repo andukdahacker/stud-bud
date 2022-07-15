@@ -59,6 +59,7 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
             addressee_id: profile_id as string,
           },
         },
+        fetchPolicy: "cache-and-network",
         notifyOnNetworkStatusChange: true,
       });
     }

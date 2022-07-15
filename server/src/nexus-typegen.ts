@@ -120,7 +120,9 @@ export interface NexusGenInputs {
   }
   ResondTutorOrderConnectInput: { // input type
     status: NexusGenEnums['TutorOrderTutorConnectStatusCode']; // TutorOrderTutorConnectStatusCode!
+    student_id: string; // String!
     tutor_id: string; // String!
+    tutor_order_id: string; // String!
   }
   SendMessageInput: { // input type
     conversation_id: string; // String!
@@ -444,6 +446,7 @@ export interface NexusGenFieldTypes {
     createProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     createTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     deleteTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
+    deleteTutorOrderConnect: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     forgotPassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     initConversation: NexusGenRootTypes['initConversationOutput'] | null; // initConversationOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
@@ -553,6 +556,7 @@ export interface NexusGenFieldTypes {
     getBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
     getConversation: NexusGenRootTypes['getConversationOutput'] | null; // getConversationOutput
     getManyConversations: NexusGenRootTypes['getManyConversationPutput'] | null; // getManyConversationPutput
+    getNotifications: NexusGenRootTypes['GetNotificationOutput'] | null; // GetNotificationOutput
   }
   TutorOrder: { // field return type
     createdAt: NexusGenScalars['Date']; // Date!
@@ -698,6 +702,7 @@ export interface NexusGenFieldTypeNames {
     createProfile: 'ProfileMutationOutput'
     createTutorOrder: 'TutorOrderOutput'
     deleteTutorOrder: 'TutorOrderOutput'
+    deleteTutorOrderConnect: 'TutorOrderOutput'
     forgotPassword: 'AuthOutput'
     initConversation: 'initConversationOutput'
     login: 'AuthOutput'
@@ -807,6 +812,7 @@ export interface NexusGenFieldTypeNames {
     getBuddyNotifications: 'BuddyNotificationOutput'
     getConversation: 'getConversationOutput'
     getManyConversations: 'getManyConversationPutput'
+    getNotifications: 'GetNotificationOutput'
   }
   TutorOrder: { // field return type name
     createdAt: 'Date'
@@ -882,6 +888,10 @@ export interface NexusGenArgTypes {
     deleteTutorOrder: { // args
       where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
     }
+    deleteTutorOrderConnect: { // args
+      where1: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
+      where2: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
     forgotPassword: { // args
       input: NexusGenInputs['ForgotPasswordInput']; // ForgotPasswordInput!
     }
@@ -918,8 +928,7 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['RelationshipInput']; // RelationshipInput!
     }
     respondTutorOrderConnect: { // args
-      input: NexusGenInputs['ResondTutorOrderConnectInput']; // ResondTutorOrderConnectInput!
-      where: NexusGenInputs['TutorOrderWhereUniqueInput']; // TutorOrderWhereUniqueInput!
+      where: NexusGenInputs['ResondTutorOrderConnectInput']; // ResondTutorOrderConnectInput!
     }
     sendMessage: { // args
       input: NexusGenInputs['SendMessageInput']; // SendMessageInput!
@@ -997,6 +1006,9 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['ConversationWhereUniqueInput']; // ConversationWhereUniqueInput!
     }
     getManyConversations: { // args
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    getNotifications: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
   }

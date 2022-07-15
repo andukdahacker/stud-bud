@@ -1,0 +1,10 @@
+mutation DeleteTutorOrderConnect(
+  $where1: TutorOrderWhereUniqueInput!
+  $where2: ProfileWhereUniqueInput!
+) {
+  deleteTutorOrderConnect(where1: $where1, where2: $where2) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}

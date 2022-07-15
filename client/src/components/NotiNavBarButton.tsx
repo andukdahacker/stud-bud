@@ -1,7 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import produce from "immer";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { useGetNotificationsLazyQuery } from "../generated/graphql";
+import {
+  GetNotificationsSubDocument,
+  useGetNotificationsLazyQuery,
+} from "../generated/graphql";
 import NewNotiCount from "./NewNotiCount";
 import NotificationBar from "./NotificationBar";
 import NotificationBox from "./NotificationBox";
@@ -26,7 +30,12 @@ const NotiNavBarButton = ({
   const router = useRouter();
   const [
     getNotifications,
-    { data: getNotificationsData, loading: getNotificationsLoading, refetch },
+    {
+      data: getNotificationsData,
+      loading: getNotificationsLoading,
+      refetch,
+      subscribeToMore,
+    },
   ] = useGetNotificationsLazyQuery();
 
   useEffect(() => {
@@ -36,6 +45,37 @@ const NotiNavBarButton = ({
           where: {
             profile_id: user_profile_id as string,
           },
+        },
+      });
+
+      subscribeToMore({
+        document: GetNotificationsSubDocument,
+        variables: {
+          where: {
+            profile_id: user_profile_id as string,
+          },
+        },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data.getNotifications?.IOutput.success)
+            return prev;
+
+          const newData = subscriptionData.data.getNotifications;
+          const merged = produce(prev, (draft) => {
+            if (
+              draft.getNotifications?.notifications &&
+              newData.notifications
+            ) {
+              draft.getNotifications.notifications = [
+                ...draft.getNotifications.notifications,
+                ...newData.notifications,
+              ];
+
+              draft.getNotifications.countNotViewedNotifications =
+                newData.countNotViewedNotifications;
+            }
+          });
+
+          return merged;
         },
       });
     }

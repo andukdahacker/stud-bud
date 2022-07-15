@@ -8,9 +8,6 @@ import ReactModal from "react-modal";
 import LogOut from "./Logout";
 import Avatar from "./Avatar";
 import {
-  useGetBuddyNotificationsLazyQuery,
-  useGetManyConversationsLazyQuery,
-  useGetNotificationsLazyQuery,
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
   useViewNotificationMutation,

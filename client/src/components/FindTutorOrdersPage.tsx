@@ -1,14 +1,40 @@
+import { LazyQueryExecFunction, NetworkStatus } from "@apollo/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useGetManyTutorOrdersQuery } from "../generated/graphql";
+import { useEffect } from "react";
+import {
+  Exact,
+  GetManyTutorOrdersInput,
+  GetManyTutorOrdersQuery,
+  useGetManyTutorOrdersQuery,
+} from "../generated/graphql";
 import { TUTOR_ORDER_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";
 import TutorOrderCard from "./TutorOrderCard";
 
-const FindTutorOrdersPage = () => {
+interface FindTutorOrdersPageProps {
+  getManyTutorOrders: LazyQueryExecFunction<
+    GetManyTutorOrdersQuery,
+    Exact<{
+      where: GetManyTutorOrdersInput;
+    }>
+  >;
+
+  data: GetManyTutorOrdersQuery | undefined;
+  loading: boolean;
+  networkStatus: NetworkStatus;
+}
+
+const FindTutorOrdersPage = ({
+  getManyTutorOrders,
+  data: GetManyTutorOrdersData,
+  loading: GetManyTutorOrderLoading,
+  networkStatus,
+}: FindTutorOrdersPageProps) => {
   const router = useRouter();
-  const { data: GetManyTutorOrdersData, loading: GetManyTutorOrderLoading } =
-    useGetManyTutorOrdersQuery({
+
+  useEffect(() => {
+    getManyTutorOrders({
       variables: {
         where: {
           search_input: router.query
@@ -18,11 +44,13 @@ const FindTutorOrdersPage = () => {
         },
       },
     });
-
+  }, []);
   const tutor_orders = GetManyTutorOrdersData?.getManyTutorOrders?.tutor_order;
   const noTutorOrderFound = tutor_orders?.length == 0;
+  const refetchManyTutorOrdersLoading = networkStatus === NetworkStatus.refetch;
 
-  if (GetManyTutorOrderLoading) return <Loading />;
+  if (GetManyTutorOrderLoading || refetchManyTutorOrdersLoading)
+    return <Loading />;
   if (noTutorOrderFound) return <div>Sorry, we found no result</div>;
   return (
     <div>

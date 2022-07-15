@@ -91,18 +91,35 @@ export const getManyTutorOrders = queryField("getManyTutorOrders", {
           take,
           where:
             search_input == null
-              ? {}
+              ? {
+                  tutor_id: null,
+                }
               : {
-                  tutor_order_interests: {
-                    some: {
-                      interest: {
-                        interest_name: {
-                          contains: search_input,
-                          mode: "insensitive",
+                  tutor_id: null,
+                  OR: [
+                    {
+                      student: {
+                        user: {
+                          username: {
+                            contains: search_input,
+                            mode: "insensitive",
+                          },
                         },
                       },
                     },
-                  },
+                    {
+                      tutor_order_interests: {
+                        some: {
+                          interest: {
+                            interest_name: {
+                              contains: search_input,
+                              mode: "insensitive",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
                 },
           orderBy: {
             createdAt: "desc",
@@ -113,18 +130,35 @@ export const getManyTutorOrders = queryField("getManyTutorOrders", {
           take,
           where:
             search_input == null
-              ? {}
+              ? {
+                  tutor_id: null,
+                }
               : {
-                  tutor_order_interests: {
-                    some: {
-                      interest: {
-                        interest_name: {
-                          contains: search_input,
-                          mode: "insensitive",
+                  tutor_id: null,
+                  OR: [
+                    {
+                      student: {
+                        user: {
+                          username: {
+                            contains: search_input,
+                            mode: "insensitive",
+                          },
                         },
                       },
                     },
-                  },
+                    {
+                      tutor_order_interests: {
+                        some: {
+                          interest: {
+                            interest_name: {
+                              contains: search_input,
+                              mode: "insensitive",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
                 },
           orderBy: {
             createdAt: "desc",
@@ -143,18 +177,35 @@ export const getManyTutorOrders = queryField("getManyTutorOrders", {
           },
           where:
             search_input == null
-              ? {}
+              ? {
+                  tutor_id: null,
+                }
               : {
-                  tutor_order_interests: {
-                    some: {
-                      interest: {
-                        interest_name: {
-                          contains: search_input,
-                          mode: "insensitive",
+                  tutor_id: null,
+                  OR: [
+                    {
+                      student: {
+                        user: {
+                          username: {
+                            contains: search_input,
+                            mode: "insensitive",
+                          },
                         },
                       },
                     },
-                  },
+                    {
+                      tutor_order_interests: {
+                        some: {
+                          interest: {
+                            interest_name: {
+                              contains: search_input,
+                              mode: "insensitive",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
                 },
           orderBy: {
             createdAt: "desc",

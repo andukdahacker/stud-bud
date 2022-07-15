@@ -1,5 +1,6 @@
 import { TutorOrderTutorConnectStatusCode } from "@prisma/client";
 import { mutationField, nonNull } from "nexus";
+import { notificationGenerator } from "../../utils/notificationGenerate";
 import {
   INTERNAL_SERVER_ERROR,
   NotificationType,
@@ -10,6 +11,7 @@ import {
 import {
   ConnectTutorOrderInput,
   CreateTutorOrderInput,
+  ProfileWhereUniqueInput,
   RespondTutorOrderConnectInput,
   TutorOrderWhereUniqueInput,
 } from "../inputs";
@@ -125,7 +127,7 @@ export const connectTutorOrder = mutationField("connectTutorOrder", {
     const { tutor_order_id, tutor_id, student_id } = args.where;
     try {
       const tutor_order_tutor_connect =
-        ctx.prisma.tutorOrderTutorConnect.create({
+        await ctx.prisma.tutorOrderTutorConnect.create({
           data: {
             tutor: {
               connect: {
@@ -140,37 +142,21 @@ export const connectTutorOrder = mutationField("connectTutorOrder", {
             status: "REQUESTED",
           },
         });
-      const notification = ctx.prisma.notification.create({
-        data: {
+
+      const notificationResult = await notificationGenerator({
+        input: {
+          notifier_id: tutor_id,
+          receiver_id: student_id,
+          type_id: NotificationType.TUTOR_ORDER_REQUEST_TO_BE_TUTOR,
           entity_id: tutor_order_id,
-          notifier: {
-            connect: {
-              id: tutor_id,
-            },
-          },
-          receiver: {
-            connect: {
-              id: student_id,
-            },
-          },
-          type: {
-            connect: {
-              id: NotificationType.TUTOR_ORDER_REQUEST_TO_BE_TUTOR,
-            },
-          },
         },
+        ctx,
       });
 
-      const result = await ctx.prisma.$transaction([
-        tutor_order_tutor_connect,
-        notification,
-      ]);
-
-      if (!result)
+      if (!tutor_order_tutor_connect || !notificationResult)
         return {
           IOutput: UNSUCCESSFUL_MUTATION,
         };
-
       return {
         IOutput: SUCCESSFUL_MUTATION,
       };
@@ -180,17 +166,52 @@ export const connectTutorOrder = mutationField("connectTutorOrder", {
   },
 });
 
+export const deleteTutorOrderConnect = mutationField(
+  "deleteTutorOrderConnect",
+  {
+    type: TutorOrderOutput,
+    args: {
+      where1: nonNull(TutorOrderWhereUniqueInput),
+      where2: nonNull(ProfileWhereUniqueInput),
+    },
+    resolve: async (_root, args, ctx) => {
+      const { id: tutor_order_id } = args.where1;
+      const { profile_id } = args.where2;
+      try {
+        const tutor_order_tutor_connect =
+          await ctx.prisma.tutorOrderTutorConnect.delete({
+            where: {
+              tutor_id_tutor_order_id: {
+                tutor_id: profile_id,
+                tutor_order_id,
+              },
+            },
+          });
+
+        if (!tutor_order_tutor_connect)
+          return {
+            IOutput: UNSUCCESSFUL_MUTATION,
+          };
+
+        return {
+          IOutput: SUCCESSFUL_MUTATION,
+        };
+      } catch (error) {
+        return INTERNAL_SERVER_ERROR;
+      }
+    },
+  }
+);
+
 export const respondTutorOrderConnect = mutationField(
   "respondTutorOrderConnect",
   {
     type: TutorOrderOutput,
     args: {
-      where: nonNull(TutorOrderWhereUniqueInput),
-      input: nonNull(RespondTutorOrderConnectInput),
+      where: nonNull(RespondTutorOrderConnectInput),
     },
     resolve: async (_root, args, ctx) => {
-      const { id: tutor_order_id } = args.where;
-      const { status, tutor_id } = args.input;
+      const { tutor_id, tutor_order_id, status, student_id } = args.where;
       try {
         const tutor_order_tutor_connect =
           await ctx.prisma.tutorOrderTutorConnect.update({
@@ -205,12 +226,67 @@ export const respondTutorOrderConnect = mutationField(
             },
           });
 
-        if (!tutor_order_tutor_connect)
+        const tutor_order = await ctx.prisma.tutorOrder.update({
+          where: {
+            id: tutor_order_id,
+          },
+          data: {
+            tutor: {
+              connect: {
+                id: tutor_id,
+              },
+            },
+          },
+        });
+
+        if (!tutor_order_tutor_connect || !tutor_order)
           return {
             IOutput: UNSUCCESSFUL_MUTATION,
           };
 
         if (status === TutorOrderTutorConnectStatusCode.ACCEPTED) {
+          await notificationGenerator({
+            input: {
+              notifier_id: student_id,
+              receiver_id: tutor_id,
+              type_id: NotificationType.TUTOR_ORDER_ACCEPT_TUTOR_REQUEST,
+              entity_id: tutor_order_id,
+            },
+            ctx,
+          });
+
+          const other_tutor_order_tutor_connect =
+            await ctx.prisma.tutorOrderTutorConnect.findMany({
+              where: {
+                tutor_order_id,
+                status: "REQUESTED",
+              },
+            });
+
+          const receiver_id = other_tutor_order_tutor_connect.map((obj) => {
+            return obj.tutor_id;
+          });
+
+          await ctx.prisma.tutorOrderTutorConnect.updateMany({
+            where: {
+              tutor_order_id,
+              status: "REQUESTED",
+            },
+            data: {
+              status: "DECLINED",
+            },
+          });
+
+          await notificationGenerator({
+            input: {
+              notifier_id: student_id,
+              receiver_id,
+              type_id: NotificationType.TUTOR_ORDER_DECLINE_TUTOR_REQUEST,
+              entity_id: tutor_order_id,
+            },
+            ctx,
+          });
+
           return {
             IOutput: {
               code: 200,
@@ -219,11 +295,37 @@ export const respondTutorOrderConnect = mutationField(
             },
           };
         } else if (status === TutorOrderTutorConnectStatusCode.DECLINED) {
+          await notificationGenerator({
+            input: {
+              notifier_id: student_id,
+              receiver_id: tutor_id,
+              type_id: NotificationType.TUTOR_ORDER_DECLINE_TUTOR_REQUEST,
+              entity_id: tutor_order_id,
+            },
+            ctx,
+          });
           return {
             IOutput: {
               code: 200,
               success: true,
               message: "Tutor order request declined!",
+            },
+          };
+        } else if (status === "REQUESTED") {
+          await notificationGenerator({
+            input: {
+              notifier_id: tutor_id,
+              receiver_id: student_id,
+              type_id: NotificationType.TUTOR_ORDER_REQUEST_TO_BE_TUTOR,
+              entity_id: tutor_order_id,
+            },
+            ctx,
+          });
+          return {
+            IOutput: {
+              code: 200,
+              success: true,
+              message: "Reconnect tutor order request",
             },
           };
         }
@@ -232,7 +334,6 @@ export const respondTutorOrderConnect = mutationField(
           IOutput: SUCCESSFUL_MUTATION,
         };
       } catch (error) {
-        console.log(error);
         return INTERNAL_SERVER_ERROR;
       }
     },

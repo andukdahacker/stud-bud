@@ -214,6 +214,7 @@ export type Mutation = {
   createProfile?: Maybe<ProfileMutationOutput>;
   createTutorOrder?: Maybe<TutorOrderOutput>;
   deleteTutorOrder?: Maybe<TutorOrderOutput>;
+  deleteTutorOrderConnect?: Maybe<TutorOrderOutput>;
   forgotPassword?: Maybe<AuthOutput>;
   initConversation?: Maybe<InitConversationOutput>;
   login: AuthOutput;
@@ -264,6 +265,12 @@ export type MutationCreateTutorOrderArgs = {
 
 export type MutationDeleteTutorOrderArgs = {
   where: TutorOrderWhereUniqueInput;
+};
+
+
+export type MutationDeleteTutorOrderConnectArgs = {
+  where1: TutorOrderWhereUniqueInput;
+  where2: ProfileWhereUniqueInput;
 };
 
 
@@ -325,8 +332,7 @@ export type MutationRespondBuddyArgs = {
 
 
 export type MutationRespondTutorOrderConnectArgs = {
-  input: ResondTutorOrderConnectInput;
-  where: TutorOrderWhereUniqueInput;
+  where: ResondTutorOrderConnectInput;
 };
 
 
@@ -567,7 +573,9 @@ export enum RelationshipStatusCode {
 
 export type ResondTutorOrderConnectInput = {
   status: TutorOrderTutorConnectStatusCode;
+  student_id: Scalars['String'];
   tutor_id: Scalars['String'];
+  tutor_order_id: Scalars['String'];
 };
 
 export type SendMessageInput = {
@@ -586,6 +594,7 @@ export type Subscription = {
   getBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   getConversation?: Maybe<GetConversationOutput>;
   getManyConversations?: Maybe<GetManyConversationPutput>;
+  getNotifications?: Maybe<GetNotificationOutput>;
 };
 
 
@@ -600,6 +609,11 @@ export type SubscriptionGetConversationArgs = {
 
 
 export type SubscriptionGetManyConversationsArgs = {
+  where: ProfileWhereUniqueInput;
+};
+
+
+export type SubscriptionGetNotificationsArgs = {
   where: ProfileWhereUniqueInput;
 };
 
@@ -762,6 +776,14 @@ export type DeleteTutorOrderMutationVariables = Exact<{
 
 export type DeleteTutorOrderMutation = { __typename?: 'Mutation', deleteTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
 
+export type DeleteTutorOrderConnectMutationVariables = Exact<{
+  where1: TutorOrderWhereUniqueInput;
+  where2: ProfileWhereUniqueInput;
+}>;
+
+
+export type DeleteTutorOrderConnectMutation = { __typename?: 'Mutation', deleteTutorOrderConnect?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
 export type ForgotPasswordMutationVariables = Exact<{
   input: ForgotPasswordInput;
 }>;
@@ -840,8 +862,7 @@ export type RespondBuddyMutationVariables = Exact<{
 export type RespondBuddyMutation = { __typename?: 'Mutation', respondBuddy?: { __typename?: 'RelationshipOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, relationship?: { __typename?: 'Relationship', addressee_id: string, requester_id: string, conversation_id?: string | null, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, otherEndRelationship?: { __typename?: 'Relationship', addressee_id: string, requester_id: string, conversation_id?: string | null, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null } | null };
 
 export type RespondTutorOrderConnectMutationVariables = Exact<{
-  where: TutorOrderWhereUniqueInput;
-  input: ResondTutorOrderConnectInput;
+  where: ResondTutorOrderConnectInput;
 }>;
 
 
@@ -1017,6 +1038,13 @@ export type GetManyConversationsSubsSubscriptionVariables = Exact<{
 
 
 export type GetManyConversationsSubsSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } }> | null } | null };
+
+export type GetNotificationsSubSubscriptionVariables = Exact<{
+  where: ProfileWhereUniqueInput;
+}>;
+
+
+export type GetNotificationsSubSubscription = { __typename?: 'Subscription', getNotifications?: { __typename?: 'GetNotificationOutput', countNotViewedNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, notifications?: Array<{ __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null> | null } | null };
 
 export const UserFragmentDoc = gql`
     fragment User on User {
@@ -1412,6 +1440,42 @@ export function useDeleteTutorOrderMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteTutorOrderMutationHookResult = ReturnType<typeof useDeleteTutorOrderMutation>;
 export type DeleteTutorOrderMutationResult = Apollo.MutationResult<DeleteTutorOrderMutation>;
 export type DeleteTutorOrderMutationOptions = Apollo.BaseMutationOptions<DeleteTutorOrderMutation, DeleteTutorOrderMutationVariables>;
+export const DeleteTutorOrderConnectDocument = gql`
+    mutation DeleteTutorOrderConnect($where1: TutorOrderWhereUniqueInput!, $where2: ProfileWhereUniqueInput!) {
+  deleteTutorOrderConnect(where1: $where1, where2: $where2) {
+    IOutput {
+      ...IOutput
+    }
+  }
+}
+    ${IOutputFragmentDoc}`;
+export type DeleteTutorOrderConnectMutationFn = Apollo.MutationFunction<DeleteTutorOrderConnectMutation, DeleteTutorOrderConnectMutationVariables>;
+
+/**
+ * __useDeleteTutorOrderConnectMutation__
+ *
+ * To run a mutation, you first call `useDeleteTutorOrderConnectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTutorOrderConnectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTutorOrderConnectMutation, { data, loading, error }] = useDeleteTutorOrderConnectMutation({
+ *   variables: {
+ *      where1: // value for 'where1'
+ *      where2: // value for 'where2'
+ *   },
+ * });
+ */
+export function useDeleteTutorOrderConnectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTutorOrderConnectMutation, DeleteTutorOrderConnectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTutorOrderConnectMutation, DeleteTutorOrderConnectMutationVariables>(DeleteTutorOrderConnectDocument, options);
+      }
+export type DeleteTutorOrderConnectMutationHookResult = ReturnType<typeof useDeleteTutorOrderConnectMutation>;
+export type DeleteTutorOrderConnectMutationResult = Apollo.MutationResult<DeleteTutorOrderConnectMutation>;
+export type DeleteTutorOrderConnectMutationOptions = Apollo.BaseMutationOptions<DeleteTutorOrderConnectMutation, DeleteTutorOrderConnectMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($input: ForgotPasswordInput!) {
   forgotPassword(input: $input) {
@@ -1834,8 +1898,8 @@ export type RespondBuddyMutationHookResult = ReturnType<typeof useRespondBuddyMu
 export type RespondBuddyMutationResult = Apollo.MutationResult<RespondBuddyMutation>;
 export type RespondBuddyMutationOptions = Apollo.BaseMutationOptions<RespondBuddyMutation, RespondBuddyMutationVariables>;
 export const RespondTutorOrderConnectDocument = gql`
-    mutation RespondTutorOrderConnect($where: TutorOrderWhereUniqueInput!, $input: ResondTutorOrderConnectInput!) {
-  respondTutorOrderConnect(where: $where, input: $input) {
+    mutation RespondTutorOrderConnect($where: ResondTutorOrderConnectInput!) {
+  respondTutorOrderConnect(where: $where) {
     IOutput {
       ...IOutput
     }
@@ -1858,7 +1922,6 @@ export type RespondTutorOrderConnectMutationFn = Apollo.MutationFunction<Respond
  * const [respondTutorOrderConnectMutation, { data, loading, error }] = useRespondTutorOrderConnectMutation({
  *   variables: {
  *      where: // value for 'where'
- *      input: // value for 'input'
  *   },
  * });
  */
@@ -2845,3 +2908,40 @@ export function useGetManyConversationsSubsSubscription(baseOptions: Apollo.Subs
       }
 export type GetManyConversationsSubsSubscriptionHookResult = ReturnType<typeof useGetManyConversationsSubsSubscription>;
 export type GetManyConversationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetManyConversationsSubsSubscription>;
+export const GetNotificationsSubDocument = gql`
+    subscription GetNotificationsSub($where: ProfileWhereUniqueInput!) {
+  getNotifications(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    notifications {
+      ...Notification
+    }
+    countNotViewedNotifications
+  }
+}
+    ${IOutputFragmentDoc}
+${NotificationFragmentDoc}`;
+
+/**
+ * __useGetNotificationsSubSubscription__
+ *
+ * To run a query within a React component, call `useGetNotificationsSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetNotificationsSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNotificationsSubSubscription({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetNotificationsSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetNotificationsSubSubscription, GetNotificationsSubSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GetNotificationsSubSubscription, GetNotificationsSubSubscriptionVariables>(GetNotificationsSubDocument, options);
+      }
+export type GetNotificationsSubSubscriptionHookResult = ReturnType<typeof useGetNotificationsSubSubscription>;
+export type GetNotificationsSubSubscriptionResult = Apollo.SubscriptionResult<GetNotificationsSubSubscription>;

@@ -39,6 +39,7 @@ const TutorOrderCard = ({
           id: tutor_order_id,
         },
       },
+      fetchPolicy: "cache-and-network",
     });
   };
 
@@ -61,10 +62,12 @@ const TutorOrderCard = ({
             ? null
             : tutor_order_interests.map((interest, index) => {
                 return (
-                  <SuggestionCard
+                  <div
                     key={index}
-                    interest_name={interest?.interest_name as string}
-                  />
+                    className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl  shadow-sm shadow-gray-500"
+                  >
+                    {interest.interest_name}
+                  </div>
                 );
               })}
         </div>

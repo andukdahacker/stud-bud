@@ -2,8 +2,6 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   GetBuddyNotificationsSubsDocument,
   useGetBuddyNotificationsLazyQuery,
-  useGetProfileLazyQuery,
-  useGetRelationshipLazyQuery,
 } from "../generated/graphql";
 import merge from "deepmerge";
 import { useRouter } from "next/router";
