@@ -1,7 +1,9 @@
 import { useApolloClient } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
+import produce from "immer";
 import { ChangeEvent, useState } from "react";
 import {
+  GetConversationDocument,
   GetConversationQuery,
   GetUserDocument,
   GetUserQuery,
@@ -25,16 +27,19 @@ const ChatBox = ({
   fetchMore,
 }: ChatBoxProps) => {
   const client = useApolloClient();
-  const user_profile_id = client.readQuery<GetUserQuery>({
+  const user_profile = client.readQuery<GetUserQuery>({
     query: GetUserDocument,
-  })?.getUser?.profile?.id;
+  })?.getUser?.profile;
+
+  const user_profile_id = user_profile?.id;
 
   const [messageContent, setMessageContent] = useState<string>("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessageContent(e.target.value);
   };
 
-  const [sendMessage, {}] = useSendMessageMutation();
+  const [sendMessage, { data: sendMessageData, loading: sendMessageLoading }] =
+    useSendMessageMutation();
 
   const messages = data?.getConversation?.Messages;
   const hasNextPage = data?.getConversation?.ConversationPageInfo?.hasNextPage;
@@ -45,23 +50,23 @@ const ChatBox = ({
     message_content: "",
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (messageContent.trim() === "") return;
 
-    if (conversation_id)
-      sendMessage({
+    if (conversation_id && user_profile && user_profile_id) {
+      await sendMessage({
         variables: {
           input: {
             message_content: messageContent,
             conversation_id,
           },
           where: {
-            profile_id: user_profile_id as string,
+            profile_id: user_profile_id,
           },
         },
       });
-
-    setMessageContent("");
+      setMessageContent("");
+    }
   };
 
   const loadMore = async () => {
@@ -71,7 +76,7 @@ const ChatBox = ({
           conversation_id,
         },
         page: {
-          take: 5,
+          take: lastTake,
           cursor,
         },
       },

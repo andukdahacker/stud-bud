@@ -52,3 +52,12 @@ export const RespondTutorOrderConnectInput = inputObjectType({
     t.nonNull.string("tutor_id");
   },
 });
+
+export const MarkCompleteTutorOrderInput = inputObjectType({
+  name: "MarkCompleteTutorOrderInput",
+  definition(t) {
+    t.nonNull.string("tutor_order_id");
+    t.nonNull.string("tutor_id");
+    t.nonNull.string("student_id");
+  },
+});

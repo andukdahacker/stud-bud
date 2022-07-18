@@ -57,9 +57,16 @@ export interface NexusGenInputs {
   }
   ConversationWhereUniqueInput: { // input type
     conversation_id: string; // String!
+    profile_id?: string | null; // String
   }
   CreateInterestInput: { // input type
     interest_name: string; // String!
+  }
+  CreateNotificationInput: { // input type
+    entity_id: string; // String!
+    notifier_id: string; // String!
+    receiver_id: string; // String!
+    type_id: number; // Int!
   }
   CreateProfileInput: { // input type
     profile_avatar?: NexusGenScalars['Upload'] | null; // Upload
@@ -97,6 +104,11 @@ export interface NexusGenInputs {
   LoginInput: { // input type
     email: string; // String!
     password: string; // String!
+  }
+  MarkCompleteTutorOrderInput: { // input type
+    student_id: string; // String!
+    tutor_id: string; // String!
+    tutor_order_id: string; // String!
   }
   NotificationWhereUniqueInput: { // input type
     id: string; // String!
@@ -451,6 +463,7 @@ export interface NexusGenFieldTypes {
     initConversation: NexusGenRootTypes['initConversationOutput'] | null; // initConversationOutput
     login: NexusGenRootTypes['AuthOutput']; // AuthOutput!
     logout: NexusGenRootTypes['AuthOutput']; // AuthOutput!
+    markCompleteTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     readBuddyNotifications: NexusGenRootTypes['BuddyNotificationOutput'] | null; // BuddyNotificationOutput
     readMessage: NexusGenRootTypes['IOutput'] | null; // IOutput
     readNotification: NexusGenRootTypes['NotificationMutationOutput'] | null; // NotificationMutationOutput
@@ -707,6 +720,7 @@ export interface NexusGenFieldTypeNames {
     initConversation: 'initConversationOutput'
     login: 'AuthOutput'
     logout: 'AuthOutput'
+    markCompleteTutorOrder: 'TutorOrderOutput'
     readBuddyNotifications: 'BuddyNotificationOutput'
     readMessage: 'IOutput'
     readNotification: 'NotificationMutationOutput'
@@ -901,6 +915,9 @@ export interface NexusGenArgTypes {
     login: { // args
       input: NexusGenInputs['LoginInput']; // LoginInput!
     }
+    markCompleteTutorOrder: { // args
+      where: NexusGenInputs['MarkCompleteTutorOrderInput']; // MarkCompleteTutorOrderInput!
+    }
     readBuddyNotifications: { // args
       where: NexusGenInputs['ReadBuddyNotificationsInput']; // ReadBuddyNotificationsInput!
     }
@@ -1003,7 +1020,7 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
     getConversation: { // args
-      where: NexusGenInputs['ConversationWhereUniqueInput']; // ConversationWhereUniqueInput!
+      where: NexusGenInputs['ConversationGroupWhereUniqueInput']; // ConversationGroupWhereUniqueInput!
     }
     getManyConversations: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!

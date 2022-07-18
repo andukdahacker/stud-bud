@@ -1,0 +1,10 @@
+mutation MarkCompleteTutorOrder($where: MarkCompleteTutorOrderInput!) {
+  markCompleteTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}

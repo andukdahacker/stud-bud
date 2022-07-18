@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { GetTutorOrderQuery, useGetUserQuery } from "../generated/graphql";
+import {
+  GetTutorOrderQuery,
+  TutorOrderFragment,
+  TutorOrderFragmentDoc,
+  useGetUserQuery,
+  useMarkCompleteTutorOrderMutation,
+} from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
 import TutorOrderConnectButton from "./TutorOrderConnectButton";
@@ -29,7 +35,35 @@ const TutorOrderPage = ({
   const tutor_id = tutor?.id;
   const tutor_username = tutor?.user?.username;
   const tutor_profile_avatar = tutor?.profile_avatar;
+  const isCompleted = GetTutorOrderData?.isCompleted;
+  const [markCompleteTutorOrder, { loading: MarkCompleteTutorOrderLoading }] =
+    useMarkCompleteTutorOrderMutation();
 
+  const markComplete = async () => {
+    if (tutor_order_id && tutor_id && student_id)
+      await markCompleteTutorOrder({
+        variables: {
+          where: {
+            tutor_order_id,
+            tutor_id,
+            student_id,
+          },
+        },
+        update(cache, { data }) {
+          if (
+            data?.markCompleteTutorOrder?.IOutput.success &&
+            data.markCompleteTutorOrder.tutor_order
+          ) {
+            cache.writeFragment<TutorOrderFragment>({
+              id: tutor_order_id,
+              fragment: TutorOrderFragmentDoc,
+              fragmentName: "TutorOrder",
+              data: data.markCompleteTutorOrder.tutor_order,
+            });
+          }
+        },
+      });
+  };
   if (GetTutorOrderLoading || GetUserLoading) return <Loading />;
   if (!GetTutorOrderSuccess) return <div>{GetTutorOrderMessage}</div>;
   if (user_profile_id !== student_id) {
@@ -100,6 +134,18 @@ const TutorOrderPage = ({
       <Link href={`/one-hour-tutor/edit/${tutor_order_id}`}>
         <a>Edit</a>
       </Link>
+
+      {isCompleted ? (
+        <div>Completed!</div>
+      ) : (
+        <button type="button" onClick={markComplete}>
+          {MarkCompleteTutorOrderLoading ? (
+            <Loading />
+          ) : (
+            <div>Mark as completed</div>
+          )}
+        </button>
+      )}
 
       <div>
         <div>Tutor:</div>

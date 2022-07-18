@@ -8,7 +8,7 @@ import {
 } from "../../constants";
 import { pubsub } from ".";
 import {
-  ConversationWhereUniqueInput,
+  ConversationGroupWhereUniqueInput,
   ProfileWhereUniqueInput,
 } from "../inputs";
 import { getConversationOutput, getManyConversationsOutput } from "../outputs";
@@ -18,12 +18,15 @@ import { withFilter } from "graphql-subscriptions";
 export const getConversationSub = subscriptionField("getConversation", {
   type: getConversationOutput,
   args: {
-    where: nonNull(ConversationWhereUniqueInput),
+    where: nonNull(ConversationGroupWhereUniqueInput),
   },
   subscribe: withFilter(
     () => pubsub.asyncIterator([NEW_MESSAGE_EVENT]),
     (root: Message, args, _ctx) => {
-      return root.conversation_id === args.where.conversation_id;
+      return (
+        root.conversation_id === args.where.conversation_id &&
+        root.message_author_id !== args.where.profile_id
+      );
     }
   ),
   resolve: async (root: Message, _args, ctx) => {

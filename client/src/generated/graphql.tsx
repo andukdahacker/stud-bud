@@ -79,10 +79,18 @@ export type ConversationPageInput = {
 
 export type ConversationWhereUniqueInput = {
   conversation_id: Scalars['String'];
+  profile_id?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateInterestInput = {
   interest_name: Scalars['String'];
+};
+
+export type CreateNotificationInput = {
+  entity_id: Scalars['String'];
+  notifier_id: Scalars['String'];
+  receiver_id: Scalars['String'];
+  type_id: Scalars['Int'];
 };
 
 export type CreateProfileInput = {
@@ -196,6 +204,12 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type MarkCompleteTutorOrderInput = {
+  student_id: Scalars['String'];
+  tutor_id: Scalars['String'];
+  tutor_order_id: Scalars['String'];
+};
+
 export type Message = {
   __typename?: 'Message';
   author: Profile;
@@ -219,6 +233,7 @@ export type Mutation = {
   initConversation?: Maybe<InitConversationOutput>;
   login: AuthOutput;
   logout: AuthOutput;
+  markCompleteTutorOrder?: Maybe<TutorOrderOutput>;
   readBuddyNotifications?: Maybe<BuddyNotificationOutput>;
   readMessage?: Maybe<IOutput>;
   readNotification?: Maybe<NotificationMutationOutput>;
@@ -286,6 +301,11 @@ export type MutationInitConversationArgs = {
 
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationMarkCompleteTutorOrderArgs = {
+  where: MarkCompleteTutorOrderInput;
 };
 
 
@@ -604,7 +624,7 @@ export type SubscriptionGetBuddyNotificationsArgs = {
 
 
 export type SubscriptionGetConversationArgs = {
-  where: ConversationWhereUniqueInput;
+  where: ConversationGroupWhereUniqueInput;
 };
 
 
@@ -733,6 +753,13 @@ export type TutorOrderInterestsFragment = { __typename?: 'TutorOrderInterests', 
 export type TutorOrderTutorConnectFragment = { __typename?: 'TutorOrderTutorConnect', tutor_order_id: string, tutor_id: string, status: TutorOrderTutorConnectStatusCode, tutor_order: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null }, tutor: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } };
 
 export type UserFragment = { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean };
+
+export type MarkCompleteTutorOrderMutationVariables = Exact<{
+  where: MarkCompleteTutorOrderInput;
+}>;
+
+
+export type MarkCompleteTutorOrderMutation = { __typename?: 'Mutation', markCompleteTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, tutor_order?: { __typename?: 'TutorOrder', id: string, student_id: string, tutor_id?: string | null, problem: string, tutor_requirements: string, isCompleted: boolean, createdAt: any, updatedAt: any, student: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, tutor?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null, tutor_order_interest?: Array<{ __typename?: 'TutorOrderInterests', interest: { __typename?: 'Interest', id: string, interest_name?: string | null } }> | null } | null } | null };
 
 export type ChangePasswordMutationVariables = Exact<{
   input: ChangePasswordInput;
@@ -874,7 +901,7 @@ export type SendMessageMutationVariables = Exact<{
 }>;
 
 
-export type SendMessageMutation = { __typename?: 'Mutation', sendMessage?: { __typename?: 'SendMessageOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage?: { __typename?: 'SendMessageOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -1026,7 +1053,7 @@ export type GetBuddyNotificationsSubsSubscriptionVariables = Exact<{
 export type GetBuddyNotificationsSubsSubscription = { __typename?: 'Subscription', getBuddyNotifications?: { __typename?: 'BuddyNotificationOutput', countNotViewedBuddyNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, buddyRequests?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, conversation_id?: string | null, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null, buddyAccepts?: Array<{ __typename?: 'Relationship', addressee_id: string, requester_id: string, conversation_id?: string | null, status: RelationshipStatusCode, isRead: boolean, isViewed: boolean, createdAt: any, updatedAt: any, addressee: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }, requester: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } }> | null } | null };
 
 export type GetConversationSubSubscriptionVariables = Exact<{
-  where: ConversationWhereUniqueInput;
+  where: ConversationGroupWhereUniqueInput;
 }>;
 
 
@@ -1210,6 +1237,45 @@ export const TutorOrderTutorConnectFragmentDoc = gql`
 }
     ${TutorOrderFragmentDoc}
 ${ProfileFragmentDoc}`;
+export const MarkCompleteTutorOrderDocument = gql`
+    mutation MarkCompleteTutorOrder($where: MarkCompleteTutorOrderInput!) {
+  markCompleteTutorOrder(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    tutor_order {
+      ...TutorOrder
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${TutorOrderFragmentDoc}`;
+export type MarkCompleteTutorOrderMutationFn = Apollo.MutationFunction<MarkCompleteTutorOrderMutation, MarkCompleteTutorOrderMutationVariables>;
+
+/**
+ * __useMarkCompleteTutorOrderMutation__
+ *
+ * To run a mutation, you first call `useMarkCompleteTutorOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkCompleteTutorOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [markCompleteTutorOrderMutation, { data, loading, error }] = useMarkCompleteTutorOrderMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useMarkCompleteTutorOrderMutation(baseOptions?: Apollo.MutationHookOptions<MarkCompleteTutorOrderMutation, MarkCompleteTutorOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MarkCompleteTutorOrderMutation, MarkCompleteTutorOrderMutationVariables>(MarkCompleteTutorOrderDocument, options);
+      }
+export type MarkCompleteTutorOrderMutationHookResult = ReturnType<typeof useMarkCompleteTutorOrderMutation>;
+export type MarkCompleteTutorOrderMutationResult = Apollo.MutationResult<MarkCompleteTutorOrderMutation>;
+export type MarkCompleteTutorOrderMutationOptions = Apollo.BaseMutationOptions<MarkCompleteTutorOrderMutation, MarkCompleteTutorOrderMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation changePassword($input: ChangePasswordInput!) {
   changePassword(input: $input) {
@@ -1938,9 +2004,13 @@ export const SendMessageDocument = gql`
     IOutput {
       ...IOutput
     }
+    Message {
+      ...Message
+    }
   }
 }
-    ${IOutputFragmentDoc}`;
+    ${IOutputFragmentDoc}
+${MessageFragmentDoc}`;
 export type SendMessageMutationFn = Apollo.MutationFunction<SendMessageMutation, SendMessageMutationVariables>;
 
 /**
@@ -2827,7 +2897,7 @@ export function useGetBuddyNotificationsSubsSubscription(baseOptions: Apollo.Sub
 export type GetBuddyNotificationsSubsSubscriptionHookResult = ReturnType<typeof useGetBuddyNotificationsSubsSubscription>;
 export type GetBuddyNotificationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetBuddyNotificationsSubsSubscription>;
 export const GetConversationSubDocument = gql`
-    subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
+    subscription GetConversationSub($where: ConversationGroupWhereUniqueInput!) {
   getConversation(where: $where) {
     IOutput {
       ...IOutput

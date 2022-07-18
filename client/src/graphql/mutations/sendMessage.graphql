@@ -6,5 +6,8 @@ mutation sendMessage(
     IOutput {
       ...IOutput
     }
+    Message {
+      ...Message
+    }
   }
 }

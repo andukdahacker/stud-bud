@@ -11,6 +11,7 @@ import {
 import {
   ConnectTutorOrderInput,
   CreateTutorOrderInput,
+  MarkCompleteTutorOrderInput,
   ProfileWhereUniqueInput,
   RespondTutorOrderConnectInput,
   TutorOrderWhereUniqueInput,
@@ -361,6 +362,48 @@ export const deleteTutorOrder = mutationField("deleteTutorOrder", {
 
       return {
         IOutput: SUCCESSFUL_MUTATION,
+      };
+    } catch (error) {
+      return INTERNAL_SERVER_ERROR;
+    }
+  },
+});
+
+export const markCompleteTutorOrder = mutationField("markCompleteTutorOrder", {
+  type: TutorOrderOutput,
+  args: {
+    where: nonNull(MarkCompleteTutorOrderInput),
+  },
+  resolve: async (_root, args, ctx) => {
+    const { student_id, tutor_id, tutor_order_id } = args.where;
+    try {
+      const tutor_order = await ctx.prisma.tutorOrder.update({
+        where: {
+          id: tutor_order_id,
+        },
+        data: {
+          isCompleted: true,
+        },
+      });
+
+      const notificationResult = await notificationGenerator({
+        input: {
+          notifier_id: student_id,
+          receiver_id: tutor_id,
+          type_id: NotificationType.TUTOR_ORDER_COMPLETE_TUTOR_ORDER,
+          entity_id: tutor_order_id,
+        },
+        ctx,
+      });
+
+      if (!tutor_order || !notificationResult)
+        return {
+          IOutput: UNSUCCESSFUL_MUTATION,
+        };
+
+      return {
+        IOutput: SUCCESSFUL_MUTATION,
+        tutor_order,
       };
     } catch (error) {
       return INTERNAL_SERVER_ERROR;

@@ -54,9 +54,8 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
             if (!prev) return incoming;
             if (prev.Messages && incoming.Messages) {
               if (incoming.Messages.length - prev.Messages.length === 1) {
-                return incoming; //subscription data
+                return incoming; //send message or subscription data
               }
-
               const mergedPagiData = produce(incoming, (draft) => {
                 if (draft.Messages && prev.Messages) {
                   draft.Messages = [...prev.Messages, ...draft.Messages];
@@ -67,15 +66,12 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
             }
             return prev;
           },
-          read: (existing) => {
-            return existing;
-          },
         },
       },
     },
     // Subscription: {
     //   fields: {
-    //     getConversationSub: {
+    //     getConversation: {
     //       keyArgs: ["where"],
     //       merge: (prev, incoming) => {
     //         console.log("subPrev", prev);

@@ -1,4 +1,4 @@
-subscription GetConversationSub($where: ConversationWhereUniqueInput!) {
+subscription GetConversationSub($where: ConversationGroupWhereUniqueInput!) {
   getConversation(where: $where) {
     IOutput {
       ...IOutput

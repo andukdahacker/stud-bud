@@ -58,10 +58,18 @@ input ConversationPageInput {
 
 input ConversationWhereUniqueInput {
   conversation_id: String!
+  profile_id: String
 }
 
 input CreateInterestInput {
   interest_name: String!
+}
+
+input CreateNotificationInput {
+  entity_id: String!
+  notifier_id: String!
+  receiver_id: String!
+  type_id: Int!
 }
 
 input CreateProfileInput {
@@ -168,6 +176,12 @@ input LoginInput {
   password: String!
 }
 
+input MarkCompleteTutorOrderInput {
+  student_id: String!
+  tutor_id: String!
+  tutor_order_id: String!
+}
+
 type Message {
   author: Profile!
   conversation_id: String!
@@ -189,6 +203,7 @@ type Mutation {
   initConversation(input: initConversationInput!): initConversationOutput
   login(input: LoginInput!): AuthOutput!
   logout: AuthOutput!
+  markCompleteTutorOrder(where: MarkCompleteTutorOrderInput!): TutorOrderOutput
   readBuddyNotifications(where: ReadBuddyNotificationsInput!): BuddyNotificationOutput
   readMessage(where: ConversationGroupWhereUniqueInput!): IOutput
   readNotification(where: NotificationWhereUniqueInput!): NotificationMutationOutput
@@ -347,7 +362,7 @@ type SendMessageOutput {
 
 type Subscription {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
-  getConversation(where: ConversationWhereUniqueInput!): getConversationOutput
+  getConversation(where: ConversationGroupWhereUniqueInput!): getConversationOutput
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
 }

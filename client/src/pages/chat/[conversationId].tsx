@@ -6,15 +6,19 @@ import ConversationList from "../../components/ConversationList";
 import ConversationListBar from "../../components/ConversationListBar";
 import Layout from "../../components/Layout";
 import {
+  GetConversationDocument,
+  GetConversationQuery,
   GetConversationSubDocument,
   GetManyConversationsSubsDocument,
   useGetConversationLazyQuery,
+  useGetConversationSubSubscription,
   useGetManyConversationsLazyQuery,
   useGetUserQuery,
 } from "../../generated/graphql";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
 import produce from "immer";
+import { cache } from "../../lib/apolloClient";
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
   const user_profile_id = userData?.getUser?.profile?.id;
@@ -40,6 +44,7 @@ const ChatWithChatBox = () => {
       subscribeToMore: subsGetConversationData,
     },
   ] = useGetConversationLazyQuery();
+
   useEffect(() => {
     async function fetchData() {
       await getManyConversations({
@@ -59,6 +64,41 @@ const ChatWithChatBox = () => {
         },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
+          if (subscriptionData.data.getManyConversations?.Conversations) {
+            const newConvo =
+              subscriptionData.data.getManyConversations.Conversations[0];
+
+            const newConvo_id = newConvo.conversation_id;
+            const newMessage =
+              newConvo.conversation.conversation_latest_message;
+
+            const exact_convo = cache.readQuery<GetConversationQuery>({
+              query: GetConversationDocument,
+              variables: {
+                where: {
+                  conversation_id: newConvo_id,
+                },
+              },
+            });
+
+            if (exact_convo) {
+              const merged = produce(exact_convo, (draft) => {
+                if (draft.getConversation?.Messages && newMessage) {
+                  draft.getConversation.Messages.unshift(newMessage);
+                }
+              });
+
+              cache.writeQuery<GetConversationQuery>({
+                query: GetConversationDocument,
+                variables: {
+                  where: {
+                    conversation_id: newConvo_id,
+                  },
+                },
+                data: merged,
+              });
+            }
+          }
           return subscriptionData.data;
         },
       });
@@ -66,6 +106,7 @@ const ChatWithChatBox = () => {
 
     if (user_profile_id) fetchData();
   }, [user_profile_id]);
+
   const conversation_id = router.query.conversationId as string;
 
   useEffect(() => {
@@ -78,34 +119,6 @@ const ChatWithChatBox = () => {
           page: {
             take: MESSAGES_TAKE_LIMIT,
           },
-        },
-      });
-
-      subsGetConversationData({
-        document: GetConversationSubDocument,
-        variables: {
-          where: {
-            conversation_id,
-          },
-        },
-        updateQuery: (prev, { subscriptionData }) => {
-          const incoming = subscriptionData.data;
-
-          if (!incoming) return prev;
-          if (!prev) return incoming;
-
-          const merged = produce(prev, (draft) => {
-            if (
-              draft.getConversation?.Messages &&
-              incoming.getConversation?.Messages
-            ) {
-              draft.getConversation.Messages = [
-                ...incoming.getConversation.Messages,
-                ...draft.getConversation.Messages,
-              ];
-            }
-          });
-          return merged;
         },
       });
     }

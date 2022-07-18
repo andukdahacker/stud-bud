@@ -48,8 +48,21 @@ const Notification = ({ data }: NotificationProps) => {
         <a>
           <div>
             <Avatar img_url={notifier?.profile_avatar} width={40} height={40} />
-            <b>{notifier_username}</b> has declined your tuto order connect
+            <b>{notifier_username}</b> has declined your tutor order connect
             request!
+          </div>
+        </a>
+      </Link>
+    );
+
+  if (type === NotificationType.TUTOR_ORDER_COMPLETE_TUTOR_ORDER)
+    return (
+      <Link href={`/one-hour-tutor/${entity_id}`}>
+        <a>
+          <div>
+            <Avatar img_url={notifier?.profile_avatar} width={40} height={40} />
+            <b>{notifier_username}</b> has marked their tutor order as
+            completed!
           </div>
         </a>
       </Link>

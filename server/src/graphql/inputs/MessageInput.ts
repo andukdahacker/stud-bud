@@ -12,6 +12,7 @@ export const ConversationWhereUniqueInput = inputObjectType({
   name: "ConversationWhereUniqueInput",
   definition(t) {
     t.nonNull.string("conversation_id");
+    t.nullable.string("profile_id");
   },
 });
 
