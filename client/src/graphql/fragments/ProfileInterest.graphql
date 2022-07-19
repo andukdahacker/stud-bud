@@ -4,7 +4,4 @@ fragment ProfileInterest on ProfileInterest {
     ...Interest
   }
   profile_id
-  profile {
-    ...Profile
-  }
 }

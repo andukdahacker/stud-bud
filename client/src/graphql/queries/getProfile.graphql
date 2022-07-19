@@ -5,9 +5,6 @@ query getProfile($where: ProfileWhereUniqueInput!) {
     }
     Profile {
       ...Profile
-      profile_interests {
-        ...ProfileInterest
-      }
     }
   }
 }

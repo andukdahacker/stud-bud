@@ -17,3 +17,22 @@ export const PageInfoIDCursor = objectType({
     t.nullable.int("lastTake");
   },
 });
+
+export const CompoundIDEndCursor = objectType({
+  name: "CompoundIDEndCursor",
+  definition(t) {
+    t.nullable.string("id_1");
+    t.nullable.string("id_2");
+  },
+});
+
+export const PageInfoCompoundIDCursor = objectType({
+  name: "PageInfoCompoundIDCursor",
+  definition(t) {
+    t.nullable.field("endCursor", {
+      type: CompoundIDEndCursor,
+    });
+    t.nonNull.boolean("hasNextPage");
+    t.nullable.int("lastTake");
+  },
+});

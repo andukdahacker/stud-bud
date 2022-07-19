@@ -5,9 +5,6 @@ query getManyProfiles($where: GetManyProfilesInput!) {
     }
     Profile {
       ...Profile
-      profile_interests {
-        ...ProfileInterest
-      }
     }
     PageInfo {
       endCursor

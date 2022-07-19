@@ -97,6 +97,12 @@ export interface NexusGenInputs {
     search_input?: string | null; // String
     take: number; // Int!
   }
+  GetMyBuddiesInput: { // input type
+    addressee_id?: string | null; // String
+    requester_id?: string | null; // String
+    search_input?: string | null; // String
+    take: number; // Int!
+  }
   GetRelationshipInput: { // input type
     addressee_id: string; // String!
     requester_id: string; // String!
@@ -183,6 +189,10 @@ export interface NexusGenObjects {
     buddyRequests?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     countNotViewedBuddyNotifications?: number | null; // Int
   }
+  CompoundIDEndCursor: { // root type
+    id_1?: string | null; // String
+    id_2?: string | null; // String
+  }
   Conversation: { // root type
     conversation_avatar?: string | null; // String
     conversation_name?: string | null; // String
@@ -217,6 +227,11 @@ export interface NexusGenObjects {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     PageInfoIDCursor?: NexusGenRootTypes['PageInfoIDCursor'] | null; // PageInfoIDCursor
     tutor_order?: NexusGenRootTypes['TutorOrder'][] | null; // [TutorOrder!]
+  }
+  GetMyBuddiesOutput: { // root type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    PageInfo?: NexusGenRootTypes['PageInfoCompoundIDCursor'] | null; // PageInfoCompoundIDCursor
+    relationships?: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
   }
   GetNotificationOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
@@ -262,6 +277,11 @@ export interface NexusGenObjects {
   }
   NotificationMutationOutput: { // root type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+  }
+  PageInfoCompoundIDCursor: { // root type
+    endCursor?: NexusGenRootTypes['CompoundIDEndCursor'] | null; // CompoundIDEndCursor
+    hasNextPage: boolean; // Boolean!
+    lastTake?: number | null; // Int
   }
   PageInfoDataCursor: { // root type
     endCursor?: NexusGenScalars['Date'] | null; // Date
@@ -381,6 +401,10 @@ export interface NexusGenFieldTypes {
     buddyRequests: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
     countNotViewedBuddyNotifications: number | null; // Int
   }
+  CompoundIDEndCursor: { // field return type
+    id_1: string | null; // String
+    id_2: string | null; // String
+  }
   Conversation: { // field return type
     conversation_avatar: string | null; // String
     conversation_latest_message: NexusGenRootTypes['Message'] | null; // Message
@@ -418,6 +442,11 @@ export interface NexusGenFieldTypes {
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
     PageInfoIDCursor: NexusGenRootTypes['PageInfoIDCursor'] | null; // PageInfoIDCursor
     tutor_order: NexusGenRootTypes['TutorOrder'][] | null; // [TutorOrder!]
+  }
+  GetMyBuddiesOutput: { // field return type
+    IOutput: NexusGenRootTypes['IOutput']; // IOutput!
+    PageInfo: NexusGenRootTypes['PageInfoCompoundIDCursor'] | null; // PageInfoCompoundIDCursor
+    relationships: NexusGenRootTypes['Relationship'][] | null; // [Relationship!]
   }
   GetNotificationOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
@@ -496,6 +525,11 @@ export interface NexusGenFieldTypes {
   NotificationMutationOutput: { // field return type
     IOutput: NexusGenRootTypes['IOutput']; // IOutput!
   }
+  PageInfoCompoundIDCursor: { // field return type
+    endCursor: NexusGenRootTypes['CompoundIDEndCursor'] | null; // CompoundIDEndCursor
+    hasNextPage: boolean; // Boolean!
+    lastTake: number | null; // Int
+  }
   PageInfoDataCursor: { // field return type
     endCursor: NexusGenScalars['Date'] | null; // Date
     hasNextPage: boolean; // Boolean!
@@ -536,6 +570,8 @@ export interface NexusGenFieldTypes {
     getManyProfiles: NexusGenRootTypes['GetManyProfilesOutput'] | null; // GetManyProfilesOutput
     getManyTutorOrderRequests: NexusGenRootTypes['GetManyTutorOrderTutorConnect'] | null; // GetManyTutorOrderTutorConnect
     getManyTutorOrders: NexusGenRootTypes['GetManyTutorOrdersOutput'] | null; // GetManyTutorOrdersOutput
+    getMyBuddies: NexusGenRootTypes['GetMyBuddiesOutput'] | null; // GetMyBuddiesOutput
+    getMyBuddiesRequests: NexusGenRootTypes['GetMyBuddiesOutput'] | null; // GetMyBuddiesOutput
     getMyTutorOrder: NexusGenRootTypes['GetManyTutorOrdersOutput'] | null; // GetManyTutorOrdersOutput
     getNotifications: NexusGenRootTypes['GetNotificationOutput'] | null; // GetNotificationOutput
     getProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
@@ -638,6 +674,10 @@ export interface NexusGenFieldTypeNames {
     buddyRequests: 'Relationship'
     countNotViewedBuddyNotifications: 'Int'
   }
+  CompoundIDEndCursor: { // field return type name
+    id_1: 'String'
+    id_2: 'String'
+  }
   Conversation: { // field return type name
     conversation_avatar: 'String'
     conversation_latest_message: 'Message'
@@ -675,6 +715,11 @@ export interface NexusGenFieldTypeNames {
     IOutput: 'IOutput'
     PageInfoIDCursor: 'PageInfoIDCursor'
     tutor_order: 'TutorOrder'
+  }
+  GetMyBuddiesOutput: { // field return type name
+    IOutput: 'IOutput'
+    PageInfo: 'PageInfoCompoundIDCursor'
+    relationships: 'Relationship'
   }
   GetNotificationOutput: { // field return type name
     IOutput: 'IOutput'
@@ -753,6 +798,11 @@ export interface NexusGenFieldTypeNames {
   NotificationMutationOutput: { // field return type name
     IOutput: 'IOutput'
   }
+  PageInfoCompoundIDCursor: { // field return type name
+    endCursor: 'CompoundIDEndCursor'
+    hasNextPage: 'Boolean'
+    lastTake: 'Int'
+  }
   PageInfoDataCursor: { // field return type name
     endCursor: 'Date'
     hasNextPage: 'Boolean'
@@ -793,6 +843,8 @@ export interface NexusGenFieldTypeNames {
     getManyProfiles: 'GetManyProfilesOutput'
     getManyTutorOrderRequests: 'GetManyTutorOrderTutorConnect'
     getManyTutorOrders: 'GetManyTutorOrdersOutput'
+    getMyBuddies: 'GetMyBuddiesOutput'
+    getMyBuddiesRequests: 'GetMyBuddiesOutput'
     getMyTutorOrder: 'GetManyTutorOrdersOutput'
     getNotifications: 'GetNotificationOutput'
     getProfile: 'ProfileMutationOutput'
@@ -994,6 +1046,14 @@ export interface NexusGenArgTypes {
     }
     getManyTutorOrders: { // args
       where: NexusGenInputs['GetManyTutorOrdersInput']; // GetManyTutorOrdersInput!
+    }
+    getMyBuddies: { // args
+      input: NexusGenInputs['GetMyBuddiesInput']; // GetMyBuddiesInput!
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
+    }
+    getMyBuddiesRequests: { // args
+      input: NexusGenInputs['GetMyBuddiesInput']; // GetMyBuddiesInput!
+      where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!
     }
     getMyTutorOrder: { // args
       where: NexusGenInputs['ProfileWhereUniqueInput']; // ProfileWhereUniqueInput!

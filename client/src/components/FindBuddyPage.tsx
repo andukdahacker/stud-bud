@@ -6,11 +6,10 @@ import {
   Exact,
   GetManyProfilesInput,
   GetManyProfilesQuery,
-  useGetManyProfilesQuery,
-  useGetUserQuery,
 } from "../generated/graphql";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";
+import LoadMoreTrigger from "./LoadMoreTrigger";
 import ProfileCard from "./ProfileCard";
 
 interface FindBuddyPageProps {
@@ -35,20 +34,6 @@ const FindBuddyPage = ({
   networkStatus,
 }: FindBuddyPageProps) => {
   const router = useRouter();
-
-  // const {
-  //   data: GetManyProfilesData,
-  //   loading: GetManyProfilesLoading,
-  //   fetchMore,
-  //   networkStatus,
-  // } = useGetManyProfilesQuery({
-  //   variables: {
-  //     where: {
-  //       search_input: router.query ? (router.query.search_input as string) : "",
-  //       take: PROFILES_TAKE_LIMIT,
-  //     },
-  //   },
-  // });
 
   useEffect(() => {
     getManyProfiles({
@@ -114,15 +99,11 @@ const FindBuddyPage = ({
         )}
       </div>
 
-      {fetchMoreProfilesLoading ? (
-        <Loading />
-      ) : hasNextPage ? (
-        <div onClick={loadMore} className="cursor-pointer">
-          Load more
-        </div>
-      ) : (
-        <div>End of list</div>
-      )}
+      <LoadMoreTrigger
+        loading={fetchMoreProfilesLoading}
+        hasNextPage={hasNextPage}
+        loadMore={loadMore}
+      />
     </div>
   );
 };

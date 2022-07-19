@@ -120,6 +120,7 @@ model Message {
   conversation_id   String
   message_content   String       @db.Text
   createdAt         DateTime     @default(now())
+
 }
 
 model Conversation {

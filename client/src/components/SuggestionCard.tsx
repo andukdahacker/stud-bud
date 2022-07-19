@@ -15,7 +15,7 @@ import {
 
 interface SuggestionCardProps {
   interest_name: string;
-  refetchManyProfiles(
+  refetchManyProfiles?(
     variables?:
       | Partial<
           Exact<{
@@ -24,7 +24,7 @@ interface SuggestionCardProps {
         >
       | undefined
   ): Promise<ApolloQueryResult<GetManyProfilesQuery>>;
-  refetchManyTutorOrders(
+  refetchManyTutorOrders?(
     variables?:
       | Partial<
           Exact<{
@@ -47,14 +47,17 @@ const SuggestionCard = ({
   const handleClick = (value: string) => {
     router.push(`/find?search_input=${value}`);
 
-    if (findOption == "buddies" || findOption == "tutors") {
+    if (
+      (refetchManyProfiles && findOption == "buddies") ||
+      (refetchManyProfiles && findOption == "tutors")
+    ) {
       refetchManyProfiles({
         where: {
           search_input: value,
           take: PROFILES_TAKE_LIMIT,
         },
       });
-    } else if (findOption === "tutor orders") {
+    } else if (findOption === "tutor orders" && refetchManyTutorOrders) {
       refetchManyTutorOrders({
         where: {
           search_input: value,

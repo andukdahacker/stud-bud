@@ -1,5 +1,5 @@
 import { objectType } from "nexus";
-import { PageInfoIDCursor } from "../objects";
+import { PageInfoCompoundIDCursor, PageInfoIDCursor } from "../objects";
 import { Relationship } from "../objects/Relationship";
 import { IOutput } from "./IOutput";
 
@@ -52,6 +52,23 @@ export const GetRelationshipOutput = objectType({
 
     t.nullable.field("otherEndRelationship", {
       type: Relationship,
+    });
+  },
+});
+
+export const GetMyBuddiesOutput = objectType({
+  name: "GetMyBuddiesOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+
+    t.nullable.list.nonNull.field("relationships", {
+      type: Relationship,
+    });
+
+    t.nullable.field("PageInfo", {
+      type: PageInfoCompoundIDCursor,
     });
   },
 });

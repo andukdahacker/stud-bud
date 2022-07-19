@@ -1,23 +1,22 @@
-import Avatar from "./Avatar";
-import ReactModal from "react-modal";
-import { useState } from "react";
-import { useGetProfileLazyQuery } from "../generated/graphql";
-import ProfilePage from "./ProfilePage";
-import { useRouter } from "next/router";
 import Link from "next/link";
-
-interface ProfileCardProps {
-  id?: string;
-  username?: string;
-  avatar?: string;
-  interests?: { interest_name: string }[];
+import { useRouter } from "next/router";
+import { useState } from "react";
+import ReactModal from "react-modal";
+import {
+  ProfileFragment,
+  RelationshipFragment,
+  useGetProfileLazyQuery,
+} from "../generated/graphql";
+import Avatar from "./Avatar";
+import ProfilePage from "./ProfilePage";
+import MessageButton from "./MessageButton";
+interface BuddyCardProps {
+  relationshipData: RelationshipFragment | undefined;
 }
-
-const ProfileCard = (props: ProfileCardProps) => {
+const BuddyCard = ({ relationshipData }: BuddyCardProps) => {
   const router = useRouter();
-  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
+  const [getProfile, { data: GetProfileData, loading: GetProfileLoading }] =
     useGetProfileLazyQuery();
-
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const openModal = async (profile_id: string) => {
@@ -33,57 +32,63 @@ const ProfileCard = (props: ProfileCardProps) => {
 
   const closeModal = () => {
     setShowModal(false);
-    router.push(`/find`, undefined, { shallow: true });
+    router.push(`/buddies`, undefined, { shallow: true });
   };
-
+  const profile = relationshipData?.addressee;
+  const profile_id = profile?.id;
+  const avatar = profile?.profile_avatar;
+  const username = profile?.user?.username;
+  const interests = profile?.profile_interests;
+  const conversation_id = relationshipData?.conversation_id;
+  const requester_id = relationshipData?.requester_id;
+  const addressee_id = relationshipData?.addressee_id;
   return (
     <div className="flex flex-col w-full p-4 transition duration-300 ease-in-out delay-150 bg-white shadow-xl rounded-xl h-60 hover:bg-blue-800 hover:text-white">
       <div className="flex flex-col items-center h-30">
-        <Avatar img_url={props.avatar} width={50} height={50} />
-        <div className="self-center mx-2 text-xl ">{props.username}</div>
+        <Avatar img_url={avatar} width={50} height={50} />
+        <div className="self-center mx-2 text-xl ">{username}</div>
       </div>
       <div className="flex flex-col items-center h-1/3">
         <span>Finding buddy for</span>
         <div className="flex">
-          {!props.interests
+          {!interests
             ? null
-            : props.interests.map((interest, index) => {
+            : interests.map((interest, index) => {
                 return (
                   <div
                     key={index}
                     className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl  shadow-sm shadow-gray-500"
                   >
-                    {interest.interest_name}
+                    {interest?.interest.interest_name}
                   </div>
                 );
               })}
         </div>
       </div>
       <div className="flex items-center justify-center mt-3 h-1/3">
-        <Link href={`/find`} as={`/profile/${props.id}`}>
+        <Link href={`/buddies`} as={`/profile/${profile_id}`}>
           <a
             className="h-10 px-3 py-1 text-sm font-medium leading-6 text-gray-700 bg-gray-100 rounded shadow-sm shadow-gray-300"
-            onClick={() => openModal(props.id!)}
+            onClick={() => openModal(profile_id!)}
           >
             View profile
           </a>
         </Link>
-        <button
-          className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
-          type="button"
-        >
-          Connect
-        </button>
+        <MessageButton
+          conversation_id={conversation_id}
+          requester_id={requester_id}
+          addressee_id={addressee_id}
+        />
       </div>
 
       <ReactModal isOpen={showModal} onRequestClose={closeModal}>
         <button type="button" onClick={closeModal}>
           X
         </button>
-        <ProfilePage data={getProfileData} loading={getProfileLoading} />
+        <ProfilePage data={GetProfileData} loading={GetProfileLoading} />
       </ReactModal>
     </div>
   );
 };
 
-export default ProfileCard;
+export default BuddyCard;

@@ -17,6 +17,7 @@ import fetch from "isomorphic-unfetch";
 import {
   GetConversationOutput,
   GetManyProfilesOutput,
+  GetMyBuddiesOutput,
 } from "../generated/graphql";
 import produce from "immer";
 
@@ -67,20 +68,26 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
             return prev;
           },
         },
+        getMyBuddies: {
+          keyArgs: [],
+          merge: (prev: GetMyBuddiesOutput, incoming: GetMyBuddiesOutput) => {
+            if (!prev) return incoming;
+            if (!incoming) return prev;
+
+            const merged = produce(prev, (draft) => {
+              if (draft.relationships && incoming.relationships) {
+                draft.relationships = [
+                  ...draft.relationships,
+                  ...incoming.relationships,
+                ];
+              }
+            });
+
+            return merged;
+          },
+        },
       },
     },
-    // Subscription: {
-    //   fields: {
-    //     getConversation: {
-    //       keyArgs: ["where"],
-    //       merge: (prev, incoming) => {
-    //         console.log("subPrev", prev);
-    //         console.log("sub", incoming);
-    //         return incoming;
-    //       },
-    //     },
-    //   },
-    // },
   },
 });
 

@@ -1,0 +1,23 @@
+query GetMyBuddiesRequests(
+  $where: ProfileWhereUniqueInput!
+  $input: GetMyBuddiesInput!
+) {
+  getMyBuddiesRequests(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    relationships {
+      ...Relationship
+    }
+
+    PageInfo {
+      endCursor {
+        id_1
+        id_2
+      }
+      hasNextPage
+      lastTake
+    }
+  }
+}

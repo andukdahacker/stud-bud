@@ -10,7 +10,7 @@ import {
 import { findOptions } from "../utils/constants";
 
 const FindBuddy = () => {
-  const [findOption, setFindOption] = useState<findOptions>(null);
+  const [findOption, setFindOption] = useState<findOptions>("buddies");
 
   const handleClick = (option: findOptions) => {
     setFindOption(option);
@@ -39,7 +39,7 @@ const FindBuddy = () => {
   return (
     <Layout>
       <div className="flex w-full">
-        <div className="w-1/5 ">
+        {/* <div className="w-1/5 ">
           <div
             className={`${
               findOption === "buddies" ? "bg-gray-400" : null
@@ -72,32 +72,31 @@ const FindBuddy = () => {
           >
             Roadmaps
           </div>
-        </div>
-        <div className="w-4/5">
-          <SearchBar
-            findOption={findOption}
-            refetchManyProfiles={refetchManyProfiles}
-            refetchManyTutorOrders={refetchManyTutorOrders}
+        </div> */}
+
+        <SearchBar
+          findOption={findOption}
+          refetchManyProfiles={refetchManyProfiles}
+          refetchManyTutorOrders={refetchManyTutorOrders}
+        />
+        {findOption === null ? (
+          <div>What are your looking for? Choose on the left bar</div>
+        ) : findOption === "buddies" ? (
+          <FindBuddyPage
+            getManyProfiles={getManyProfiles}
+            data={GetManyProfilesData}
+            loading={GetManyProfilesLoading}
+            fetchMore={fetchMoreManyProfiles}
+            networkStatus={GetManyProfilesNetworkStatus}
           />
-          {findOption === null ? (
-            <div>What are your looking for? Choose on the left bar</div>
-          ) : findOption === "buddies" ? (
-            <FindBuddyPage
-              getManyProfiles={getManyProfiles}
-              data={GetManyProfilesData}
-              loading={GetManyProfilesLoading}
-              fetchMore={fetchMoreManyProfiles}
-              networkStatus={GetManyProfilesNetworkStatus}
-            />
-          ) : findOption === "tutor orders" ? (
-            <FindTutorOrdersPage
-              getManyTutorOrders={getManyTutorOrders}
-              data={GetManyTutorOrdersData}
-              loading={GetManyTutorOrdersLoading}
-              networkStatus={GetManyTutorOrdersNetworkStatus}
-            />
-          ) : null}
-        </div>
+        ) : findOption === "tutor orders" ? (
+          <FindTutorOrdersPage
+            getManyTutorOrders={getManyTutorOrders}
+            data={GetManyTutorOrdersData}
+            loading={GetManyTutorOrdersLoading}
+            networkStatus={GetManyTutorOrdersNetworkStatus}
+          />
+        ) : null}
       </div>
     </Layout>
   );

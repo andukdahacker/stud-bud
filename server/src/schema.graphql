@@ -21,6 +21,11 @@ input ChangePasswordInput {
   token: String!
 }
 
+type CompoundIDEndCursor {
+  id_1: String
+  id_2: String
+}
+
 input ConnectTutorOrderInput {
   message_content: String
   student_id: String!
@@ -137,6 +142,19 @@ type GetManyTutorOrdersOutput {
   tutor_order: [TutorOrder!]
 }
 
+input GetMyBuddiesInput {
+  addressee_id: String
+  requester_id: String
+  search_input: String
+  take: Int!
+}
+
+type GetMyBuddiesOutput {
+  IOutput: IOutput!
+  PageInfo: PageInfoCompoundIDCursor
+  relationships: [Relationship!]
+}
+
 type GetNotificationOutput {
   IOutput: IOutput!
   countNotViewedNotifications: Int
@@ -243,6 +261,12 @@ input NotificationWhereUniqueInput {
   id: String!
 }
 
+type PageInfoCompoundIDCursor {
+  endCursor: CompoundIDEndCursor
+  hasNextPage: Boolean!
+  lastTake: Int
+}
+
 type PageInfoDataCursor {
   endCursor: Date
   hasNextPage: Boolean!
@@ -292,6 +316,8 @@ type Query {
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
   getManyTutorOrderRequests(where: TutorOrderWhereUniqueInput!): GetManyTutorOrderTutorConnect
   getManyTutorOrders(where: GetManyTutorOrdersInput!): GetManyTutorOrdersOutput
+  getMyBuddies(input: GetMyBuddiesInput!, where: ProfileWhereUniqueInput!): GetMyBuddiesOutput
+  getMyBuddiesRequests(input: GetMyBuddiesInput!, where: ProfileWhereUniqueInput!): GetMyBuddiesOutput
   getMyTutorOrder(where: ProfileWhereUniqueInput!): GetManyTutorOrdersOutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput

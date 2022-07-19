@@ -65,8 +65,18 @@ const ChatWithChatBox = () => {
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
           if (subscriptionData.data.getManyConversations?.Conversations) {
-            const newConvo =
-              subscriptionData.data.getManyConversations.Conversations[0];
+            const conversations =
+              subscriptionData.data.getManyConversations.Conversations;
+            const sorted = conversations?.slice(0).sort((a, b) => {
+              const dateA =
+                a.conversation.conversation_latest_message?.createdAt;
+              const dateB =
+                b.conversation.conversation_latest_message?.createdAt;
+
+              return dateB - dateA;
+            });
+
+            const newConvo = sorted[0];
 
             const newConvo_id = newConvo.conversation_id;
             const newMessage =

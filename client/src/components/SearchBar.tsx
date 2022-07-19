@@ -9,12 +9,14 @@ import {
   GetManyProfilesQuery,
   GetManyTutorOrdersInput,
   GetManyTutorOrdersQuery,
+  GetMyBuddiesInput,
+  GetMyBuddiesQuery,
+  ProfileWhereUniqueInput,
   useGetManyInterestsLazyQuery,
-  useGetManyProfilesLazyQuery,
-  useGetManyTutorOrdersLazyQuery,
   useGetUserQuery,
 } from "../generated/graphql";
 import {
+  BUDDIES_TAKE_LIMIT,
   findOptions,
   PROFILES_TAKE_LIMIT,
   TUTOR_ORDER_TAKE_LIMIT,
@@ -25,7 +27,7 @@ import SuggestionCard from "./SuggestionCard";
 
 interface SearchBarProps {
   findOption: findOptions;
-  refetchManyProfiles(
+  refetchManyProfiles?(
     variables?:
       | Partial<
           Exact<{
@@ -35,7 +37,7 @@ interface SearchBarProps {
       | undefined
   ): Promise<ApolloQueryResult<GetManyProfilesQuery>>;
 
-  refetchManyTutorOrders(
+  refetchManyTutorOrders?(
     variables?:
       | Partial<
           Exact<{
@@ -44,12 +46,24 @@ interface SearchBarProps {
         >
       | undefined
   ): Promise<ApolloQueryResult<GetManyTutorOrdersQuery>>;
+
+  refetchMyBuddies?(
+    variables?:
+      | Partial<
+          Exact<{
+            where: ProfileWhereUniqueInput;
+            input: GetMyBuddiesInput;
+          }>
+        >
+      | undefined
+  ): Promise<ApolloQueryResult<GetMyBuddiesQuery>>;
 }
 
 const SearchBar = ({
   findOption,
   refetchManyProfiles,
   refetchManyTutorOrders,
+  refetchMyBuddies,
 }: SearchBarProps) => {
   const [
     getManyInterests,
@@ -89,20 +103,32 @@ const SearchBar = ({
     take: PROFILES_TAKE_LIMIT,
   };
   const onSubmit = (values: GetManyProfilesInput) => {
-    router.push(`/find?search_input=${values.search_input}`);
     if (user_profile_id) {
-      if (findOption === "buddies") {
+      if (findOption === "buddies" && refetchManyProfiles) {
+        router.push(`/find?search_input=${values.search_input}`);
         refetchManyProfiles({
           where: {
             search_input: values.search_input,
             take: PROFILES_TAKE_LIMIT,
           },
         });
-      } else if (findOption === "tutor orders") {
+      } else if (findOption === "tutor orders" && refetchManyTutorOrders) {
+        router.push(`/find?search_input=${values.search_input}`);
         refetchManyTutorOrders({
           where: {
             search_input: values.search_input,
             take: TUTOR_ORDER_TAKE_LIMIT,
+          },
+        });
+      } else if (findOption === "relationships" && refetchMyBuddies) {
+        router.push(`/buddies?search_input=${values.search_input}`);
+        refetchMyBuddies({
+          where: {
+            profile_id: user_profile_id,
+          },
+          input: {
+            take: BUDDIES_TAKE_LIMIT,
+            search_input: values.search_input,
           },
         });
       }
@@ -119,10 +145,7 @@ const SearchBar = ({
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        <Form className="flex flex-col items-center content-center justify-center w-full bg-center h-50 bg-gradient-to-r from-cyan-500 to-blue-500">
-          <label className="m-6 text-3xl font-bold leading-9 text-white">
-            Find your perfect {findOption}
-          </label>
+        <Form className="flex flex-col items-center content-center justify-center ">
           <div className="mb-3">
             <Field
               placeholder="search by an interest or an username"

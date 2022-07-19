@@ -26,3 +26,13 @@ export const GetRelationshipInput = inputObjectType({
     t.nonNull.string("addressee_id");
   },
 });
+
+export const GetMyBuddiesInput = inputObjectType({
+  name: "GetMyBuddiesInput",
+  definition(t) {
+    t.nullable.string("search_input");
+    t.nonNull.int("take");
+    t.nullable.string("requester_id");
+    t.nullable.string("addressee_id");
+  },
+});

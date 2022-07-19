@@ -173,13 +173,13 @@ const NavBar = () => {
             />
           )}
 
-          <NotiNavBarButton
+          {/* <NotiNavBarButton
             user_profile_id={user_profile_id}
             newNotiCount={newNotiCount}
             setNewNotiCount={setNewNotiCount}
             toggle={toggleNotification}
             hidden={hiddenNotification}
-          />
+          /> */}
 
           <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
             <a

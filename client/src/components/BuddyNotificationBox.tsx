@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GetBuddyNotificationsQuery } from "../generated/graphql";
 import BuddyNotification from "./BuddyNotification";
 import Loading from "./Loading";
@@ -11,6 +12,8 @@ const BuddyNotificationBox = ({ data, loading }: BuddyNotificationBoxProps) => {
   const buddyRequests = data?.getBuddyNotifications?.buddyRequests;
   const buddyAccepts = data?.getBuddyNotifications?.buddyAccepts;
 
+  const countNotViewedBuddyNotifications =
+    data?.getBuddyNotifications?.countNotViewedBuddyNotifications;
   if (loading) return <Loading />;
   return (
     <div>
@@ -45,6 +48,16 @@ const BuddyNotificationBox = ({ data, loading }: BuddyNotificationBoxProps) => {
           );
         })}
       </div>
+
+      <Link href={`/buddies`}>
+        <a>
+          See all
+          {countNotViewedBuddyNotifications &&
+          countNotViewedBuddyNotifications > 0 ? (
+            <div>({countNotViewedBuddyNotifications})</div>
+          ) : null}
+        </a>
+      </Link>
     </div>
   );
 };

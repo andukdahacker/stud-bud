@@ -6,6 +6,9 @@ fragment Profile on Profile {
   profile_wallpaper
   profile_wallpaper_public_id
   tutor_mode
+  profile_interests {
+    ...ProfileInterest
+  }
   user {
     ...User
   }
