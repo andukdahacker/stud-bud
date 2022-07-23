@@ -43,6 +43,7 @@ const MessageButton = ({
         type="button"
         disabled={initConversationLoading ? true : false}
         onClick={handleClick}
+        className="px-5 py-1 mr-3 font-semibold border-2 border-black  bg-blue"
       >
         {initConversationLoading ? <Loading /> : <div>Message</div>}
       </button>
@@ -50,7 +51,14 @@ const MessageButton = ({
   }
   return (
     <Link href={`/chat/${conversation_id}`}>
-      <a>Message</a>
+      <a>
+        <button
+          type="button"
+          className="px-5 py-1 mr-3 font-bold border-2 border-black bg-blue"
+        >
+          MESSAGE
+        </button>
+      </a>
     </Link>
   );
 };

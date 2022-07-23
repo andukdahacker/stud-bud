@@ -1,6 +1,5 @@
 import Head from "next/head";
 import React, { PropsWithChildren } from "react";
-import Footer from "./Footer";
 import NavBar from "./NavBar";
 
 interface LayoutProps {
@@ -13,9 +12,14 @@ const Layout = ({ children, username }: PropsWithChildren<LayoutProps>) => {
         <title>{username ? `${username} | ` : null}StudBud</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <NavBar />
-      <main className="w-screen h-full">{children}</main>
-      <Footer />
+      <div className="flex justify-center w-full min-h-screen bg-white font-lexend">
+        <div className="w-[calc(100%_-_3rem)] h-full min-h-screen bg-white border border-black">
+          <NavBar />
+          <main className="min-h-[calc(100vh_-_115px)] h-[calc((100vh_-_115px))] max-h-fit">
+            {children}
+          </main>
+        </div>
+      </div>
     </>
   );
 };

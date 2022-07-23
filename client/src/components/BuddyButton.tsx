@@ -206,16 +206,20 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
   if (!getRelationshipSuccess) return <div>{getRelationshipMessage}</div>;
   if (isBuddy)
     return (
-      <div>
-        <button type="button" onClick={respondButtonHandleClick}>
+      <div className="inline-block">
+        <button
+          type="button"
+          onClick={respondButtonHandleClick}
+          className="w-32 px-2 py-1 mr-5 font-bold text-white border-2 border-black bg-purple"
+        >
           Buddy
         </button>
         <button
           type="button"
-          className={`${hideButton}`}
+          className={`${hideButton} absolute block bg-white border-r border-l border-b border-black px-2 py-1 w-32 `}
           onClick={() => respond(BuddyRespondOptions.REMOVE)}
         >
-          Remove from your buddies list?
+          Remove buddy?
         </button>
 
         <MessageButton
@@ -228,16 +232,20 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
 
   if (isRequested)
     return (
-      <div>
-        <button type="button" onClick={respondButtonHandleClick}>
+      <div className="inline-block">
+        <button
+          type="button"
+          onClick={respondButtonHandleClick}
+          className="w-32 px-2 py-1 mr-5 font-bold text-white border-2 border-black bg-purple"
+        >
           Requested
         </button>
         <button
           type="button"
-          className={`${hideButton}`}
+          className={`${hideButton} w-32 absolute block bg-white border-r border-l border-b  border-black px-2 py-1`}
           onClick={() => respond(BuddyRespondOptions.UNDO)}
         >
-          Undo Request
+          Undo
         </button>
 
         <MessageButton
@@ -251,24 +259,33 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
   if (isRespond)
     return (
       <div>
-        <button type="button" onClick={respondButtonHandleClick}>
-          Respond
-        </button>
-        <button
-          type="button"
-          className={`${hideButton}`}
-          onClick={() => respond(BuddyRespondOptions.ACCEPT)}
-        >
-          Accept
-        </button>
-        <button
-          type="button"
-          className={`${hideButton}`}
-          onClick={() => respond(BuddyRespondOptions.DECLINE)}
-        >
-          Decline
-        </button>
-
+        <div className="inline-block ">
+          <button
+            type="button"
+            onClick={respondButtonHandleClick}
+            className="w-32 px-2 py-1 mr-5 font-bold text-white border-2 border-black bg-purple"
+          >
+            Respond
+          </button>
+          <div className={`${hideButton} absolute block w-32 bg-white`}>
+            <div className="flex flex-col ">
+              <button
+                type="button"
+                onClick={() => respond(BuddyRespondOptions.ACCEPT)}
+                className="border-b border-l border-r border-black"
+              >
+                Accept
+              </button>
+              <button
+                type="button"
+                onClick={() => respond(BuddyRespondOptions.DECLINE)}
+                className="border-b border-l border-r border-black"
+              >
+                Decline
+              </button>
+            </div>
+          </div>
+        </div>
         <MessageButton
           conversation_id={conversation_id}
           requester_id={user_profile_id}
@@ -279,8 +296,12 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
 
   return (
     <div>
-      <button type="button" onClick={() => connect()}>
-        Connect
+      <button
+        type="button"
+        onClick={() => connect()}
+        className="px-2 py-1 mr-5 font-bold text-white border-2 border-black bg-purple"
+      >
+        + ADD BUDDY
       </button>
       <MessageButton
         conversation_id={conversation_id}

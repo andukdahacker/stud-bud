@@ -9,7 +9,9 @@ const NotificationBar = ({
   children,
 }: PropsWithChildren<NotificationBarProps>) => {
   return (
-    <div className={`${hidden} overflow-auto fixed bg-white top-20 z-10`}>
+    <div
+      className={`${hidden} overflow-auto bg-white z-10 border border-black absolute right-0 w-[24rem]`}
+    >
       {children}
     </div>
   );

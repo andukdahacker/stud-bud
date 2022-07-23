@@ -16,25 +16,29 @@ const BuddyNotificationBox = ({ data, loading }: BuddyNotificationBoxProps) => {
     data?.getBuddyNotifications?.countNotViewedBuddyNotifications;
   if (loading) return <Loading />;
   return (
-    <div>
-      <div>Buddies requests</div>
+    <div className="">
+      <div className="border-b border-black">Requests</div>
       <div>
-        {buddyRequests?.map((noti, index) => {
-          return (
-            <BuddyNotification
-              key={index}
-              profile_id={noti.requester_id}
-              profile_avatar={noti.requester.profile_avatar}
-              username={noti.requester.user!.username}
-              status={noti.status}
-              isRead={noti.isRead}
-            />
-          );
-        })}
+        {buddyRequests?.length == 0 ? (
+          <div className="border-b border-black">No recent requests </div>
+        ) : (
+          buddyRequests?.map((noti, index) => {
+            return (
+              <BuddyNotification
+                key={index}
+                profile_id={noti.requester_id}
+                profile_avatar={noti.requester.profile_avatar}
+                username={noti.requester.user!.username}
+                status={noti.status}
+                isRead={noti.isRead}
+              />
+            );
+          })
+        )}
       </div>
 
-      <div>Buddies accepts</div>
-      <div>
+      <div className="border-b border-black">Recently accepted</div>
+      <div className="w-full">
         {buddyAccepts?.map((noti, index) => {
           return (
             <BuddyNotification
@@ -49,7 +53,7 @@ const BuddyNotificationBox = ({ data, loading }: BuddyNotificationBoxProps) => {
         })}
       </div>
 
-      <Link href={`/buddies`}>
+      <Link href={`/spark-buddies/buddies`}>
         <a>
           See all
           {countNotViewedBuddyNotifications &&

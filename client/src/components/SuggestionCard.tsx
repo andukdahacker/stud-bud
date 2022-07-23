@@ -6,8 +6,12 @@ import {
   GetManyProfilesQuery,
   GetManyTutorOrdersInput,
   GetManyTutorOrdersQuery,
+  GetMyBuddiesInput,
+  GetMyBuddiesQuery,
+  ProfileWhereUniqueInput,
 } from "../generated/graphql";
 import {
+  BUDDIES_TAKE_LIMIT,
   findOptions,
   PROFILES_TAKE_LIMIT,
   TUTOR_ORDER_TAKE_LIMIT,
@@ -33,24 +37,36 @@ interface SuggestionCardProps {
         >
       | undefined
   ): Promise<ApolloQueryResult<GetManyTutorOrdersQuery>>;
+  refetchMyBuddies?(
+    variables?:
+      | Partial<
+          Exact<{
+            where: ProfileWhereUniqueInput;
+            input: GetMyBuddiesInput;
+          }>
+        >
+      | undefined
+  ): Promise<ApolloQueryResult<GetMyBuddiesQuery>>;
   findOption: findOptions;
+  user_profile_id: string | undefined;
 }
 
 const SuggestionCard = ({
   interest_name,
   refetchManyProfiles,
   refetchManyTutorOrders,
+  refetchMyBuddies,
   findOption,
+  user_profile_id,
 }: SuggestionCardProps) => {
   const router = useRouter();
 
   const handleClick = (value: string) => {
-    router.push(`/find?search_input=${value}`);
-
     if (
       (refetchManyProfiles && findOption == "buddies") ||
       (refetchManyProfiles && findOption == "tutors")
     ) {
+      router.push(`/spark-buddies/find?search_input=${value}`);
       refetchManyProfiles({
         where: {
           search_input: value,
@@ -58,10 +74,26 @@ const SuggestionCard = ({
         },
       });
     } else if (findOption === "tutor orders" && refetchManyTutorOrders) {
+      router.push(`/spark-buddies/find?search_input=${value}`);
       refetchManyTutorOrders({
         where: {
           search_input: value,
           take: TUTOR_ORDER_TAKE_LIMIT,
+        },
+      });
+    } else if (
+      findOption === "relationships" &&
+      refetchMyBuddies &&
+      user_profile_id
+    ) {
+      router.push(`/spark-buddies/buddies?search_input=${value}`);
+      refetchMyBuddies({
+        where: {
+          profile_id: user_profile_id,
+        },
+        input: {
+          take: BUDDIES_TAKE_LIMIT,
+          search_input: value,
         },
       });
     }
@@ -69,9 +101,9 @@ const SuggestionCard = ({
   return (
     <div
       onClick={() => handleClick(interest_name)}
-      className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl hover:cursor-pointer shadow-sm shadow-gray-500"
+      className="z-10 block w-full px-1 py-2 text-lg bg-white border-b border-l border-r border-gray-300 cursor-pointer font-lexend hover:bg-gray-200"
     >
-      #{interest_name}
+      {interest_name}
     </div>
   );
 };

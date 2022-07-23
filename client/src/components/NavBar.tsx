@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCheckAuth } from "../utils/useCheckAuth";
-import logo from "../assets/Mark.jpg";
+import logo from "../public/Logo.png";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";
@@ -16,7 +16,6 @@ import {
 import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
 import ChatNotiNavBarButton from "./ChatNotiNavBarButton";
 import Loading from "./Loading";
-import NotiNavBarButton from "./NotiNavBarButton";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -42,6 +41,9 @@ const NavBar = () => {
   const [hiddenNotification, setHiddenNotification] = useState<
     string | undefined
   >("hidden");
+  const [hiddenButtons, setHiddenButtons] = useState<string | undefined>(
+    "hidden"
+  );
 
   const toggleBuddyNotification = async (
     countNotViewedBuddyNotifications: number | null | undefined
@@ -66,6 +68,7 @@ const NavBar = () => {
     setNewBuddyNotiCount(0);
     setHiddenNotification("hidden");
     setHiddenChatNotification("hidden");
+    setHiddenButtons("hidden");
   };
 
   const toggleChatNotification = async (
@@ -92,6 +95,8 @@ const NavBar = () => {
     setNewChatNotiCount(0);
     setHiddenNotification("hidden");
     setHiddenBuddyNotification("hidden");
+
+    setHiddenButtons("hidden");
   };
 
   const toggleNotification = async (
@@ -111,8 +116,17 @@ const NavBar = () => {
     setNewNotiCount(0);
     setHiddenBuddyNotification("hidden");
     setHiddenChatNotification("hidden");
+
+    setHiddenButtons("hidden");
   };
 
+  const toggleButtons = () => {
+    if (hiddenButtons === "hidden") setHiddenButtons(undefined);
+    if (hiddenButtons === undefined) setHiddenButtons("hidden");
+
+    setHiddenBuddyNotification("hidden");
+    setHiddenChatNotification("hidden");
+  };
   const [showModal, setShowModal] = useState<boolean>(false);
   const openModal = () => {
     setShowModal(true);
@@ -123,47 +137,52 @@ const NavBar = () => {
   };
 
   return (
-    <div className="flex items-center justify-between h-20 px-5 py-5 bg-white ">
-      <div className="flex items-center">
-        <Link href="/">
-          <a className="flex items-center text-sm font-medium leading-5">
-            <Image src={logo} />
-            <div
-              className={`text-center ml-10 ${
-                router.route == "/" && `text-blue-700`
-              }`}
-            >
-              Home
+    <div className="flex items-center justify-between px-5 py-2 border-b border-black font-lexend h-[7rem]">
+      <Link href="/">
+        <a className="flex items-center justify-center">
+          <Image src={logo} />
+          <div className="pl-5">
+            <div className="text-2xl tracking-wider font-lexendZetta">
+              SPARK<span className=" text-blue">LE</span>
+              <div className="text-base tracking-normal font-lexend">
+                Spark up your learning journey
+              </div>
             </div>
-          </a>
-        </Link>
-        <Link href="/find">
-          <a
-            className={` ml-10 text-sm font-medium ${
-              router.route == "/find"
-                ? `text-blue-700`
-                : `text-gray-800 hover:text-blue-700`
-            }`}
-          >
-            Find
-          </a>
-        </Link>
-      </div>
+          </div>
+        </a>
+      </Link>
+
+      <Link href="/spark-buddies/find">
+        <a
+          className={`${
+            router.route == "/spark-buddies/find" ||
+            router.route == "/spark-buddies/buddies"
+              ? "text-white bg-black px-2 py-1 "
+              : null
+          } font-bold`}
+        >
+          Spark Buddy
+        </a>
+      </Link>
       {authLoading ? (
         <Loading />
       ) : router.route == "/login" ||
         router.route == "/register" ||
         router.route == "/logout" ? null : authData?.getUser ? (
-        <div className="flex justify-around">
-          <BuddyNotiNavBarButton
-            user_profile_id={user_profile_id}
-            newBuddyNotiCount={newBuddyNotiCount}
-            setNewBuddyNotiCount={setNewBuddyNotiCount}
-            toggle={toggleBuddyNotification}
-            hidden={hiddenBuddyNotification}
-          />
+        <div className="flex items-center justify-center">
+          {profile ? (
+            <BuddyNotiNavBarButton
+              user_profile_id={user_profile_id}
+              newBuddyNotiCount={newBuddyNotiCount}
+              setNewBuddyNotiCount={setNewBuddyNotiCount}
+              toggle={toggleBuddyNotification}
+              hidden={hiddenBuddyNotification}
+            />
+          ) : null}
+
           {router.route === "/chat" ||
-          router.route === "/chat/[conversationId]" ? null : (
+          router.route === "/chat/[conversationId]" ||
+          !profile ? null : (
             <ChatNotiNavBarButton
               user_profile_id={user_profile_id}
               newChatNotiCount={newChatNotiCount}
@@ -181,36 +200,27 @@ const NavBar = () => {
             hidden={hiddenNotification}
           /> */}
 
-          <Link href={profile ? `/profile/${profile.id}` : "/create-profile"}>
-            <a
-              className={` flex text-sm font-medium  ${
-                router.asPath == `/profile/${profile?.id}`
-                  ? `text-blue-700`
-                  : `text-gray-800 hover:text-blue-700`
-              }`}
+          <div onClick={toggleButtons} className="relative cursor-pointer">
+            <Avatar img_url={profile?.profile_avatar} width={10} height={10} />
+            <div
+              className={`${hiddenButtons} absolute -bottom-16 -left-8 z-10 bg-white border-black border w-max flex flex-col justify-around items-center p-2`}
             >
-              <Avatar
-                img_url={profile?.profile_avatar}
-                width={50}
-                height={50}
-              />
-
-              <div>{username}</div>
-            </a>
-          </Link>
-
-          <button
-            onClick={openModal}
-            className="ml-10 text-sm font-medium text-gray-800 hover:text-blue-700"
-          >
-            Log out
-          </button>
+              <Link
+                href={profile ? `/profile/${profile.id}` : "/create-profile"}
+              >
+                <a>My Profile</a>
+              </Link>
+              <button onClick={openModal} className="">
+                Log out
+              </button>
+            </div>
+          </div>
 
           <ReactModal isOpen={showModal} onRequestClose={closeModal}>
             <LogOut>
               <button
                 onClick={closeModal}
-                className="p-3 ml-5 text-sm font-medium leading-6 text-gray-900 rounded shadow-sm bg-gray-50 shadow-gray-900"
+                className="px-2 py-1 font-bold border-2 border-black"
               >
                 No
               </button>
@@ -218,15 +228,15 @@ const NavBar = () => {
           </ReactModal>
         </div>
       ) : (
-        <div>
-          <Link href="/login">
-            <a className="text-sm font-medium text-gray-800 hover:text-blue-700">
-              Sign in
+        <div className="">
+          <Link href="/register">
+            <a className="px-2 py-1 mr-4 font-bold border-2 border-black ">
+              SIGN UP
             </a>
           </Link>
-          <Link href="/register">
-            <a className="p-3 ml-10 text-sm font-medium leading-6 text-white bg-[#0056FF] shadow-sm shadow-gray-900 rounded ">
-              Sign up
+          <Link href="/login">
+            <a className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+              SIGN IN
             </a>
           </Link>
         </div>

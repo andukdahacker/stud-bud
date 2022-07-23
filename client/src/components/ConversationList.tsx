@@ -24,34 +24,13 @@ const ConversationList = ({
   if (loading) return <Loading />;
 
   return (
-    <div>
+    <div className="">
       {sorted?.map((conversation, index) => {
-        const buddy_profile =
-          conversation.conversation.conversation_member.filter(
-            (conversation) => conversation.id !== user_profile_id
-          );
-
-        const profile_avatar =
-          buddy_profile.length === 1 ? buddy_profile[0].profile_avatar : null;
-
-        const username =
-          buddy_profile.length === 1 ? buddy_profile[0].user?.username : null;
-        const conversation_id = conversation.conversation.id;
-        const conversation_name = conversation.conversation.conversation_name;
-        const conversation_avatar =
-          conversation.conversation.conversation_avatar;
-        const conversation_latest_message =
-          conversation.conversation.conversation_latest_message
-            ?.message_content;
         return (
           <ConversationBox
             key={index}
-            conversation_id={conversation_id}
-            conversation_name={conversation_name}
-            conversation_avatar={conversation_avatar}
-            profile_avatar={profile_avatar}
-            username={username}
-            conversation_latest_message={conversation_latest_message}
+            data={conversation}
+            user_profile_id={user_profile_id}
           />
         );
       })}

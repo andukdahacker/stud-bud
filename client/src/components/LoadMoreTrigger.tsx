@@ -12,13 +12,12 @@ const LoadMoreTrigger = ({
   loadMore,
 }: LoadMoreTriggerProps) => {
   if (loading) return <Loading />;
-  if (hasNextPage)
-    return (
-      <div onClick={loadMore} className="cursor-pointer">
-        Load more
-      </div>
-    );
-  return <div>End of list</div>;
+  if (!hasNextPage) return <div>End of list</div>;
+  return (
+    <div onClick={loadMore} className="cursor-pointer">
+      Load more
+    </div>
+  );
 };
 
 export default LoadMoreTrigger;

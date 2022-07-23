@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   GetBuddyNotificationsSubsDocument,
+  GetRelationshipDocument,
+  GetRelationshipQuery,
   useGetBuddyNotificationsLazyQuery,
 } from "../generated/graphql";
 import merge from "deepmerge";
@@ -9,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NewNotiCount from "./NewNotiCount";
 import BuddyNotificationBox from "./BuddyNotificationBox";
 import NotificationBar from "./NotificationBar";
+import { cache } from "../lib/apolloClient";
 
 interface BuddyNotiNavBarProps {
   user_profile_id: string | undefined;
@@ -61,6 +64,13 @@ const BuddyNotiNavBarButton = ({
           if (!subscriptionData.data) return prev;
           const merged = merge(prev, subscriptionData.data);
 
+          const buddy_accepts =
+            subscriptionData.data.getBuddyNotifications?.buddyAccepts;
+          const buddy_requests =
+            subscriptionData.data.getBuddyNotifications?.buddyRequests;
+
+          //update relationship cache(fix)
+
           return merged;
         },
       });
@@ -75,11 +85,15 @@ const BuddyNotiNavBarButton = ({
   }, [countNotViewedBuddyNotifications]);
 
   return (
-    <div>
+    <div className="relative ">
       <div
-        className="relative flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full cursor-pointer"
+        className={`${
+          router.route == "/spark-buddies/buddies"
+            ? "bg-black"
+            : "cursor-pointer"
+        } relative flex items-center justify-center w-10 h-10 rounded-full `}
         onClick={
-          router.pathname === "/buddies"
+          router.pathname === "/spark-buddies/buddies"
             ? () => {}
             : async () => {
                 await toggle(countNotViewedBuddyNotifications);
@@ -94,9 +108,9 @@ const BuddyNotiNavBarButton = ({
         <FontAwesomeIcon
           icon="user-group"
           size="lg"
-          className={
-            router.pathname === "/buddies" ? " bg-blue-400" : "cursor-pointer "
-          }
+          color={`${
+            router.route == "/spark-buddies/buddies" ? "white" : "black"
+          }`}
         />
         <NewNotiCount count={newBuddyNotiCount} />
       </div>

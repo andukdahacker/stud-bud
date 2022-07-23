@@ -1,42 +1,67 @@
 import { useRouter } from "next/router";
+import { ConversationGroupFragment } from "../generated/graphql";
 import Avatar from "./Avatar";
 
 interface ConversationBoxProps {
-  conversation_id: string;
-  conversation_name?: string | null;
-  conversation_avatar?: string | null;
-  profile_avatar?: string | null;
-  username?: string | null;
-  conversation_latest_message?: string | null;
+  data: ConversationGroupFragment | undefined;
+  user_profile_id: string | undefined;
 }
 
-const ConversationBox = ({
-  conversation_id,
-  conversation_name,
-  conversation_avatar,
-  profile_avatar,
-  username,
-  conversation_latest_message,
-}: ConversationBoxProps) => {
+const ConversationBox = ({ data, user_profile_id }: ConversationBoxProps) => {
   const router = useRouter();
+
+  const buddy_profile = data?.conversation.conversation_member.filter(
+    (conversation) => conversation.id !== user_profile_id
+  );
+
+  const profile_avatar =
+    buddy_profile?.length === 1 ? buddy_profile[0].profile_avatar : null;
+
+  const username =
+    buddy_profile?.length === 1 ? buddy_profile[0].user?.username : null;
+  const conversation_id = data?.conversation.id;
+  const conversation_name = data?.conversation.conversation_name;
+  const conversation_avatar = data?.conversation.conversation_avatar;
+  const conversation_latest_message =
+    data?.conversation.conversation_latest_message;
+  const conversation_latest_message_content =
+    conversation_latest_message?.message_content;
+  const conversation_latest_message_author_username =
+    conversation_latest_message?.author.user?.username;
+  const conversation_latest_message_author_id =
+    conversation_latest_message?.author.id;
+
+  console.log(router.query.conversationId);
 
   const handleClick = () => {
     router.push(`/chat/${conversation_id}`);
   };
   return (
-    <div onClick={handleClick} className="flex cursor-pointer">
+    <div
+      onClick={handleClick}
+      className={` ${
+        router.query.conversationId == conversation_id ? "bg-gray-200" : null
+      } flex items-center justify-start p-2 border-b border-black cursor-pointer hover:bg-gray-200`}
+    >
       <Avatar
         img_url={conversation_avatar ? conversation_avatar : profile_avatar}
-        width={40}
-        height={40}
+        width={14}
+        height={14}
       />
-      <div>{conversation_name ? conversation_name : username}</div>
-      <div>
+      <div className="flex flex-col ml-2">
+        <div>{conversation_name ? conversation_name : username}</div>
         {conversation_latest_message ? (
-          conversation_latest_message
-        ) : (
-          <div>"No messages yet"</div>
-        )}
+          <div className="flex font-light">
+            <div>
+              {conversation_latest_message_author_id === user_profile_id ? (
+                <div>You:</div>
+              ) : (
+                <div>{conversation_latest_message_author_username}:</div>
+              )}
+            </div>
+            <div className="ml-1">{conversation_latest_message_content}</div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

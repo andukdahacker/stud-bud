@@ -14,13 +14,25 @@ const ConversationListBar = ({
 
   const onSubmit = () => {};
   return (
-    <div className="w-1/4 bg-red-200">
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        <Form>
-          <Field name="search_input" />
-        </Form>
-      </Formik>
-      <div>{children}</div>
+    <div className="w-1/4 h-full bg-white border-r border-black ">
+      <div className="flex flex-col items-center p-2 border-b border-black ">
+        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+          <Form className="flex items-center justify-center w-full p-2 h-fit">
+            <Field
+              name="search_input"
+              className="w-4/5 p-2 border border-black"
+              placeholder="Looking for your buddy?"
+            />
+          </Form>
+        </Formik>
+        <button
+          type="button"
+          className="px-2 py-1 font-bold bg-white border-2 border-black w-fit"
+        >
+          NEW MESSAGE
+        </button>
+      </div>
+      <div className="mt-2">{children}</div>
     </div>
   );
 };

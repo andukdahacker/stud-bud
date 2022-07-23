@@ -1,19 +1,33 @@
 import Avatar from "./Avatar";
 import ReactModal from "react-modal";
 import { useState } from "react";
-import { useGetProfileLazyQuery } from "../generated/graphql";
+import {
+  ProfileFragment,
+  RelationshipFragment,
+  useGetProfileLazyQuery,
+} from "../generated/graphql";
 import ProfilePage from "./ProfilePage";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import MessageButton from "./MessageButton";
 
 interface ProfileCardProps {
   id?: string;
   username?: string;
   avatar?: string;
   interests?: { interest_name: string }[];
+  profileData: ProfileFragment | undefined | null;
+  relationshipData?: RelationshipFragment | undefined;
 }
 
-const ProfileCard = (props: ProfileCardProps) => {
+const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
+  const avatar = profileData?.profile_avatar;
+  const id = profileData?.id;
+  const username = profileData?.user?.username;
+  const interests = profileData?.profile_interests;
+  const conversation_id = relationshipData?.conversation_id;
+  const requester_id = relationshipData?.requester_id;
+  const addressee_id = relationshipData?.addressee_id;
   const router = useRouter();
   const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
     useGetProfileLazyQuery();
@@ -33,47 +47,65 @@ const ProfileCard = (props: ProfileCardProps) => {
 
   const closeModal = () => {
     setShowModal(false);
-    router.push(`/find`, undefined, { shallow: true });
+    router.push(`/spark-buddies/find`, undefined, { shallow: true });
   };
 
   return (
-    <div className="flex flex-col w-full p-4 transition duration-300 ease-in-out delay-150 bg-white shadow-xl rounded-xl h-60 hover:bg-blue-800 hover:text-white">
-      <div className="flex flex-col items-center h-30">
-        <Avatar img_url={props.avatar} width={50} height={50} />
-        <div className="self-center mx-2 text-xl ">{props.username}</div>
-      </div>
-      <div className="flex flex-col items-center h-1/3">
-        <span>Finding buddy for</span>
-        <div className="flex">
-          {!props.interests
-            ? null
-            : props.interests.map((interest, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="h-5 px-3 mt-3 mx-1.5 text-sm font-semibold text-center text-gray-800 bg-gray-100 rounded-xl  shadow-sm shadow-gray-500"
-                  >
-                    {interest.interest_name}
-                  </div>
-                );
-              })}
+    <div className=" w-full h-[15rem] p-3 border-2 border-black ">
+      <div className="flex h-full ">
+        <div className="w-1/6 ">
+          <Avatar img_url={avatar} width={14} height={14} />
         </div>
-      </div>
-      <div className="flex items-center justify-center mt-3 h-1/3">
-        <Link href={`/find`} as={`/profile/${props.id}`}>
-          <a
-            className="h-10 px-3 py-1 text-sm font-medium leading-6 text-gray-700 bg-gray-100 rounded shadow-sm shadow-gray-300"
-            onClick={() => openModal(props.id!)}
-          >
-            View profile
-          </a>
-        </Link>
-        <button
-          className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
-          type="button"
-        >
-          Connect
-        </button>
+        <div className="flex flex-col w-5/6 h-full ml-5 font-light">
+          <div className="flex items-center h-1/5">
+            <b>{username}</b>
+          </div>
+
+          <div className=" h-2/5">
+            <span className="">Finding buddy for</span>
+            <div className="flex flex-wrap items-center h-full pb-5 overflow-auto ">
+              {!interests
+                ? null
+                : interests.map((interest, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
+                      >
+                        {interest?.interest.interest_name}
+                      </div>
+                    );
+                  })}
+            </div>
+          </div>
+          <div className="flex items-center h-2/5">
+            {relationshipData ? (
+              <MessageButton
+                conversation_id={conversation_id}
+                requester_id={requester_id}
+                addressee_id={addressee_id}
+              />
+            ) : (
+              <button
+                type="button"
+                className="px-5 py-1 mr-3 font-semibold border-2 border-black bg-blue"
+              >
+                + ADD
+              </button>
+            )}
+
+            <Link href={`/spark-buddies/find`} as={`/profile/${id}`}>
+              <a>
+                <button
+                  className="px-5 py-1 font-semibold border-2 border-black "
+                  onClick={() => openModal(id!)}
+                >
+                  VIEW
+                </button>
+              </a>
+            </Link>
+          </div>
+        </div>
       </div>
 
       <ReactModal isOpen={showModal} onRequestClose={closeModal}>

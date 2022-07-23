@@ -1,112 +1,210 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { NextPage } from "next";
-import Link from "next/link";
 import Image from "next/image";
-import friendsImg from "../assets/friends.png";
-import worldIcon from "../assets/world-icon.png";
-import messageIcon from "../assets/message-icon.png";
+import { useState } from "react";
 import Layout from "../components/Layout";
+import homeImg1 from "../public/home-image-1.png";
+import homeImg2 from "../public/home-image-2.png";
+import homeImg3 from "../public/home-image-3.png";
+import homeImg4 from "../public/home-image-4.png";
+import homeImg5 from "../public/home-image-5.png";
 
 const Home: NextPage = () => {
+  const [dropDown1, setDropDown1] = useState(false);
+  const [dropDown2, setDropDown2] = useState(false);
+  const [dropDown3, setDropDown3] = useState(false);
+
+  const handleClick = (option: number) => {
+    if (option === 1) {
+      if (dropDown1 === false) {
+        setDropDown1(true);
+      } else {
+        setDropDown1(false);
+      }
+    }
+    if (option === 2) {
+      if (dropDown2 === false) {
+        setDropDown2(true);
+      } else {
+        setDropDown2(false);
+      }
+    }
+    if (option === 3) {
+      if (dropDown3 === false) {
+        setDropDown3(true);
+      } else {
+        setDropDown3(false);
+      }
+    }
+  };
+
   return (
     <Layout>
       <div className="flex flex-col ">
-        {/* hero section */}
-        <div className="bg-gradient-to-b from-[#0056FF] to-purple-100 h-[44rem] flex flex-col justify-start items-center w-full p-20">
-          <div className="w-[50rem]  items-center flex flex-col">
-            <h1 className="w-[50rem] text-center text-6xl font-extrabold text-gray-50 mb-10 mt-20">
-              A Buddy is worth a thousand books
+        <div className="flex items-center justify-center w-full border-b border-black">
+          <div className="flex flex-col items-baseline justify-center w-2/3 pl-20 ">
+            <h1 className="text-3xl tracking-widest text-blue font-lexendZetta">
+              First steps in learning has never been easy
             </h1>
-            <span className="w-[40rem] text-center text-gray-50 text-xl font-normal">
-              Let’s find yourself a study buddy that can go along with you
-              during the journey of getting new knowledge
+            <span className="my-8 text-xl">
+              Don't worry, SPARKLE has solutions for you
             </span>
-            <Link href="/find-buddy">
-              <a className="p-3 mt-10 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900 ">
-                Find a Buddy
-              </a>
-            </Link>
+            <button
+              type="button"
+              className="px-2 py-1 font-bold text-white border-2 border-black bg-purple"
+            >
+              GET STARTED
+            </button>
+          </div>
+          <Image src={homeImg1} width={600} height={500} className="w-1/3 " />
+        </div>
+        <div className="grid grid-cols-2">
+          <div className="flex items-center justify-center p-10 text-3xl tracking-widest border-b border-r border-black text-blue font-lexendZetta">
+            We are here to spark your learning by {`>>`}
+          </div>
+          <div className="flex items-center justify-center p-10 border-b border-black">
+            <Image src={homeImg2} width={300} height={200} />
+            <div className="flex flex-col items-end justify-center ">
+              <div className="text-xl tracking-widest font-lexendZetta">
+                Learning Buddy
+              </div>
+              <span className="my-5">
+                More <b>connective</b> and <b>disciplined</b>
+              </span>
+              <button
+                type="button"
+                className="px-2 py-1 font-bold text-white border-2 border-black bg-purple"
+              >
+                EXPLORE
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center p-10 border-b border-r border-black">
+            <Image src={homeImg3} width={300} height={200} className="" />
+            <div className="flex flex-col items-end justify-center ">
+              <div className="text-xl tracking-widest font-lexendZetta">
+                1-hour tutoring
+              </div>
+              <span className="my-5">get personal learning support</span>
+              <span className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+                COMING SOON
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-center p-10 border-b border-black">
+            <Image src={homeImg4} width={300} height={200} />
+            <div className="flex flex-col items-end justify-center">
+              <span className="text-xl tracking-widest font-lexendZetta">
+                Learning roadmaps
+              </span>
+              <span className="my-5">clear your learning path</span>
+              <span className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+                COMING SOON
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center p-10 border-b border-r border-black">
+            <Image src={homeImg5} width={300} height={200} />
+            <div className="flex flex-col items-end justify-center">
+              <div className="text-xl tracking-widest font-lexendZetta">
+                Be the tutor
+              </div>
+              <span className="my-5">give knowledge, receive rewards</span>
+              <span className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+                COMING SOON
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col items-end justify-center p-10 border-b border-black">
+            <div className="text-xl tracking-widest font-lexendZetta">
+              and many to come ...
+            </div>
+            <span className="my-5">
+              to help you learning journey become effective and easy
+            </span>
+            <span className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+              JOIN NOW
+            </span>
           </div>
         </div>
-
-        {/* section 2 */}
-        <div className="flex flex-col items-center justify-start w-full h-screen p-20 ">
-          <h2 className="mb-10 text-6xl font-extrabold leading-10 text-gray-900 ">
-            A better way to learn
-          </h2>
-
-          <div className="flex items-center justify-center w-full h-[30rem]">
-            <div className="w-1/2 text-center">
-              <Image src={friendsImg} width={500} />
+        <div className="flex flex-col items-center justify-center h-screen p-10">
+          <div className="text-3xl tracking-widest text-blue font-lexendZetta">
+            Frequently Ask Questions
+          </div>
+          <div className="m-5 border border-black w-[64rem]">
+            <div className="p-5 border-b border-black">
+              <div className="flex justify-between my-5">
+                <div className="text-xl tracking-widest font-lexendZetta">
+                  What is SPARKLE?
+                </div>
+                <button type="button" onClick={() => handleClick(1)}>
+                  <FontAwesomeIcon
+                    icon="angle-down"
+                    size="lg"
+                    rotation={dropDown1 ? undefined : 180}
+                  />
+                </button>
+              </div>
+              <span className={`${dropDown1 ? null : "hidden"} font-light `}>
+                SPARKLE is the combination of SPARK and LEARNING. We are
+                ambitious to help young people spark their learning spirit and
+                kick start their learning journey in an easy, connective and
+                effective way.
+              </span>
             </div>
-            <div className="flex flex-col w-1/2 ">
-              <div className="w-[40rem]  mb-10 flex">
-                <div className="flex items-center justify-center w-24 bg-[#0056FF] rounded-md h-14">
-                  <Image src={worldIcon} />
+            <div className="p-5 border-b border-black">
+              <div className="flex justify-between my-5">
+                <div className="text-xl tracking-widest font-lexendZetta">
+                  How does SPARKLE work?
                 </div>
-                <div className="ml-5">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Interest based Buddy
-                  </h3>
-                  <span className="text-base font-normal leading-6 text-gray-500">
-                    Connect with friends near you or miles away from you but
-                    having the same interest and wants to study the same topic
-                    together.
-                  </span>
-                </div>
+                <button type="button" onClick={() => handleClick(2)}>
+                  <FontAwesomeIcon
+                    icon="angle-down"
+                    size="lg"
+                    rotation={dropDown2 ? undefined : 180}
+                  />
+                </button>
               </div>
 
-              <div className="w-[40rem] h-14  mt-10 flex">
-                <div className="flex items-center justify-center w-20 bg-[#0056FF] rounded-md h-14">
-                  <Image src={messageIcon} />
+              <span className={`${dropDown2 ? null : "hidden"} font-light `}>
+                SPARKLE is the combination of SPARK and LEARNING. We are
+                ambitious to help young people spark their learning spirit and
+                kick start their learning journey in an easy, connective and
+                effective way.
+              </span>
+            </div>
+            <div className="p-5 ">
+              <div className="flex justify-between my-5">
+                <div className="text-xl tracking-widest font-lexendZetta">
+                  How much does SPARKLE cost?
                 </div>
-                <div className="ml-5">
-                  <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    Quick setup and matching
-                  </h3>
-                  <span className="text-base font-normal leading-6 text-gray-500">
-                    Create an account and start searching study buddy, connect
-                    with them and set a study routine together
-                  </span>
-                </div>
+                <button type="button" onClick={() => handleClick(3)}>
+                  <FontAwesomeIcon
+                    icon="angle-down"
+                    size="lg"
+                    rotation={dropDown3 ? undefined : 180}
+                  />
+                </button>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* section 3 */}
+              <span className={`${dropDown3 ? null : "hidden"} font-light `}>
+                SPARKLE is the combination of SPARK and LEARNING. We are
+                ambitious to help young people spark their learning spirit and
+                kick start their learning journey in an easy, connective and
+                effective way.
+              </span>
+            </div>
+          </div>
 
-        <div className="flex flex-col h-screen ">
-          <div className="flex flex-col items-center p-10 h-2/3">
-            <h2 className="mb-5 text-4xl font-extrabold text-gray-900">
-              Find the right people quickly
-            </h2>
-            <span className="text-xl font-normal text-gray-500">
-              Connect to our popular buddies
-            </span>
-            <div>Cards</div>
+          <div className="mb-5 text-xl tracking-widest font-lexendZetta">
+            Kick start your learning journey today
           </div>
-          <div className="flex items-center justify-between p-10 bg-gray-50 h-1/3">
-            <div>
-              <h2 className="text-4xl font-extrabold text-gray-900">
-                Ready to dive in?
-              </h2>
-              <h2 className="text-4xl font-extrabold text-[#0056FF]">
-                Start finding your study buddy!
-              </h2>
-            </div>
-            <div className="flex">
-              <Link href="/register">
-                <a className="p-3 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900">
-                  Get started
-                </a>
-              </Link>
-              <div className="">
-                <div className="p-3 ml-5 text-sm font-medium leading-6 text-[#0056FF] rounded shadow-sm bg-gray-50 shadow-gray-900">
-                  Learn more
-                </div>
-              </div>
-            </div>
-          </div>
+
+          <button className="px-2 py-1 font-bold text-white border-2 border-black bg-purple">
+            Click here
+          </button>
         </div>
       </div>
     </Layout>

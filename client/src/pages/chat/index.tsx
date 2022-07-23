@@ -4,6 +4,7 @@ import ChatBox from "../../components/ChatBox";
 import ConversationList from "../../components/ConversationList";
 import ConversationListBar from "../../components/ConversationListBar";
 import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 import {
   GetUserDocument,
   GetUserQuery,
@@ -33,6 +34,8 @@ const Chat = () => {
 
     if (user_profile_id) fetchData();
   }, [user_profile_id]);
+
+  if (userLoading) return <Loading />;
 
   return (
     <Layout>

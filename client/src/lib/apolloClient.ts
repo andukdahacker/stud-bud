@@ -80,6 +80,7 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
                   ...draft.relationships,
                   ...incoming.relationships,
                 ];
+                draft.PageInfo = incoming.PageInfo;
               }
             });
 

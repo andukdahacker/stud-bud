@@ -4,7 +4,6 @@ import {
   GetProfileQuery,
   GetUserDocument,
   GetUserQuery,
-  useGetRelationshipLazyQuery,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
@@ -35,52 +34,90 @@ const ProfilePage = (props: ProfilePageProps) => {
 
   if (user_profile_id !== profile_id) {
     return (
-      <div>
-        <Wallpaper img_url={profile_wallpaper} />
-        <Avatar img_url={profile_avatar} width={70} height={70} />
-        <BuddyButton profile_id={profile_id} />
-
-        <h1>{username}</h1>
-        <h2>Bio: {profile_bio}</h2>
-        <h2>Interest</h2>
-        {profile_interests &&
-          profile_interests.map((obj, index) => {
-            return (
-              <div key={index}>
-                <span>{obj?.interest.interest_name}</span>
+      <div className="w-full ">
+        <div className="relative">
+          <Wallpaper img_url={profile_wallpaper} />
+          <div className="absolute w-32 h-32 -bottom-20 left-8">
+            <Avatar
+              img_url={profile_avatar}
+              width={32}
+              height={32}
+              border={2}
+            />
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center w-full p-8 ">
+          <div className="flex w-full mb-10 pl-36">
+            <h1 className="mr-10 text-2xl">{username}</h1>
+            <BuddyButton profile_id={profile_id} />
+          </div>
+          <div className="w-4/5 border border-black ">
+            <div className="p-2 border-b border-black">
+              <h2 className="mb-5 text-2xl tracking-widest">About Me </h2>
+              <span>{profile_bio}</span>
+            </div>
+            <div className="flex w-full p-2 bg-gray-100">
+              <h2 className="w-1/5">Interest</h2>
+              <div className="flex flex-wrap w-4/5">
+                {profileData?.profile_interests &&
+                  profileData.profile_interests.map((profile, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
+                      >
+                        {profile?.interest.interest_name}
+                      </div>
+                    );
+                  })}
               </div>
-            );
-          })}
-        {success ? null : <div>{props.data?.getProfile?.IOutput?.message}</div>}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <Wallpaper img_url={profile_wallpaper} />
-
-      <Avatar img_url={profile_avatar} width={70} height={70} />
-
-      <h1>{username}</h1>
-      <Link href={`/profile/edit/${profile_id}`}>
-        <a>Edit profile</a>
-      </Link>
-      <h2>Bio: {profile_bio}</h2>
-      <h2>Interest</h2>
-      <div>
-        {profileData?.profile_interests &&
-          profileData.profile_interests.map((profile, index) => {
-            return (
-              <div key={index}>
-                <span>{profile?.interest.interest_name}</span>
-              </div>
-            );
-          })}
+    <div className="w-full ">
+      <div className="relative">
+        <Wallpaper img_url={profile_wallpaper} />
+        <div className="absolute w-32 h-32 -bottom-20 left-8">
+          <Avatar img_url={profile_avatar} width={32} height={32} border={2} />
+        </div>
       </div>
-      <Link href={"/one-hour-tutor"}>
-        <a>Need a tutor?</a>
-      </Link>
+      <div className="flex flex-col items-center justify-center w-full p-8 ">
+        <div className="flex justify-between w-full mb-10 pl-36">
+          <h1 className="text-2xl ">{username}</h1>
+          <Link href={`/profile/edit/${profile_id}`}>
+            <a className="px-2 py-1 font-bold border-2 border-black">
+              Edit profile
+            </a>
+          </Link>
+        </div>
+        <div className="w-4/5 border border-black ">
+          <div className="p-2 border-b border-black">
+            <h2 className="mb-5 text-2xl tracking-widest">About Me </h2>
+            <span>{profile_bio}</span>
+          </div>
+          <div className="flex w-full p-2 bg-gray-100">
+            <h2 className="w-1/5">Interest</h2>
+            <div className="flex flex-wrap w-4/5">
+              {profileData?.profile_interests &&
+                profileData.profile_interests.map((profile, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
+                    >
+                      {profile?.interest.interest_name}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

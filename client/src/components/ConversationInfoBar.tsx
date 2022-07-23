@@ -26,11 +26,11 @@ const ConversationInfoBar = ({
 
   if (loading) return <Loading />;
   return (
-    <div className="w-1/4 bg-green-200">
+    <div className="flex flex-col items-center justify-start w-1/4 h-full p-5">
       <Avatar
         img_url={conversation_avatar ? conversation_avatar : profile_avatar}
-        width={60}
-        height={60}
+        width={20}
+        height={20}
       />
 
       <div>{conversation_name ? conversation_name : username}</div>

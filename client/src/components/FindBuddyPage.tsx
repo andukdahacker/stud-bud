@@ -74,27 +74,13 @@ const FindBuddyPage = ({
   if (GetManyProfilesLoading || refetchManyProfilesLoading) return <Loading />;
 
   return (
-    <div>
-      <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
+    <div className="w-full h-full ">
+      <div className="grid w-full h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
         {noProfilesFound ? (
           <div>Sorry, we found no result</div>
         ) : (
           profiles?.map((profile, index) => {
-            const interests = profile?.profile_interests?.map((obj) => {
-              return { interest_name: obj?.interest.interest_name as string };
-            });
-            return (
-              <div key={index}>
-                <ProfileCard
-                  id={profile?.id}
-                  username={profile?.user?.username}
-                  avatar={
-                    profile?.profile_avatar ? profile.profile_avatar : undefined
-                  }
-                  interests={interests}
-                />
-              </div>
-            );
+            return <ProfileCard profileData={profile} key={index} />;
           })
         )}
       </div>

@@ -86,8 +86,8 @@ const ChatBox = ({
   if (loading) return <Loading />;
 
   return (
-    <div className="w-1/2 bg-white">
-      <div className="max-h-[calc(100vh_-_8rem)] overflow-y-auto">
+    <div className="w-3/4 bg-white h-full max-h-[calc(100vh_-_115px)] relative flex flex-col justify-end">
+      <div className="px-2 pb-12 overflow-y-auto">
         {hasNextPage ? <div onClick={loadMore}>Load more</div> : null}
         <div>
           {messages
@@ -96,20 +96,24 @@ const ChatBox = ({
             .map((message, index) => {
               if (message.author.id !== user_profile_id)
                 return (
-                  <div key={index} className="flex justify-start">
+                  <div
+                    key={index}
+                    className="flex items-center justify-start mt-2"
+                  >
                     <Avatar
                       img_url={message.author.profile_avatar}
-                      width={40}
-                      height={40}
+                      width={10}
+                      height={10}
+                      border={1}
                     />
-                    <div className="bg-gray-200 rounded-md">
+                    <div className="flex justify-start px-2 py-1 ml-2 bg-white border border-black items-starts-center max-w-96 min-w-12 h-fit">
                       {message.message_content}
                     </div>
                   </div>
                 );
               return (
-                <div key={index} className="flex justify-end">
-                  <div className="bg-blue-500 rounded-md">
+                <div key={index} className="flex items-center justify-end">
+                  <div className="flex px-2 py-1 mt-2 text-white border border-black bg-purple">
                     {message.message_content}
                   </div>
                 </div>
@@ -117,19 +121,33 @@ const ChatBox = ({
             })}
         </div>
       </div>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        <Form className="">
-          <Field
-            type="text"
-            name="message_content"
-            value={messageContent}
-            onChange={handleChange}
-          />
-          <button type="submit" className="bg-blue-400">
-            Send
-          </button>
-        </Form>
-      </Formik>
+      <div className="absolute bottom-0 w-full h-10 p-1 bg-gray-100 border-t border-black ">
+        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+          <Form className="flex items-center justify-between">
+            <div className="flex items-center justify-center w-1/12 ">
+              <button
+                type="button"
+                className="flex items-center justify-center w-6 h-6 text-2xl text-white border border-black rounded-full bg-purple"
+              >
+                +
+              </button>
+            </div>
+            <Field
+              type="text"
+              name="message_content"
+              value={messageContent}
+              onChange={handleChange}
+              className="w-9/12 p-1 mx-2 border border-black"
+            />
+            <button
+              type="submit"
+              className="w-2/12 px-2 py-1 font-bold text-white border-2 border-black bg-purple"
+            >
+              SEND
+            </button>
+          </Form>
+        </Formik>
+      </div>
     </div>
   );
 };

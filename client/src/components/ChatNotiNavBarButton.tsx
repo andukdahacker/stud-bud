@@ -72,9 +72,9 @@ const ChatNotiNavBarButton = ({
       setNewChatNotiCount(countNotViewedChatNotifications);
   }, [countNotViewedChatNotifications]);
   return (
-    <div>
+    <div className="relative">
       <div
-        className="relative flex items-center justify-center w-10 h-10 bg-gray-400 rounded-full cursor-pointer"
+        className="relative flex items-center justify-center w-10 h-10 rounded-full cursor-pointer"
         onClick={
           router.pathname === "/chat"
             ? () => {}

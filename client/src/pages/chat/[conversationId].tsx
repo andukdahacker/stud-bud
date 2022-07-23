@@ -145,7 +145,7 @@ const ChatWithChatBox = () => {
 
   return (
     <Layout>
-      <div className="flex ">
+      <div className="flex items-start justify-center w-full h-full bg-blue">
         <ConversationListBar>
           <ConversationList
             data={ManyConversationsData}
@@ -161,11 +161,11 @@ const ChatWithChatBox = () => {
           loading={getConversationLoading}
           fetchMore={fetchMoreConversationData}
         />
-        <ConversationInfoBar
+        {/* <ConversationInfoBar
           data={getConversationData}
           loading={getConversationLoading}
           user_profile_id={user_profile_id}
-        />
+        /> */}
       </div>
     </Layout>
   );

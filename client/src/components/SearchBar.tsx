@@ -1,7 +1,8 @@
 import { ApolloQueryResult } from "@apollo/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   Exact,
   GetManyInterestsInput,
@@ -78,9 +79,12 @@ const SearchBar = ({
   const user_profile_id = GetUserData?.getUser?.profile?.id;
 
   const [search, setSearch] = useState<string | null>(null);
+  const [hiddenSuggest, setHiddenSuggest] = useState(true);
+  const [mouseAtSuggest, setMouseAtSuggest] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+    if (hiddenSuggest === true) setHiddenSuggest(false);
   };
   const router = useRouter();
 
@@ -105,7 +109,7 @@ const SearchBar = ({
   const onSubmit = (values: GetManyProfilesInput) => {
     if (user_profile_id) {
       if (findOption === "buddies" && refetchManyProfiles) {
-        router.push(`/find?search_input=${values.search_input}`);
+        router.push(`/spark-buddies/find?search_input=${values.search_input}`);
         refetchManyProfiles({
           where: {
             search_input: values.search_input,
@@ -113,7 +117,7 @@ const SearchBar = ({
           },
         });
       } else if (findOption === "tutor orders" && refetchManyTutorOrders) {
-        router.push(`/find?search_input=${values.search_input}`);
+        router.push(`/spark-buddies/find?search_input=${values.search_input}`);
         refetchManyTutorOrders({
           where: {
             search_input: values.search_input,
@@ -121,7 +125,9 @@ const SearchBar = ({
           },
         });
       } else if (findOption === "relationships" && refetchMyBuddies) {
-        router.push(`/buddies?search_input=${values.search_input}`);
+        router.push(
+          `/spark-buddies/buddies?search_input=${values.search_input}`
+        );
         refetchMyBuddies({
           where: {
             profile_id: user_profile_id,
@@ -145,34 +151,49 @@ const SearchBar = ({
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        <Form className="flex flex-col items-center content-center justify-center ">
-          <div className="mb-3">
+        <Form className="flex flex-col items-center justify-center p-5 ">
+          <div className="relative inline-block w-1/3 ">
             <Field
               placeholder="search by an interest or an username"
               type="search"
               name="search_input"
               onKeyUp={handleChange}
-              className="p-1 m-1 rounded-md w-96"
+              onBlur={() => {
+                if (mouseAtSuggest == false) setHiddenSuggest(true);
+              }}
+              className="w-full p-3 border border-black"
             />
-          </div>
-          <div className="flex content-center h-14">
-            {getManyInterestsLoading ? (
-              <Loading />
-            ) : !getManyInterestsSuccess ? (
-              <div>{getManyInterestMessage}</div>
-            ) : !suggestions || !search ? null : (
-              suggestions.map((interest, index) => {
-                return (
-                  <SuggestionCard
-                    key={index}
-                    interest_name={interest?.interest_name as string}
-                    findOption={findOption}
-                    refetchManyProfiles={refetchManyProfiles}
-                    refetchManyTutorOrders={refetchManyTutorOrders}
-                  />
-                );
-              })
-            )}
+            <button type="submit" className="absolute right-3 bottom-3">
+              <FontAwesomeIcon icon="magnifying-glass" size="lg" />
+            </button>
+            <div
+              onMouseEnter={() => setMouseAtSuggest(true)}
+              onMouseLeave={() => setMouseAtSuggest(false)}
+              onClick={() => setHiddenSuggest(true)}
+              className={`${
+                hiddenSuggest ? "hidden" : null
+              } absolute flex flex-col items-start justify-center w-full max-h-56 overflow-auto`}
+            >
+              {getManyInterestsLoading ? (
+                <Loading />
+              ) : !getManyInterestsSuccess ? (
+                <div>{getManyInterestMessage}</div>
+              ) : !suggestions || !search ? null : (
+                suggestions.map((interest, index) => {
+                  return (
+                    <SuggestionCard
+                      key={index}
+                      user_profile_id={user_profile_id}
+                      interest_name={interest?.interest_name as string}
+                      findOption={findOption}
+                      refetchManyProfiles={refetchManyProfiles}
+                      refetchManyTutorOrders={refetchManyTutorOrders}
+                      refetchMyBuddies={refetchMyBuddies}
+                    />
+                  );
+                })
+              )}
+            </div>
           </div>
         </Form>
       </Formik>

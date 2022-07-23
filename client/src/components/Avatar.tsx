@@ -1,21 +1,26 @@
 import Image from "next/image";
-import defaultAvatar from "../assets/default-avatar.jpg";
+import defaultAvatar from "../public/default-avatar.jpg";
 
 interface AvatarProps {
   img_url: string | null | undefined;
   width: number | string;
   height: number | string;
+  border?: number;
 }
 
-const Avatar = (props: AvatarProps) => {
+const Avatar = ({ img_url, width, height, border }: AvatarProps) => {
   return (
-    <Image
-      src={props.img_url ? props.img_url : defaultAvatar}
-      className="rounded-full"
-      width={props.width}
-      height={props.height}
-      priority
-    />
+    <div
+      className={`w-${width} h-${height} overflow-hidden rounded-full relative ${
+        !border
+          ? null
+          : border == 1
+          ? `border border-black`
+          : `border-${border} border-black`
+      }`}
+    >
+      <Image src={img_url ? img_url : defaultAvatar} layout="fill" />
+    </div>
   );
 };
 

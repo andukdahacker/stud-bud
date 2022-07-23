@@ -34,14 +34,14 @@ const LogOut = ({ children }: PropsWithChildren<LogoutProps>) => {
 
   if (loading) return <div>Loading...</div>;
   return (
-    <div className="flex flex-col items-center justify-start  h-[45rem] p-56">
+    <div className="flex flex-col items-center justify-center h-full font-lexend">
       <span className="mb-10 text-2xl font-bold">
         Are you sure you want to log out?
       </span>
       <div>
         <button
           onClick={logout}
-          className="p-3 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900"
+          className="px-2 py-1 m-2 font-bold text-white border-2 border-black bg-purple"
         >
           Yes
         </button>

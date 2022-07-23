@@ -59,6 +59,8 @@ const BuddyNotification = ({
           },
         },
       });
+
+      //update relationship cache (fix)
     } else if (option === BuddyRespondOptions.DECLINE) {
       await respondBuddy({
         variables: {
@@ -70,62 +72,63 @@ const BuddyNotification = ({
         },
       });
     }
+
+    //update relationship cache (fix)
   };
 
   if (status === RelationshipStatusCode.Accepted)
     return (
-      <Link href={`/profile/${profile_id}`}>
-        <a
-          className={`flex justify-center items-center`}
-          onClick={readBuddyNoti}
-        >
-          <Avatar img_url={profile_avatar} width={40} height={40} />
+      <div className="flex items-center justify-center p-2 border-b border-black">
+        <Link href={`/profile/${profile_id}`}>
+          <a
+            className={`flex w-full justify-start items-center`}
+            onClick={readBuddyNoti}
+          >
+            <Avatar img_url={profile_avatar} width={14} height={14} />
 
-          <div>You and {username} have become buddies!</div>
+            <div className="ml-2">
+              You and <b>{username}</b> have become buddies!
+            </div>
 
-          {isRead ? null : (
-            <div className="w-2 h-2 bg-blue-700 rounded-full"></div>
-          )}
-        </a>
-      </Link>
+            {isRead ? null : (
+              <div className="w-2 h-2 bg-blue-700 rounded-full"></div>
+            )}
+          </a>
+        </Link>
+      </div>
     );
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-center justify-center">
-        <Link href={`/profile/${profile_id}`}>
-          <a
-            className="flex items-center justify-center"
-            onClick={readBuddyNoti}
-          >
-            <Avatar img_url={profile_avatar} width={40} height={40} />
-          </a>
-        </Link>
-        <div>
-          <div>{username} sent you a buddy request!</div>
-          {respondSuccess ? (
-            <div>{respondMessage}</div>
-          ) : (
-            <div>
-              <button
-                className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white bg-blue-700 rounded shadow-sm shadow-blue-300"
-                type="button"
-                disabled={respondBuddyLoading ? true : false}
-                onClick={() => respond(BuddyRespondOptions.ACCEPT)}
-              >
-                Accept
-              </button>
-              <button
-                className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-black bg-gray-300 rounded shadow-sm shadow-blue-300"
-                type="button"
-                disabled={respondBuddyLoading ? true : false}
-                onClick={() => respond(BuddyRespondOptions.DECLINE)}
-              >
-                Decline
-              </button>
-            </div>
-          )}
-        </div>
+    <div className="flex items-center justify-start p-2 border-b border-black">
+      <Link href={`/profile/${profile_id}`}>
+        <a onClick={readBuddyNoti}>
+          <Avatar img_url={profile_avatar} width={14} height={14} />
+        </a>
+      </Link>
+      <div className="ml-2">
+        <b>{username}</b> sent you a buddy request!
+        {respondSuccess ? (
+          <div>{respondMessage}</div>
+        ) : (
+          <div>
+            <button
+              className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-white rounded shadow-sm bg-blue shadow-blue-300"
+              type="button"
+              disabled={respondBuddyLoading ? true : false}
+              onClick={() => respond(BuddyRespondOptions.ACCEPT)}
+            >
+              Accept
+            </button>
+            <button
+              className="h-10 px-3 py-1 ml-5 text-sm font-medium leading-6 text-black bg-gray-300 rounded shadow-sm shadow-blue-300"
+              type="button"
+              disabled={respondBuddyLoading ? true : false}
+              onClick={() => respond(BuddyRespondOptions.DECLINE)}
+            >
+              Decline
+            </button>
+          </div>
+        )}
       </div>
 
       <UnreadNotiMark isRead={isRead} />

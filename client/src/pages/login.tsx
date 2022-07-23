@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import Link from "next/link";
 import Loading from "../components/Loading";
 import Image from "next/image";
-import logo from "../assets/Mark.png";
+import logo from "../public/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Layout from "../components/Layout";
@@ -72,20 +72,20 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className="h-[44rem] bg-gray-50">
+      <div className="flex items-center justify-center w-full h-full p-5 bg-red-200">
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={logInValidationSchema}
         >
           {({ isSubmitting }) => (
-            <Form className="flex flex-col items-center justify-center w-full h-full">
+            <Form className="flex flex-col items-center justify-center ">
               <Image src={logo} />
-              <h2 className="mt-5 text-3xl font-extrabold leading-9">
+              <h2 className="mt-5 text-2xl font-extrabold leading-9 tracking-widest font-lexendZetta text-blue">
                 Sign in to your account
               </h2>
 
-              <div className="flex flex-col items-center justify-center w-full mt-5 h-[15rem]">
+              <div className="flex flex-col items-center justify-center w-full mt-5 h-fit">
                 <div className="flex w-1/3">
                   <label htmlFor="email" className="mr-2 font-bold">
                     Email
@@ -96,7 +96,7 @@ const Login = () => {
                 <Field
                   name="email"
                   placeholder="Email"
-                  className="w-1/3 h-10 border border-gray-200 border-solid rounded-t-sm "
+                  className="w-1/3 p-2 border border-black rounded-t-sm "
                 />
 
                 <div className="flex w-1/3">
@@ -106,14 +106,14 @@ const Login = () => {
                   <ErrorMessage name="password" component={TextError} />
                 </div>
 
-                <div className="relative w-1/3">
+                <div className="relative w-1/3 ">
                   <Field
                     name="password"
                     type={passwordVisibility ? "text" : "password"}
                     placeholder="Password"
-                    className="w-full h-10 border border-gray-200 border-solid rounded-b-sm "
+                    className="w-full p-2 border border-black rounded-b-sm"
                   />
-                  <div className="absolute bottom-3 right-2 hover:cursor-pointer">
+                  <div className="absolute top-2 right-1 hover:cursor-pointer">
                     <FontAwesomeIcon
                       icon="eye"
                       size="lg"
@@ -124,9 +124,9 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting ? true : false}
-                  className="m-3 p-2 text-sm font-medium leading-6 text-white bg-[#0056FF] rounded shadow-sm shadow-gray-900"
+                  className="px-2 py-1 my-5 font-bold text-white border-2 border-black bg-purple"
                 >
-                  {loading ? <Loading /> : <div>Submit</div>}
+                  {loading ? <Loading /> : <div>SIGN IN</div>}
                 </button>
                 <Link href="/forgot-password">
                   <a className="text-blue-700">Forgot password?</a>

@@ -1,15 +1,16 @@
 import Image from "next/image";
-import defaultWallpaper from "../assets/default-wallpaper.jpg";
+import defaultWallpaper from "../public/default-wallpaper.jpg";
 
 interface WallpaperProps {
   img_url: string | null | undefined;
 }
 
-const Wallpaper = (props: WallpaperProps) => {
+const Wallpaper = ({ img_url }: WallpaperProps) => {
+  if (!img_url) return <div className="relative z-0 w-full h-96 bg-blue"></div>;
   return (
-    <div className="relative z-0 w-full h-96">
+    <div className="relative z-0 w-full h-96 bg-blue">
       <Image
-        src={props.img_url ? props.img_url : defaultWallpaper}
+        src={img_url ? img_url : defaultWallpaper}
         layout="fill"
         priority
       />
