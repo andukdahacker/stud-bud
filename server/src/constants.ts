@@ -17,7 +17,6 @@ export const INTERNAL_SERVER_ERROR = {
   },
 };
 export const INVALID_TOKEN = "Invalid or expired token.";
-export const BASE_URL = "http://localhost:3000";
 export const RELATIONSHIP_CONNECT = 1;
 export const RELATIONSHIP_ACCEPT = 2;
 export const CONNECT_BUDDY_EVENT = "CONNECT_BUDDY";

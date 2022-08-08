@@ -10,13 +10,14 @@ import {
 import dotenv from "dotenv";
 import connectRedis from "connect-redis";
 import session from "express-session";
-import { BASE_URL, COOKIE_NAME, __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import { createContext } from "./context";
 import { schemaWithMiddleware } from "./schema";
 import { redis } from "./redis";
 import { graphqlUploadExpress } from "graphql-upload";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
+import { BASE_URL, PORT, SESSION_SECRET } from "./config";
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ const startServer = async () => {
     session({
       name: COOKIE_NAME,
       store: new RedisStore({ client: redis, disableTouch: true }),
-      secret: process.env.SESSION_SECRET as string,
+      secret: SESSION_SECRET as string,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -96,15 +97,15 @@ const startServer = async () => {
     },
   });
 
-  const PORT = process.env.PORT || 4000;
+  const SERVER_PORT = PORT;
 
   await new Promise<void>((resolve) => {
-    httpServer.listen(PORT);
+    httpServer.listen(SERVER_PORT);
     resolve();
   });
 
   console.log(
-    `Express server running at http://localhost:${PORT}. Apollo server running at http://localhost:${PORT}${apolloServer.graphqlPath} `
+    `Express server running at http://localhost:${SERVER_PORT}. Apollo server running at http://localhost:${SERVER_PORT}${apolloServer.graphqlPath} `
   );
 };
 

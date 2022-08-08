@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import {
-  BASE_URL,
   EMAIL_VERIFICATION_PREFIX,
   EMAIL_VERIFICATION_SUBJECT,
   FORGOT_PASSWORD_EMAIL_SUBJECT,
@@ -8,6 +7,7 @@ import {
 } from "../constants";
 import { Context } from "../context";
 import { v4 } from "uuid";
+import { BASE_URL } from "../config";
 
 const sendMail = async (to: string, subject: string, html: string) => {
   const transporter = nodemailer.createTransport({
