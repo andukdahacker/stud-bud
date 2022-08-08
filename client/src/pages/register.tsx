@@ -6,7 +6,7 @@ import TextError from "../components/TextError";
 import * as Yup from "yup";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../public/Logo.png";
+import logo from "../../public/Logo.png";
 import Loading from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";

@@ -17,12 +17,6 @@ const OneHourTutor = () => {
   ] = useGetMyTutorOrderLazyQuery();
 
   const my_tutor_orders = GetMyTutorOrderData?.getMyTutorOrder?.tutor_order;
-  if (GetUserLoading)
-    return (
-      <Layout>
-        <Loading />
-      </Layout>
-    );
 
   useEffect(() => {
     async function fetchData() {
@@ -37,7 +31,14 @@ const OneHourTutor = () => {
     }
 
     if (user_profile_id) fetchData();
-  }, [user_profile_id]);
+  }, [user_profile_id, getMyTutorOrder]);
+
+  if (GetUserLoading)
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
 
   return (
     <Layout>

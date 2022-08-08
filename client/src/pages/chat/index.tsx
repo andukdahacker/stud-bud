@@ -33,7 +33,7 @@ const Chat = () => {
     }
 
     if (user_profile_id) fetchData();
-  }, [user_profile_id]);
+  }, [user_profile_id, getManyConversations]);
 
   if (userLoading) return <Loading />;
 

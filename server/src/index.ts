@@ -104,7 +104,7 @@ const startServer = async () => {
   });
 
   console.log(
-    `Express server running at http://localhost:${PORT}. Apollo server running at http://localhost:${PORT}${apolloServer.graphqlPath}`
+    `Express server running at http://localhost:${PORT}. Apollo server running at http://localhost:${PORT}${apolloServer.graphqlPath} `
   );
 };
 

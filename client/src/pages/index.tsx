@@ -3,11 +3,11 @@ import type { NextPage } from "next";
 import Image from "next/image";
 import { useState } from "react";
 import Layout from "../components/Layout";
-import homeImg1 from "../public/home-image-1.png";
-import homeImg2 from "../public/home-image-2.png";
-import homeImg3 from "../public/home-image-3.png";
-import homeImg4 from "../public/home-image-4.png";
-import homeImg5 from "../public/home-image-5.png";
+import homeImg1 from "../../public/home-image-1.png";
+import homeImg2 from "../../public/home-image-2.png";
+import homeImg3 from "../../public/home-image-3.png";
+import homeImg4 from "../../public/home-image-4.png";
+import homeImg5 from "../../public/home-image-5.png";
 
 const Home: NextPage = () => {
   const [dropDown1, setDropDown1] = useState(false);

@@ -17,15 +17,14 @@ const TutorOrderRespondButton = ({
   tutor_id,
   student_id,
 }: TutorOrderRespondButtonProps) => {
+  const [
+    respond,
+    {
+      data: RespondTutorOrderRequestData,
+      loading: RespondTutorOrderRequestLoading,
+    },
+  ] = useRespondTutorOrderConnectMutation();
   if (status === TutorOrderTutorConnectStatusCode.Requested) {
-    const [
-      respond,
-      {
-        data: RespondTutorOrderRequestData,
-        loading: RespondTutorOrderRequestLoading,
-      },
-    ] = useRespondTutorOrderConnectMutation();
-
     const respondSuccess =
       RespondTutorOrderRequestData?.respondTutorOrderConnect?.IOutput.success;
     const respondMessage =

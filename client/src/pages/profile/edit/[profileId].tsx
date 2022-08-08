@@ -189,7 +189,7 @@ const EditProfile = () => {
       >
         {({ isSubmitting, values, setFieldValue }) => (
           <Form>
-            <div className=" bg-red-50">
+            <div className="">
               <button
                 type="button"
                 className="w-full h-full "

@@ -18,7 +18,7 @@
     "apollo-upload-client": "^17.0.0",
     "deepmerge": "^4.2.2",
     "formik": "^2.2.9",
-    "graphql": "^16.3.0",
+    "graphql": "^15.8.0",
     "graphql-ws": "^5.8.2",
     "immer": "^9.0.15",
     "isomorphic-unfetch": "^3.1.0",

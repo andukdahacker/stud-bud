@@ -20,7 +20,7 @@ const Profile = () => {
           },
         },
       });
-  }, [router.isReady, router]);
+  }, [router.isReady, router, getProfile, profile_id]);
   const username = getProfileData?.getProfile?.Profile?.user?.username;
 
   return (

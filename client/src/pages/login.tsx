@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import Link from "next/link";
 import Loading from "../components/Loading";
 import Image from "next/image";
-import logo from "../public/Logo.png";
+import logo from "../../public/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Layout from "../components/Layout";

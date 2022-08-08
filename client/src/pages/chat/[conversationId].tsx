@@ -115,7 +115,7 @@ const ChatWithChatBox = () => {
     }
 
     if (user_profile_id) fetchData();
-  }, [user_profile_id]);
+  }, [user_profile_id, getManyConversations, subsGetManyConversation]);
 
   const conversation_id = router.query.conversationId as string;
 
@@ -134,7 +134,7 @@ const ChatWithChatBox = () => {
     }
 
     if (router.isReady) fetchData();
-  }, [router.query, router.isReady]);
+  }, [router.query, router.isReady, conversation_id, getConversation]);
 
   if (userLoading)
     return (

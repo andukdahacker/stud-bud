@@ -26,6 +26,7 @@ export const Profile = objectType({
     });
 
     t.nullable.date("createdAt");
+
     t.nullable.field("user", {
       type: User,
       resolve: async (root, _args, ctx) => {

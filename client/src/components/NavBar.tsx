@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCheckAuth } from "../utils/useCheckAuth";
-import logo from "../public/Logo.png";
+import logo from "../../public/Logo.png";
 import { useState } from "react";
 import ReactModal from "react-modal";
 import LogOut from "./Logout";

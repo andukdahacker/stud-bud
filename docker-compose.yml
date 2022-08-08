@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  client:
+    build:
+      context: client
+      dockerfile: prod.Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - front-tier
+    depends_on:
+      - server
+  server:
+    container_name: server
+    build:
+      context: server
+      target: production
+      dockerfile: prod.Dockerfile
+    ports:
+      - 4000:4000
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - back-tier
+      - front-tier
+    env_file:
+      - ./server/.env
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=studybuddy
+
+    networks:
+      - back-tier
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=doanduc227@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=Ducdeptraino2
+      - PG_LISTEN_PORT=80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - back-tier
+
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    env_file:
+      - ./server/.env
+    networks:
+      - back-tier
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:
+  pgadmin-data:
+
+networks:
+  back-tier:
+  front-tier:

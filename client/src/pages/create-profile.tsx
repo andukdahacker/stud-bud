@@ -17,7 +17,7 @@ const CreateProfile = () => {
   const user_profile_id = user_profile?.id;
   useEffect(() => {
     if (user_profile) router.push(`/profile/${user_profile_id}`);
-  }, [user_profile]);
+  }, [user_profile, router, user_profile_id]);
   const [error, setError] = useState<string>();
 
   const [createProfile, { loading: createProfileLoading }] =
