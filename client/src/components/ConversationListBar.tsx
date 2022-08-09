@@ -14,7 +14,7 @@ const ConversationListBar = ({
 
   const onSubmit = () => {};
   return (
-    <div className="w-1/4 h-full bg-white border-r border-black ">
+    <div className="w-1/4 h-[calc(100vh_-_115px)] bg-white border-r border-black overflow-y-auto">
       <div className="flex flex-col items-center p-2 border-b border-black ">
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
           <Form className="flex items-center justify-center w-full p-2 h-fit">

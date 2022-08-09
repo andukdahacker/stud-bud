@@ -86,7 +86,7 @@ const ChatBox = ({
   if (loading) return <Loading />;
 
   return (
-    <div className="w-3/4 bg-white h-full max-h-[calc(100vh_-_115px)] relative flex flex-col justify-end">
+    <div className="w-3/4 bg-white  h-[calc(100vh_-_115px)] relative flex flex-col justify-end">
       <div className="px-2 pb-12 overflow-y-auto">
         {hasNextPage ? <div onClick={loadMore}>Load more</div> : null}
         <div>

@@ -19,15 +19,11 @@ interface BuddyButtonProps {
   profile_id: string | undefined;
 }
 const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
-  const [
-    connectBuddy,
-    { data: ConnectBuddyData, loading: ConnectBuddyLoading },
-  ] = useConnectBuddyMutation();
-  const [
-    respondBuddy,
-    { data: RespondBuddyData, loading: RespondBuddyLoading },
-  ] = useRespondBuddyMutation();
-  const [removeBuddy, { data: RemoveBuddyData, loading: RemoveBuddyLoading }] =
+  const [connectBuddy, { loading: ConnectBuddyLoading }] =
+    useConnectBuddyMutation();
+  const [respondBuddy, { loading: RespondBuddyLoading }] =
+    useRespondBuddyMutation();
+  const [removeBuddy, { loading: RemoveBuddyLoading }] =
     useRemoveBuddyMutation();
 
   const [
