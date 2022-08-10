@@ -30,14 +30,14 @@ const CreateProfile = () => {
   };
   const onSubmit = async ({
     profile_bio,
-    profile_avatar,
+
     profile_interest,
   }: CreateProfileInput) => {
     const result = await createProfile({
       variables: {
         input: {
           profile_bio,
-          profile_avatar,
+
           profile_interest,
         },
       },
@@ -74,15 +74,15 @@ const CreateProfile = () => {
                   as="textarea"
                   className="p-2 border border-black "
                 />
-                <label htmlFor="profile_avatar">Avatar</label>
-                <input
+                {/* <label htmlFor="profile_avatar">Avatar</label> */}
+                {/* <input
                   type="file"
                   onChange={(event) => {
                     if (event.target.files)
                       setFieldValue("profile_avatar", event.target.files[0]);
                   }}
                   className="bg-red-200"
-                />
+                /> */}
                 <label htmlFor="profile_interest">Interests</label>
                 <FieldArray name="profile_interest">
                   {({ push, remove }) => (

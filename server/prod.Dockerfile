@@ -25,7 +25,6 @@ WORKDIR /usr/src/server
 
 COPY package*.json .
 COPY ./prisma ./prisma
-COPY .env .
 COPY --from=build /usr/src/server/dist ./dist
 
 RUN npm ci --only-production

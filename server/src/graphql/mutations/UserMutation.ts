@@ -77,7 +77,7 @@ export const RegisterMutation = mutationField("register", {
           isVerified: false,
         },
       });
-      // await sendIMail(ctx, newUser.id, email, "verifyEmail"); create enum option
+      await sendIMail(ctx, newUser.id, email, "verifyEmail");
 
       //all good
       return {
@@ -295,7 +295,7 @@ export const forgotPassword = mutationField("forgotPassword", {
             message: "Incorrect email",
           },
         };
-      // await sendForgotPasswordEmail(ctx, existingUser.id, email);
+
       await sendIMail(ctx, existingUser.id, email, "forgotPassword");
 
       return {

@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Layout from "../../components/Layout";
-import { useVerifyEmailMutation } from "../../generated/graphql";
+import {
+  GetUserDocument,
+  GetUserQuery,
+  useVerifyEmailMutation,
+} from "../../generated/graphql";
 
 const VerifyEmail = () => {
   const router = useRouter();
@@ -17,6 +21,17 @@ const VerifyEmail = () => {
           input: {
             token,
           },
+        },
+        update: (cache, { data }) => {
+          if (data?.verifyEmail.IOutput.success) {
+            cache.writeQuery<GetUserQuery>({
+              query: GetUserDocument,
+              data: {
+                __typename: "Query",
+                getUser: data.verifyEmail.User,
+              },
+            });
+          }
         },
       });
 

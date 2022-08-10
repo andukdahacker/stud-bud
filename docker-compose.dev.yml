@@ -52,8 +52,6 @@ services:
       - /usr/src/server/node_modules
     ports:
       - 4000:4000
-    environment:
-      - NODE_ENV=development
     env_file:
       - .env
     depends_on:
