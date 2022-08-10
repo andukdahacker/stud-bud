@@ -29,8 +29,20 @@ services:
     networks:
       - back-tier
       - front-tier
-    env_file:
-      - .env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - EMAIL_SERVICE=${EMAIL_SERVICE}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - CLOUDINARY_CLOUDNAME=${CLOUDINARY_CLOUDNAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
   postgres:
     container_name: postgres
     image: postgres
