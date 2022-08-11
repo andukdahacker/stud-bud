@@ -21,6 +21,7 @@ services:
       target: production
       dockerfile: prod.Dockerfile
     image: sparklestudbud/sparkle-registry:server
+    restart: always
     ports:
       - 4000:4000
     depends_on:
