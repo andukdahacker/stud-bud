@@ -14,7 +14,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:buster-slim as production
+FROM --platform=amd64 node:buster-slim as production
 
 RUN apt-get update && apt-get install --no-install-recommends --yes openssl
 
