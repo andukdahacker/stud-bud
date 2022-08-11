@@ -1,4 +1,4 @@
-FROM node:buster-slim as build
+FROM --platform=amd64 node:buster-slim as build
 
 RUN apt-get update && apt-get install --no-install-recommends --yes openssl
 

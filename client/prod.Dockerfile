@@ -1,4 +1,4 @@
-FROM node:buster-slim
+FROM --platform=amd64 node:buster-slim
 
 WORKDIR /client
 
