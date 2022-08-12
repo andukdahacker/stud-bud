@@ -8,6 +8,7 @@ services:
       dockerfile: prod.Dockerfile
     image: sparklestudbud/sparkle-registry:client
     restart: always
+    tty: true
     ports:
       - 3000:3000
     networks:
@@ -22,6 +23,7 @@ services:
       dockerfile: prod.Dockerfile
     image: sparklestudbud/sparkle-registry:server
     restart: always
+    tty: true
     ports:
       - 4000:4000
     depends_on:
@@ -31,7 +33,7 @@ services:
       - back-tier
       - front-tier
     environment:
-      - NODE_ENV=${NODE_ENV}
+      - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
       - SESSION_SECRET=${SESSION_SECRET}
