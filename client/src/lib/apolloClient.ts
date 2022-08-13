@@ -108,7 +108,10 @@ export const createApolloClient = (
   };
 
   const uploadLink = createUploadLink({
-    uri: "http://localhost:4000/graphql",
+    uri:
+      process.env.NODE_ENV === "production"
+        ? "http://167.99.77.112:4000/graphql"
+        : "http://localhost:4000/graphql",
     credentials: "include",
     fetch: enhancedFetch,
   });
@@ -117,7 +120,10 @@ export const createApolloClient = (
     typeof window !== "undefined"
       ? new GraphQLWsLink(
           createClient({
-            url: "ws://localhost:4000/graphql",
+            url:
+              process.env.NODE_ENV === "production"
+                ? "ws://167.99.77.112:4000/graphql"
+                : "ws://localhost:4000/graphql",
           })
         )
       : null;

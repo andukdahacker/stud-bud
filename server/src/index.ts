@@ -27,7 +27,9 @@ const startServer = async () => {
 
   app.use(
     cors({
-      origin: [BASE_URL, "https://studio.apollographql.com"],
+      origin: __prod__
+        ? BASE_URL
+        : [BASE_URL, "https://studio.apollographql.com"],
       credentials: true,
     })
   );
@@ -45,7 +47,7 @@ const startServer = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: __prod__ ? true : false,
       },
     })
   );
@@ -92,7 +94,9 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: [BASE_URL, "https://studio.apollographql.com"],
+      origin: __prod__
+        ? BASE_URL
+        : [BASE_URL, "https://studio.apollographql.com"],
       credentials: true,
     },
   });
