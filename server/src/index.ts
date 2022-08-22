@@ -18,7 +18,7 @@ import { graphqlUploadExpress } from "graphql-upload";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { BASE_URL, PORT, SESSION_SECRET } from "./config";
-
+import { NetworkInterfaceInfo, networkInterfaces } from "os";
 dotenv.config();
 
 const startServer = async () => {
@@ -47,7 +47,7 @@ const startServer = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10 years
         httpOnly: true,
         sameSite: "lax",
-        secure: __prod__ ? true : false,
+        secure: false,
       },
     })
   );
@@ -108,9 +108,17 @@ const startServer = async () => {
     resolve();
   });
 
-  console.log(
-    `Express server running at http://localhost:${SERVER_PORT}. Apollo server running at http://localhost:${SERVER_PORT}${apolloServer.graphqlPath} `
-  );
+  if (__prod__) {
+    const host_ip: NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces();
+    const IPAddress = host_ip.eth0 ? host_ip.eth0[0].address : undefined;
+    console.log(
+      `Express server running at http://${IPAddress}:${SERVER_PORT}. Apollo server running at http://${IPAddress}:${SERVER_PORT}${apolloServer.graphqlPath}`
+    );
+  } else {
+    console.log(
+      `Express server running at http://localhost:${SERVER_PORT}. Apollo server running at http://localhost:${SERVER_PORT}${apolloServer.graphqlPath}`
+    );
+  }
 };
 
 startServer().catch((err) => console.log("Error starting server", err));

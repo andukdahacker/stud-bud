@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  client:
+    container_name: client
+    build:
+      context: client
+      dockerfile: prod.Dockerfile
+    image: sparklestudbud/sparkle-registry:client
+    restart: always
+    tty: true
+    ports:
+      - 3000:3000
+    networks:
+      - front-tier
+    depends_on:
+      - server
   server:
     container_name: server
     build:
@@ -17,11 +31,13 @@ services:
       - redis
     networks:
       - back-tier
+      - front-tier
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT}
       - SESSION_SECRET=${SESSION_SECRET}
+      - BASE_URL=${BASE_URL}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - EMAIL_SERVICE=${EMAIL_SERVICE}
@@ -83,3 +99,4 @@ volumes:
 
 networks:
   back-tier:
+  front-tier:

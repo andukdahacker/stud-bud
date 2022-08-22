@@ -201,7 +201,12 @@ const NavBar = () => {
           /> */}
 
           <div onClick={toggleButtons} className="relative cursor-pointer">
-            <Avatar img_url={profile?.profile_avatar} width={10} height={10} />
+            <Avatar
+              img_url={profile?.profile_avatar}
+              width="16"
+              height="16"
+              border={1}
+            />
             <div
               className={`${hiddenButtons} absolute -bottom-16 -left-8 z-10 bg-white border-black border w-max flex flex-col justify-around items-center p-2`}
             >

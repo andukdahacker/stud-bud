@@ -17,6 +17,7 @@ const MessageButton = ({
   const router = useRouter();
   const [initConversation, { loading: initConversationLoading }] =
     useInitConversationMutation();
+  if (addressee_id == requester_id) return null;
   if (!conversation_id) {
     const handleClick = async () => {
       if (requester_id && addressee_id) {
@@ -44,7 +45,7 @@ const MessageButton = ({
         onClick={handleClick}
         className="px-5 py-1 mr-3 font-semibold border-2 border-black bg-blue"
       >
-        {initConversationLoading ? <Loading /> : <div>Message</div>}
+        {initConversationLoading ? <Loading /> : <div>MESSAGE</div>}
       </button>
     );
   }

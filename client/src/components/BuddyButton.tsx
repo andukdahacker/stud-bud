@@ -200,6 +200,7 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
   )
     return <Loading />;
   if (!getRelationshipSuccess) return <div>{getRelationshipMessage}</div>;
+  if (profile_id == user_profile_id) return null;
   if (isBuddy)
     return (
       <div className="inline-block">
@@ -297,7 +298,7 @@ const BuddyButton = ({ profile_id }: BuddyButtonProps) => {
         onClick={() => connect()}
         className="px-2 py-1 mr-5 font-bold text-white border-2 border-black bg-purple"
       >
-        + ADD BUDDY
+        + ADD
       </button>
       <MessageButton
         conversation_id={conversation_id}

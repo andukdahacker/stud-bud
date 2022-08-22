@@ -9,6 +9,7 @@ import Avatar from "./Avatar";
 import Loading from "./Loading";
 import Wallpaper from "./Wallpaper";
 import BuddyButton from "./BuddyButton";
+import { useCheckAuth } from "../utils/useCheckAuth";
 
 interface ProfilePageProps {
   data: GetProfileQuery | undefined;
@@ -16,11 +17,9 @@ interface ProfilePageProps {
 }
 
 const ProfilePage = (props: ProfilePageProps) => {
-  const client = useApolloClient();
-  const user_profile_id = client.readQuery<GetUserQuery>({
-    query: GetUserDocument,
-  })?.getUser?.profile?.id;
+  const { data: authData, loading: authLoading } = useCheckAuth();
 
+  const user_profile_id = authData?.getUser?.profile?.id;
   const success = props.data?.getProfile?.IOutput.success;
   const profileData = props.data?.getProfile?.Profile;
   const profile_interests = profileData?.profile_interests;
@@ -30,18 +29,20 @@ const ProfilePage = (props: ProfilePageProps) => {
   const profile_id = profileData?.id;
   const profile_bio = profileData?.profile_bio;
 
-  if (props.loading) return <Loading />;
+  if (props.loading || authLoading) return <Loading />;
+
+  if (!success) return <div>{props.data?.getProfile?.IOutput.message}</div>;
 
   if (user_profile_id !== profile_id) {
     return (
       <div className="w-full ">
         <div className="relative">
           <Wallpaper img_url={profile_wallpaper} />
-          <div className="absolute w-32 h-32 -bottom-20 left-8">
+          <div className="absolute -bottom-20 left-8">
             <Avatar
               img_url={profile_avatar}
-              width={32}
-              height={32}
+              width="32"
+              height="32"
               border={2}
             />
           </div>
@@ -59,17 +60,16 @@ const ProfilePage = (props: ProfilePageProps) => {
             <div className="flex w-full p-2 bg-gray-100">
               <h2 className="w-1/5">Interest</h2>
               <div className="flex flex-wrap w-4/5">
-                {profileData?.profile_interests &&
-                  profileData.profile_interests.map((profile, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
-                      >
-                        {profile?.interest.interest_name}
-                      </div>
-                    );
-                  })}
+                {profile_interests?.map((profile, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
+                    >
+                      {profile?.interest.interest_name}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -103,17 +103,16 @@ const ProfilePage = (props: ProfilePageProps) => {
           <div className="flex w-full p-2 bg-gray-100">
             <h2 className="w-1/5">Interest</h2>
             <div className="flex flex-wrap w-4/5">
-              {profileData?.profile_interests &&
-                profileData.profile_interests.map((profile, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
-                    >
-                      {profile?.interest.interest_name}
-                    </div>
-                  );
-                })}
+              {profile_interests?.map((profile, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="px-2 py-1 my-1 mr-2 bg-gray-200 h-fit w-fit"
+                  >
+                    {profile?.interest.interest_name}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

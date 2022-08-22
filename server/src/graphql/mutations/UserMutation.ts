@@ -18,6 +18,7 @@ import {
   INVALID_INPUT,
   INVALID_TOKEN,
   UNVERIFIED,
+  __prod__,
 } from "../../constants";
 import { sendIMail } from "../../utils/emailService";
 import { validateChangePasswordInput } from "../../utils/validateChangePasswordInput";
@@ -74,10 +75,13 @@ export const RegisterMutation = mutationField("register", {
           username: username,
           email: email,
           password: hashedPassword,
-          isVerified: false,
+          isVerified: __prod__ ? false : true,
         },
       });
-      await sendIMail(ctx, newUser.id, email, "verifyEmail");
+
+      if (__prod__) {
+        await sendIMail(ctx, newUser.id, email, "verifyEmail");
+      }
 
       //all good
       return {

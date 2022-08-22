@@ -190,37 +190,50 @@ const EditProfile = () => {
         {({ isSubmitting, values, setFieldValue }) => (
           <Form>
             <div className="">
-              <button
-                type="button"
-                className="w-full h-full "
-                onClick={() => profileWallpaperInput.current!.click()}
-              >
+              <div>
                 <Wallpaper img_url={profile_wallpaper} />
-              </button>
-              {profile_wallpaper_public_id && (
-                <button
-                  className=""
-                  onClick={() => onRemoveWallpaper(profile_wallpaper_public_id)}
-                >
-                  Delete
-                </button>
-              )}
-              <input
-                type="file"
-                onChange={(event) => {
-                  if (event.target.files)
-                    setFieldValue("profile_wallpaper", event.target.files[0]);
-                }}
-                className="hidden"
-                ref={profileWallpaperInput}
-              />
+                <input
+                  type="file"
+                  onChange={(event) => {
+                    if (event.target.files)
+                      setFieldValue("profile_wallpaper", event.target.files[0]);
+                  }}
+                  className="hidden"
+                  ref={profileWallpaperInput}
+                />
+                <button type="button">Edit wallpaper</button>
+                <div>
+                  <button
+                    type="button"
+                    className={`hidden`}
+                    onClick={() => profileWallpaperInput.current!.click()}
+                  >
+                    Add wallpaper
+                  </button>
+                  {profile_wallpaper_public_id && (
+                    <button
+                      className=""
+                      onClick={() =>
+                        onRemoveWallpaper(profile_wallpaper_public_id)
+                      }
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
             <div>
               <button
                 type="button"
                 onClick={() => profileAvatarInput.current!.click()}
               >
-                <Avatar img_url={profile_avatar} width={70} height={70} />
+                <Avatar
+                  img_url={profile_avatar}
+                  width="32"
+                  height="32"
+                  border={2}
+                />
               </button>
               {profile_avatar_public_id && (
                 <button

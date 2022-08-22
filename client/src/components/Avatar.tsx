@@ -1,5 +1,4 @@
 import Image from "next/image";
-import defaultAvatar from "../../public/default-avatar.jpg";
 
 interface AvatarProps {
   img_url: string | null | undefined;
@@ -27,7 +26,7 @@ const Avatar = ({ img_url, width, height, border }: AvatarProps) => {
 
   return (
     <div
-      className={`w-${width} h-${height} overflow-hidden rounded-full relative bg-white ${
+      className={`w-${width} h-${height} overflow-hidden rounded-full bg-white ${
         !border
           ? null
           : border == 1

@@ -1,7 +1,5 @@
 import Layout from "../../../components/Layout";
 
-const BuddiesRequests = () => {
-  return Layout;
-};
+const BuddiesRequests = () => {};
 
 export default BuddiesRequests;

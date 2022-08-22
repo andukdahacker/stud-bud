@@ -1,6 +1,6 @@
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import {
@@ -12,17 +12,26 @@ import {
 const CreateProfile = () => {
   //reroute if profile already existed
   const router = useRouter();
-  const { data: GetUserData, loading: GetUserLoading } = useGetUserQuery();
+  const {
+    data: GetUserData,
+    loading: GetUserLoading,
+    refetch: refetchUser,
+  } = useGetUserQuery();
   const user_profile = GetUserData?.getUser?.profile;
   const user_profile_id = user_profile?.id;
   useEffect(() => {
     if (user_profile) router.push(`/profile/${user_profile_id}`);
   }, [user_profile, router, user_profile_id]);
-  const [error, setError] = useState<string>();
 
-  const [createProfile, { loading: createProfileLoading }] =
-    useCreateProfileMutation();
+  const [
+    createProfile,
+    { data: CreateProfileData, loading: createProfileLoading },
+  ] = useCreateProfileMutation();
 
+  const createProfileSuccess =
+    CreateProfileData?.createProfile?.IOutput.success;
+  const createProfileMessage =
+    CreateProfileData?.createProfile?.IOutput.message;
   const initialValues: CreateProfileInput = {
     profile_bio: "",
     profile_avatar: undefined,
@@ -37,16 +46,14 @@ const CreateProfile = () => {
       variables: {
         input: {
           profile_bio,
-
           profile_interest,
         },
       },
     });
 
-    if (!result.data?.createProfile?.IOutput.success) {
-      setError(result.data?.createProfile?.IOutput.message);
-    } else if (result.data.createProfile.IOutput.success) {
-      router.push(`/profile/${result.data?.createProfile?.Profile?.id}`);
+    if (result.data?.createProfile?.IOutput.success) {
+      await refetchUser();
+      router.push(`/profile/${result.data.createProfile.Profile?.id}`);
     } //fix me
   };
 
@@ -130,11 +137,12 @@ const CreateProfile = () => {
                 >
                   Submit
                 </button>
-                {error && <div>{error}</div>}
               </div>
             </Form>
           )}
         </Formik>
+
+        {!createProfileSuccess ? <div>{createProfileMessage}</div> : null}
       </div>
     </Layout>
   );

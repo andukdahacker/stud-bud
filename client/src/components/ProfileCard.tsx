@@ -10,6 +10,7 @@ import ProfilePage from "./ProfilePage";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import MessageButton from "./MessageButton";
+import BuddyButton from "./BuddyButton";
 
 interface ProfileCardProps {
   id?: string;
@@ -54,7 +55,7 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
     <div className=" w-full h-[15rem] p-3 border-2 border-black ">
       <div className="flex h-full ">
         <div className="w-1/6 ">
-          <Avatar img_url={avatar} width={14} height={14} />
+          <Avatar img_url={avatar} width="16" height="16" border={1} />
         </div>
         <div className="flex flex-col w-5/6 h-full ml-5 font-light">
           <div className="flex items-center h-1/5">
@@ -86,12 +87,7 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
                 addressee_id={addressee_id}
               />
             ) : (
-              <button
-                type="button"
-                className="px-5 py-1 mr-3 font-semibold border-2 border-black bg-blue"
-              >
-                + ADD
-              </button>
+              <BuddyButton profile_id={id} />
             )}
 
             <Link href={`/spark-buddies/find`} as={`/profile/${id}`}>

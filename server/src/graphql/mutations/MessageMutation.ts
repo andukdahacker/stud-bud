@@ -72,6 +72,8 @@ export const initConversation = mutationField("initConversation", {
             },
           },
           status: "DECLINED",
+          isViewed: true,
+          isRead: true,
         },
       });
 
@@ -106,6 +108,8 @@ export const initConversation = mutationField("initConversation", {
             },
           },
           status: "DECLINED",
+          isViewed: true,
+          isRead: true,
         },
       });
 
