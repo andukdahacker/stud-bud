@@ -245,6 +245,7 @@ export type Mutation = {
   changePassword?: Maybe<AuthOutput>;
   connectBuddy?: Maybe<RelationshipOutput>;
   connectTutorOrder?: Maybe<TutorOrderOutput>;
+  createGroupConversation?: Maybe<InitConversationOutput>;
   createProfile?: Maybe<ProfileMutationOutput>;
   createTutorOrder?: Maybe<TutorOrderOutput>;
   deleteTutorOrder?: Maybe<TutorOrderOutput>;
@@ -285,6 +286,11 @@ export type MutationConnectBuddyArgs = {
 
 export type MutationConnectTutorOrderArgs = {
   where: ConnectTutorOrderInput;
+};
+
+
+export type MutationCreateGroupConversationArgs = {
+  input: CreateGroupConversationInput;
 };
 
 
@@ -739,6 +745,12 @@ export type VerifyEmailInput = {
   token: Scalars['String'];
 };
 
+export type CreateGroupConversationInput = {
+  creator_id: Scalars['String'];
+  member_ids: Array<Scalars['String']>;
+  message_content?: InputMaybe<Scalars['String']>;
+};
+
 export type GetConversationOutput = {
   __typename?: 'getConversationOutput';
   Conversation?: Maybe<Conversation>;
@@ -822,6 +834,13 @@ export type ConnectTutorOrderMutationVariables = Exact<{
 
 
 export type ConnectTutorOrderMutation = { __typename?: 'Mutation', connectTutorOrder?: { __typename?: 'TutorOrderOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean } } | null };
+
+export type CreateGroupConversationMutationVariables = Exact<{
+  input: CreateGroupConversationInput;
+}>;
+
+
+export type CreateGroupConversationMutation = { __typename?: 'Mutation', createGroupConversation?: { __typename?: 'initConversationOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, conversation?: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } | null } | null };
 
 export type CreateProfileMutationVariables = Exact<{
   input: CreateProfileInput;
@@ -1022,7 +1041,7 @@ export type GetManyProfilesQueryVariables = Exact<{
 }>;
 
 
-export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null> | null, PageInfo?: { __typename?: 'PageInfoDataCursor', endCursor?: any | null, hasNextPage: boolean } | null } | null };
+export type GetManyProfilesQuery = { __typename?: 'Query', getManyProfiles?: { __typename?: 'GetManyProfilesOutput', IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Profile?: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null> | null, PageInfo?: { __typename?: 'PageInfoDataCursor', endCursor?: any | null, hasNextPage: boolean, lastTake?: number | null } | null } | null };
 
 export type GetManyTutorOrdersQueryVariables = Exact<{
   where: GetManyTutorOrdersInput;
@@ -1446,6 +1465,45 @@ export function useConnectTutorOrderMutation(baseOptions?: Apollo.MutationHookOp
 export type ConnectTutorOrderMutationHookResult = ReturnType<typeof useConnectTutorOrderMutation>;
 export type ConnectTutorOrderMutationResult = Apollo.MutationResult<ConnectTutorOrderMutation>;
 export type ConnectTutorOrderMutationOptions = Apollo.BaseMutationOptions<ConnectTutorOrderMutation, ConnectTutorOrderMutationVariables>;
+export const CreateGroupConversationDocument = gql`
+    mutation createGroupConversation($input: createGroupConversationInput!) {
+  createGroupConversation(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    conversation {
+      ...Conversation
+    }
+  }
+}
+    ${IOutputFragmentDoc}
+${ConversationFragmentDoc}`;
+export type CreateGroupConversationMutationFn = Apollo.MutationFunction<CreateGroupConversationMutation, CreateGroupConversationMutationVariables>;
+
+/**
+ * __useCreateGroupConversationMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupConversationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupConversationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupConversationMutation, { data, loading, error }] = useCreateGroupConversationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGroupConversationMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupConversationMutation, CreateGroupConversationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGroupConversationMutation, CreateGroupConversationMutationVariables>(CreateGroupConversationDocument, options);
+      }
+export type CreateGroupConversationMutationHookResult = ReturnType<typeof useCreateGroupConversationMutation>;
+export type CreateGroupConversationMutationResult = Apollo.MutationResult<CreateGroupConversationMutation>;
+export type CreateGroupConversationMutationOptions = Apollo.BaseMutationOptions<CreateGroupConversationMutation, CreateGroupConversationMutationVariables>;
 export const CreateProfileDocument = gql`
     mutation createProfile($input: CreateProfileInput!) {
   createProfile(input: $input) {
@@ -2501,6 +2559,7 @@ export const GetManyProfilesDocument = gql`
     PageInfo {
       endCursor
       hasNextPage
+      lastTake
     }
   }
 }

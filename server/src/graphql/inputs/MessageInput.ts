@@ -39,3 +39,12 @@ export const initConversationInput = inputObjectType({
     t.nonNull.string("addressee_id");
   },
 });
+
+export const createGroupConversationInput = inputObjectType({
+  name: "createGroupConversationInput",
+  definition(t) {
+    t.nonNull.string("creator_id");
+    t.nonNull.list.nonNull.string("member_ids");
+    t.nullable.string("message_content");
+  },
+});

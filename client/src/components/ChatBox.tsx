@@ -1,9 +1,8 @@
 import { useApolloClient } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
-import produce from "immer";
-import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
-  GetConversationDocument,
   GetConversationQuery,
   GetUserDocument,
   GetUserQuery,
@@ -11,6 +10,7 @@ import {
 } from "../generated/graphql";
 import Avatar from "./Avatar";
 import Loading from "./Loading";
+import LoadMoreTrigger from "./LoadMoreTrigger";
 
 interface ChatBoxProps {
   data?: GetConversationQuery;
@@ -18,6 +18,7 @@ interface ChatBoxProps {
   user_profile_id: string | undefined;
   loading: boolean;
   fetchMore: any;
+  fetchMoreLoading: boolean;
 }
 
 const ChatBox = ({
@@ -25,6 +26,7 @@ const ChatBox = ({
   loading,
   conversation_id,
   fetchMore,
+  fetchMoreLoading,
 }: ChatBoxProps) => {
   const client = useApolloClient();
   const user_profile = client.readQuery<GetUserQuery>({
@@ -32,6 +34,7 @@ const ChatBox = ({
   })?.getUser?.profile;
 
   const user_profile_id = user_profile?.id;
+  const bottomChatBox = useRef<HTMLDivElement | null>(null);
 
   const [messageContent, setMessageContent] = useState<string>("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,45 +86,61 @@ const ChatBox = ({
     });
   };
 
-  if (loading) return <Loading />;
+  useEffect(() => {
+    if (bottomChatBox.current)
+      bottomChatBox.current?.scrollIntoView({
+        behavior: "auto",
+      });
+  }, []);
 
   return (
-    <div className="w-3/4 bg-white  h-[calc(100vh_-_115px)] relative flex flex-col justify-end">
-      <div className="px-2 pb-12 overflow-y-auto">
-        {hasNextPage ? <div onClick={loadMore}>Load more</div> : null}
-        <div>
-          {messages
-            ?.slice()
-            .reverse()
-            .map((message, index) => {
-              if (message.author.id !== user_profile_id)
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center justify-start mt-2"
-                  >
-                    <Avatar
-                      img_url={message.author.profile_avatar}
-                      width={10}
-                      height={10}
-                      border={1}
-                    />
-                    <div className="flex justify-start px-2 py-1 ml-2 bg-white border border-black items-starts-center max-w-96 min-w-12 h-fit">
-                      {message.message_content}
+    <div className="relative flex flex-col w-3/4 h-full bg-white">
+      <div className="px-2 pb-1 overflow-y-auto ">
+        {loading ? (
+          <Loading />
+        ) : (
+          <div>
+            <LoadMoreTrigger
+              loadMore={loadMore}
+              loading={fetchMoreLoading}
+              hasNextPage={hasNextPage}
+            />
+            <div className="">
+              {messages
+                ?.slice()
+                .reverse()
+                .map((message, index) => {
+                  if (message.author.id !== user_profile_id)
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-center justify-start mt-2"
+                      >
+                        <Avatar
+                          img_url={message.author.profile_avatar}
+                          width={10}
+                          height={10}
+                          border={1}
+                        />
+                        <div className="flex justify-start px-2 py-1 ml-2 bg-white border border-black items-starts-center max-w-96 min-w-12 h-fit">
+                          {message.message_content}
+                        </div>
+                      </div>
+                    );
+                  return (
+                    <div key={index} className="flex items-center justify-end">
+                      <div className="flex px-2 py-1 mt-2 text-white border border-black bg-purple">
+                        {message.message_content}
+                      </div>
                     </div>
-                  </div>
-                );
-              return (
-                <div key={index} className="flex items-center justify-end">
-                  <div className="flex px-2 py-1 mt-2 text-white border border-black bg-purple">
-                    {message.message_content}
-                  </div>
-                </div>
-              );
-            })}
-        </div>
+                  );
+                })}
+            </div>
+            <div ref={bottomChatBox}></div>
+          </div>
+        )}
       </div>
-      <div className="absolute bottom-0 w-full h-10 p-1 bg-gray-100 border-t border-black ">
+      <div className="w-full p-1 bg-gray-100 border-t border-black">
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
           <Form className="flex items-center justify-between">
             <div className="flex items-center justify-center w-1/12 ">

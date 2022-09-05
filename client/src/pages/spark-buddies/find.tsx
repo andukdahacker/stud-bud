@@ -1,23 +1,16 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+
 import FindBuddyPage from "../../components/FindBuddyPage";
-import FindTutorOrdersPage from "../../components/FindTutorOrdersPage";
+
 import Layout from "../../components/Layout";
 import SearchBar from "../../components/SearchBar";
-import {
-  useGetManyProfilesLazyQuery,
-  useGetManyTutorOrdersLazyQuery,
-} from "../../generated/graphql";
-import { findOptions } from "../../utils/constants";
+import SparkBuddiesLayout from "../../components/SparkBuddiesLayout";
+import { useGetManyProfilesLazyQuery } from "../../generated/graphql";
+import { PROFILES_TAKE_LIMIT } from "../../utils/constants";
+import { SearchInput } from "../../utils/types";
 
 const FindBuddy = () => {
   const router = useRouter();
-  const [findOption, setFindOption] = useState<findOptions>("buddies");
-
-  const handleClick = (option: findOptions) => {
-    setFindOption(option);
-  };
 
   const [
     getManyProfiles,
@@ -29,106 +22,32 @@ const FindBuddy = () => {
       networkStatus: GetManyProfilesNetworkStatus,
     },
   ] = useGetManyProfilesLazyQuery();
-  const [
-    getManyTutorOrders,
-    {
-      data: GetManyTutorOrdersData,
-      loading: GetManyTutorOrdersLoading,
-      refetch: refetchManyTutorOrders,
-      networkStatus: GetManyTutorOrdersNetworkStatus,
-    },
-  ] = useGetManyTutorOrdersLazyQuery();
+
+  const onSubmitRefetchManyProfiles = ({ search_input }: SearchInput) => {
+    router.push(`/spark-buddies/find?search_input=${search_input}`);
+    refetchManyProfiles({
+      where: {
+        search_input: search_input,
+        take: PROFILES_TAKE_LIMIT,
+      },
+    });
+  };
 
   return (
     <Layout>
-      <div className="flex flex-col w-full ">
-        {/* <div className="w-1/5 ">
-          <div
-            className={`${
-              findOption === "buddies" ? "bg-gray-400" : null
-            } cursor-pointer`}
-            onClick={() => handleClick("buddies")}
-          >
-            Buddies
-          </div>
-          <div
-            className={`${
-              findOption === "tutor orders" ? "bg-gray-400" : null
-            } cursor-pointer`}
-            onClick={() => handleClick("tutor orders")}
-          >
-            Tutor orders
-          </div>
-          <div
-            className={`${
-              findOption === "tutors" ? "bg-gray-400" : null
-            } cursor-pointer`}
-            onClick={() => handleClick("tutors")}
-          >
-            Tutors
-          </div>
-          <div
-            className={`${
-              findOption === "roadmaps" ? "bg-gray-400" : null
-            } cursor-pointer`}
-            onClick={() => handleClick("roadmaps")}
-          >
-            Roadmaps
-          </div>
-        </div> */}
-
-        <div className="flex items-center justify-around py-5 border-b border-black">
-          <Link href={`/spark-buddies/find`}>
-            <a
-              className={`${
-                router.route == "/spark-buddies/find"
-                  ? "text-white bg-black py-1 px-2"
-                  : null
-              } font-bold `}
-            >
-              Find Buddy
-            </a>
-          </Link>
-          <Link href={`/spark-buddies/buddies`}>
-            <a
-              className={`${
-                router.route == "/spark-buddies/buddies"
-                  ? "text-white bg-black py-1 px-2"
-                  : null
-              } font-bold `}
-            >
-              My Buddies
-            </a>
-          </Link>
-        </div>
-
+      <SparkBuddiesLayout>
         <div className="p-5 ">
-          <SearchBar
-            findOption={findOption}
-            refetchManyProfiles={refetchManyProfiles}
-            refetchManyTutorOrders={refetchManyTutorOrders}
-          />
+          <SearchBar onSubmit={onSubmitRefetchManyProfiles} />
 
-          {findOption === null ? (
-            <div>What are your looking for? Choose on the left bar</div>
-          ) : findOption === "buddies" ? (
-            <FindBuddyPage
-              getManyProfiles={getManyProfiles}
-              data={GetManyProfilesData}
-              loading={GetManyProfilesLoading}
-              fetchMore={fetchMoreManyProfiles}
-              networkStatus={GetManyProfilesNetworkStatus}
-            />
-          ) : findOption === "tutor orders" ? (
-            <FindTutorOrdersPage
-              getManyTutorOrders={getManyTutorOrders}
-              data={GetManyTutorOrdersData}
-              loading={GetManyTutorOrdersLoading}
-              networkStatus={GetManyTutorOrdersNetworkStatus}
-            />
-          ) : null}
+          <FindBuddyPage
+            getManyProfiles={getManyProfiles}
+            data={GetManyProfilesData}
+            loading={GetManyProfilesLoading}
+            fetchMore={fetchMoreManyProfiles}
+            networkStatus={GetManyProfilesNetworkStatus}
+          />
         </div>
-      </div>
+      </SparkBuddiesLayout>
     </Layout>
   );
 };

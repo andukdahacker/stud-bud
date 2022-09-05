@@ -9,6 +9,7 @@ query getManyProfiles($where: GetManyProfilesInput!) {
     PageInfo {
       endCursor
       hasNextPage
+      lastTake
     }
   }
 }

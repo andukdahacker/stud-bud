@@ -213,6 +213,7 @@ type Mutation {
   changePassword(input: ChangePasswordInput!): AuthOutput
   connectBuddy(input: RelationshipInput!): RelationshipOutput
   connectTutorOrder(where: ConnectTutorOrderInput!): TutorOrderOutput
+  createGroupConversation(input: createGroupConversationInput!): initConversationOutput
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
   createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
   deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
@@ -450,6 +451,12 @@ type User {
 
 input VerifyEmailInput {
   token: String!
+}
+
+input createGroupConversationInput {
+  creator_id: String!
+  member_ids: [String!]!
+  message_content: String
 }
 
 type getConversationOutput {

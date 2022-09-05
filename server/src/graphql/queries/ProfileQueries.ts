@@ -169,7 +169,8 @@ export const getManyProfiles = queryField("getManyProfiles", {
           Profile: queryResult,
           PageInfo: {
             endCursor: myCursor,
-            hasNextPage: secondQueryResults.length >= take,
+            hasNextPage: true,
+            lastTake: secondQueryResults.length,
           },
         };
       }

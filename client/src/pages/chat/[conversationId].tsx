@@ -1,24 +1,23 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import ChatBox from "../../components/ChatBox";
-import ConversationInfoBar from "../../components/ConversationInfoBar";
 import ConversationList from "../../components/ConversationList";
 import ConversationListBar from "../../components/ConversationListBar";
 import Layout from "../../components/Layout";
 import {
   GetConversationDocument,
   GetConversationQuery,
-  GetConversationSubDocument,
   GetManyConversationsSubsDocument,
   useGetConversationLazyQuery,
-  useGetConversationSubSubscription,
   useGetManyConversationsLazyQuery,
+  useGetManyConversationsSubsSubscription,
   useGetUserQuery,
 } from "../../generated/graphql";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
 import produce from "immer";
 import { cache } from "../../lib/apolloClient";
+import { NetworkStatus } from "@apollo/client";
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
   const user_profile_id = userData?.getUser?.profile?.id;
@@ -41,9 +40,19 @@ const ChatWithChatBox = () => {
       data: getConversationData,
       loading: getConversationLoading,
       fetchMore: fetchMoreConversationData,
+      networkStatus: fetchMoreConversationNetworkStatus,
       subscribeToMore: subsGetConversationData,
     },
   ] = useGetConversationLazyQuery();
+
+  const { data, loading } = useGetManyConversationsSubsSubscription({
+    variables: {
+      where: {
+        profile_id: user_profile_id as string,
+      },
+    },
+    onSubscriptionData: ({ subscriptionData }) => {},
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -53,6 +62,7 @@ const ChatWithChatBox = () => {
             profile_id: user_profile_id as string,
           },
         },
+        fetchPolicy: "cache-and-network",
       });
 
       subsGetManyConversation({
@@ -118,6 +128,8 @@ const ChatWithChatBox = () => {
   }, [user_profile_id, getManyConversations, subsGetManyConversation]);
 
   const conversation_id = router.query.conversationId as string;
+  const fetchMoreConversationLoading =
+    fetchMoreConversationNetworkStatus == NetworkStatus.fetchMore;
 
   useEffect(() => {
     async function fetchData() {
@@ -145,7 +157,7 @@ const ChatWithChatBox = () => {
 
   return (
     <Layout>
-      <div className="flex items-start justify-center w-full h-full bg-blue">
+      <div className="flex items-start justify-center w-full h-[calc(100vh_-_115px)] bg-blue">
         <ConversationListBar>
           <ConversationList
             data={ManyConversationsData}
@@ -160,6 +172,7 @@ const ChatWithChatBox = () => {
           user_profile_id={user_profile_id}
           loading={getConversationLoading}
           fetchMore={fetchMoreConversationData}
+          fetchMoreLoading={fetchMoreConversationLoading}
         />
         {/* <ConversationInfoBar
           data={getConversationData}

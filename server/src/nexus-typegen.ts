@@ -152,6 +152,11 @@ export interface NexusGenInputs {
   VerifyEmailInput: { // input type
     token: string; // String!
   }
+  createGroupConversationInput: { // input type
+    creator_id: string; // String!
+    member_ids: string[]; // [String!]!
+    message_content?: string | null; // String
+  }
   getManyInterestsInput: { // input type
     search_input?: string | null; // String
   }
@@ -484,6 +489,7 @@ export interface NexusGenFieldTypes {
     changePassword: NexusGenRootTypes['AuthOutput'] | null; // AuthOutput
     connectBuddy: NexusGenRootTypes['RelationshipOutput'] | null; // RelationshipOutput
     connectTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
+    createGroupConversation: NexusGenRootTypes['initConversationOutput'] | null; // initConversationOutput
     createProfile: NexusGenRootTypes['ProfileMutationOutput'] | null; // ProfileMutationOutput
     createTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
     deleteTutorOrder: NexusGenRootTypes['TutorOrderOutput'] | null; // TutorOrderOutput
@@ -757,6 +763,7 @@ export interface NexusGenFieldTypeNames {
     changePassword: 'AuthOutput'
     connectBuddy: 'RelationshipOutput'
     connectTutorOrder: 'TutorOrderOutput'
+    createGroupConversation: 'initConversationOutput'
     createProfile: 'ProfileMutationOutput'
     createTutorOrder: 'TutorOrderOutput'
     deleteTutorOrder: 'TutorOrderOutput'
@@ -944,6 +951,9 @@ export interface NexusGenArgTypes {
     }
     connectTutorOrder: { // args
       where: NexusGenInputs['ConnectTutorOrderInput']; // ConnectTutorOrderInput!
+    }
+    createGroupConversation: { // args
+      input: NexusGenInputs['createGroupConversationInput']; // createGroupConversationInput!
     }
     createProfile: { // args
       input: NexusGenInputs['CreateProfileInput']; // CreateProfileInput!

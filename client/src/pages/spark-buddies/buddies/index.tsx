@@ -1,18 +1,19 @@
 import { NetworkStatus } from "@apollo/client";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import BuddyCard from "../../../components/BuddyCard";
 import Layout from "../../../components/Layout";
-import Loading from "../../../components/Loading";
 import LoadMoreTrigger from "../../../components/LoadMoreTrigger";
 import ProfileCard from "../../../components/ProfileCard";
+import ProfileCardSkeleton from "../../../components/ProfileCardSkeleton";
 import SearchBar from "../../../components/SearchBar";
+import SkeletonLoading from "../../../components/SkeletonLoading";
+import SparkBuddiesLayout from "../../../components/SparkBuddiesLayout";
 import {
   useGetMyBuddiesLazyQuery,
   useGetUserQuery,
 } from "../../../generated/graphql";
 import { BUDDIES_TAKE_LIMIT } from "../../../utils/constants";
+import { SearchInput } from "../../../utils/types";
 
 const Buddies = () => {
   const router = useRouter();
@@ -52,6 +53,19 @@ const Buddies = () => {
     });
   };
 
+  const onSubmitRefetchMyBuddies = ({ search_input }: SearchInput) => {
+    if (user_profile_id)
+      refetchMyBuddies({
+        where: {
+          profile_id: user_profile_id,
+        },
+        input: {
+          take: BUDDIES_TAKE_LIMIT,
+          search_input: search_input,
+        },
+      });
+  };
+
   useEffect(() => {
     if (user_profile_id)
       getMyBuddies({
@@ -68,46 +82,21 @@ const Buddies = () => {
         },
       });
   }, [user_profile_id]);
-  if (GetUserLoading)
+  if (GetUserLoading || GetMyBuddiesLoading || refetchMyBuddiesLoading)
     return (
       <Layout>
-        <Loading />
+        <SkeletonLoading
+          take={BUDDIES_TAKE_LIMIT}
+          skeleton={<ProfileCardSkeleton />}
+          layout="ProfileCard"
+        />
       </Layout>
     );
   return (
     <Layout>
-      <div className="flex items-center justify-around py-5 border-b border-black">
-        <Link href={`/spark-buddies/find`}>
-          <a
-            className={`${
-              router.route == "/spark-buddies/find"
-                ? "text-white bg-black py-1 px-2"
-                : null
-            } font-bold `}
-          >
-            Find Buddy
-          </a>
-        </Link>
-        <Link href={`/spark-buddies/buddies`}>
-          <a
-            className={`${
-              router.route == "/spark-buddies/buddies"
-                ? "text-white bg-black py-1 px-2"
-                : null
-            } font-bold `}
-          >
-            My Buddies
-          </a>
-        </Link>
-      </div>
-      <SearchBar
-        findOption={"relationships"}
-        refetchMyBuddies={refetchMyBuddies}
-      />
+      <SparkBuddiesLayout>
+        <SearchBar onSubmit={onSubmitRefetchMyBuddies} />
 
-      {GetMyBuddiesLoading || refetchMyBuddiesLoading ? (
-        <Loading />
-      ) : (
         <div className="grid w-full max-h-full grid-cols-3 bg-white gap-x-20 gap-y-10 p-7">
           {buddies?.map((buddy, index) => {
             return (
@@ -119,13 +108,13 @@ const Buddies = () => {
             );
           })}
         </div>
-      )}
 
-      <LoadMoreTrigger
-        loading={fetchMoreMyBuddiesLoading}
-        hasNextPage={hasNextPage}
-        loadMore={loadMore}
-      />
+        <LoadMoreTrigger
+          loading={fetchMoreMyBuddiesLoading}
+          hasNextPage={hasNextPage}
+          loadMore={loadMore}
+        />
+      </SparkBuddiesLayout>
     </Layout>
   );
 };

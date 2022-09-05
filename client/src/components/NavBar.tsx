@@ -137,7 +137,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="flex items-center justify-between px-5 py-2 border-b border-black font-lexend h-[7rem]">
+    <div className="flex items-center justify-between px-5 py-2 border-b border-black font-lexend ">
       <Link href="/">
         <a className="flex items-center justify-center">
           <Image src={logo} />
@@ -161,7 +161,7 @@ const NavBar = () => {
               : null
           } font-bold`}
         >
-          Spark Buddy
+          SPARK BUDDY
         </a>
       </Link>
       {authLoading ? (
@@ -221,7 +221,22 @@ const NavBar = () => {
             </div>
           </div>
 
-          <ReactModal isOpen={showModal} onRequestClose={closeModal}>
+          <ReactModal
+            isOpen={showModal}
+            onRequestClose={closeModal}
+            style={{
+              content: {
+                top: "15rem",
+                bottom: "15rem",
+                left: "30rem",
+                right: "30rem",
+                padding: 0,
+              },
+              overlay: {
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+              },
+            }}
+          >
             <LogOut>
               <button
                 onClick={closeModal}

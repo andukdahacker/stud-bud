@@ -1,0 +1,11 @@
+mutation createGroupConversation($input: createGroupConversationInput!) {
+  createGroupConversation(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    conversation {
+      ...Conversation
+    }
+  }
+}

@@ -1,71 +1,22 @@
-import { ApolloQueryResult } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
-  Exact,
-  GetManyInterestsInput,
-  GetManyProfilesInput,
-  GetManyProfilesQuery,
-  GetManyTutorOrdersInput,
-  GetManyTutorOrdersQuery,
-  GetMyBuddiesInput,
-  GetMyBuddiesQuery,
-  ProfileWhereUniqueInput,
   useGetManyInterestsLazyQuery,
   useGetUserQuery,
 } from "../generated/graphql";
-import {
-  BUDDIES_TAKE_LIMIT,
-  findOptions,
-  PROFILES_TAKE_LIMIT,
-  TUTOR_ORDER_TAKE_LIMIT,
-} from "../utils/constants";
+
+import { SearchInput } from "../utils/types";
 import useDebounce from "../utils/useDebounce";
 import Loading from "./Loading";
 import SuggestionCard from "./SuggestionCard";
 
 interface SearchBarProps {
-  findOption: findOptions;
-  refetchManyProfiles?(
-    variables?:
-      | Partial<
-          Exact<{
-            where: GetManyProfilesInput;
-          }>
-        >
-      | undefined
-  ): Promise<ApolloQueryResult<GetManyProfilesQuery>>;
-
-  refetchManyTutorOrders?(
-    variables?:
-      | Partial<
-          Exact<{
-            where: GetManyTutorOrdersInput;
-          }>
-        >
-      | undefined
-  ): Promise<ApolloQueryResult<GetManyTutorOrdersQuery>>;
-
-  refetchMyBuddies?(
-    variables?:
-      | Partial<
-          Exact<{
-            where: ProfileWhereUniqueInput;
-            input: GetMyBuddiesInput;
-          }>
-        >
-      | undefined
-  ): Promise<ApolloQueryResult<GetMyBuddiesQuery>>;
+  onSubmit: (value: SearchInput) => void;
 }
 
-const SearchBar = ({
-  findOption,
-  refetchManyProfiles,
-  refetchManyTutorOrders,
-  refetchMyBuddies,
-}: SearchBarProps) => {
+const SearchBar = ({ onSubmit }: SearchBarProps) => {
   const [
     getManyInterests,
     { data: getManyInterestsData, loading: getManyInterestsLoading },
@@ -75,8 +26,6 @@ const SearchBar = ({
   const getManyInterestMessage =
     getManyInterestsData?.getManyInterests?.IOutput.message;
   const suggestions = getManyInterestsData?.getManyInterests?.Interest;
-  const { data: GetUserData, loading: GetUserLoading } = useGetUserQuery();
-  const user_profile_id = GetUserData?.getUser?.profile?.id;
 
   const [search, setSearch] = useState<string | null>(null);
   const [hiddenSuggest, setHiddenSuggest] = useState(true);
@@ -100,49 +49,11 @@ const SearchBar = ({
       });
   }, [debouncedSearch]);
 
-  const initialValues: GetManyInterestsInput & GetManyProfilesInput = {
+  const initialValues = {
     search_input: router.query.search_input
       ? (router.query.search_input as string)
       : "",
-    take: PROFILES_TAKE_LIMIT,
   };
-  const onSubmit = (values: GetManyProfilesInput) => {
-    if (user_profile_id) {
-      if (findOption === "buddies" && refetchManyProfiles) {
-        router.push(`/spark-buddies/find?search_input=${values.search_input}`);
-        refetchManyProfiles({
-          where: {
-            search_input: values.search_input,
-            take: PROFILES_TAKE_LIMIT,
-          },
-        });
-      } else if (findOption === "tutor orders" && refetchManyTutorOrders) {
-        router.push(`/spark-buddies/find?search_input=${values.search_input}`);
-        refetchManyTutorOrders({
-          where: {
-            search_input: values.search_input,
-            take: TUTOR_ORDER_TAKE_LIMIT,
-          },
-        });
-      } else if (findOption === "relationships" && refetchMyBuddies) {
-        router.push(
-          `/spark-buddies/buddies?search_input=${values.search_input}`
-        );
-        refetchMyBuddies({
-          where: {
-            profile_id: user_profile_id,
-          },
-          input: {
-            take: BUDDIES_TAKE_LIMIT,
-            search_input: values.search_input,
-          },
-        });
-      }
-    }
-  };
-
-  if (findOption === null) return null;
-  if (GetUserLoading) return <Loading />;
 
   return (
     <div>
@@ -180,15 +91,12 @@ const SearchBar = ({
                 <div>{getManyInterestMessage}</div>
               ) : !suggestions || !search ? null : (
                 suggestions.map((interest, index) => {
+                  const interest_name = interest?.interest_name;
                   return (
                     <SuggestionCard
                       key={index}
-                      user_profile_id={user_profile_id}
-                      interest_name={interest?.interest_name as string}
-                      findOption={findOption}
-                      refetchManyProfiles={refetchManyProfiles}
-                      refetchManyTutorOrders={refetchManyTutorOrders}
-                      refetchMyBuddies={refetchMyBuddies}
+                      onSubmit={onSubmit}
+                      interest_name={interest_name!}
                     />
                   );
                 })

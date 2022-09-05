@@ -31,8 +31,6 @@ const ConversationBox = ({ data, user_profile_id }: ConversationBoxProps) => {
   const conversation_latest_message_author_id =
     conversation_latest_message?.author.id;
 
-  console.log(router.query.conversationId);
-
   const handleClick = () => {
     router.push(`/chat/${conversation_id}`);
   };

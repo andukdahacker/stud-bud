@@ -10,6 +10,7 @@ import {
 import { ProfileWhereUniqueInput } from "../inputs";
 import {
   ConversationGroupWhereUniqueInput,
+  createGroupConversationInput,
   initConversationInput,
   SendMessageInput,
 } from "../inputs/MessageInput";
@@ -261,3 +262,58 @@ export const readMessage = mutationField("readMessage", {
     }
   },
 });
+
+export const createGroupConversation = mutationField(
+  "createGroupConversation",
+  {
+    type: initConversationOutput,
+    args: {
+      input: nonNull(createGroupConversationInput),
+    },
+    resolve: async (_root, args, ctx) => {
+      const { member_ids, message_content, creator_id } = args.input;
+
+      try {
+        const conversation = await ctx.prisma.conversation.create({
+          data: {
+            conversation_group: {
+              createMany: {
+                data: member_ids.map((member_id) => ({
+                  conversation_member_id: member_id,
+                })),
+              },
+              create: {
+                conversation_member_id: creator_id,
+              },
+            },
+            message: message_content
+              ? {
+                  create: {
+                    message_content: message_content,
+                    message_author: {
+                      connect: {
+                        id: creator_id,
+                      },
+                    },
+                  },
+                }
+              : undefined,
+          },
+        });
+
+        if (!conversation)
+          return {
+            IOutput: UNSUCCESSFUL_MUTATION,
+          };
+        return {
+          IOutput: UNSUCCESSFUL_MUTATION,
+          conversation: conversation,
+        };
+      } catch (error) {
+        return {
+          IOutput: UNSUCCESSFUL_MUTATION,
+        };
+      }
+    },
+  }
+);

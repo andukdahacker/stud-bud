@@ -51,8 +51,7 @@ services:
     container_name: postgres
     image: postgres
     restart: always
-    ports:
-      - 5432:5432
+
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -82,8 +81,7 @@ services:
     container_name: redis
     image: redis
     restart: always
-    ports:
-      - 6379:6379
+
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}

@@ -1,6 +1,6 @@
 import { LazyQueryExecFunction, NetworkStatus } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Exact,
@@ -8,9 +8,11 @@ import {
   GetManyProfilesQuery,
 } from "../generated/graphql";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
-import Loading from "./Loading";
+
 import LoadMoreTrigger from "./LoadMoreTrigger";
 import ProfileCard from "./ProfileCard";
+import ProfileCardSkeleton from "./ProfileCardSkeleton";
+import SkeletonLoading from "./SkeletonLoading";
 
 interface FindBuddyPageProps {
   getManyProfiles: LazyQueryExecFunction<
@@ -35,6 +37,8 @@ const FindBuddyPage = ({
 }: FindBuddyPageProps) => {
   const router = useRouter();
 
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
   useEffect(() => {
     getManyProfiles({
       variables: {
@@ -45,6 +49,7 @@ const FindBuddyPage = ({
           take: PROFILES_TAKE_LIMIT,
         },
       },
+      notifyOnNetworkStatusChange: true,
     });
   }, []);
 
@@ -56,7 +61,7 @@ const FindBuddyPage = ({
   const cursor = GetManyProfilesData?.getManyProfiles?.PageInfo?.endCursor;
   const fetchMoreProfilesLoading = networkStatus === NetworkStatus.fetchMore;
   const refetchManyProfilesLoading = networkStatus === NetworkStatus.refetch;
-
+  const lastTake = GetManyProfilesData?.getManyProfiles?.PageInfo?.lastTake;
   const loadMore = () => {
     fetchMore({
       variables: {
@@ -65,13 +70,23 @@ const FindBuddyPage = ({
             ? (router.query.search_input as string)
             : "",
           cursor,
-          take: PROFILES_TAKE_LIMIT,
+          take: lastTake,
         },
       },
     });
   };
 
-  if (GetManyProfilesLoading || refetchManyProfilesLoading) return <Loading />;
+  if (
+    (!fetchMoreProfilesLoading && GetManyProfilesLoading) ||
+    refetchManyProfilesLoading
+  )
+    return (
+      <SkeletonLoading
+        take={PROFILES_TAKE_LIMIT}
+        skeleton={<ProfileCardSkeleton />}
+        layout="ProfileCard"
+      />
+    );
 
   return (
     <div className="w-full h-full ">

@@ -1,9 +1,10 @@
 import Avatar from "./Avatar";
 import ReactModal from "react-modal";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   ProfileFragment,
   RelationshipFragment,
+  RelationshipStatusCode,
   useGetProfileLazyQuery,
 } from "../generated/graphql";
 import ProfilePage from "./ProfilePage";
@@ -13,10 +14,6 @@ import MessageButton from "./MessageButton";
 import BuddyButton from "./BuddyButton";
 
 interface ProfileCardProps {
-  id?: string;
-  username?: string;
-  avatar?: string;
-  interests?: { interest_name: string }[];
   profileData: ProfileFragment | undefined | null;
   relationshipData?: RelationshipFragment | undefined;
 }
@@ -29,7 +26,9 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
   const conversation_id = relationshipData?.conversation_id;
   const requester_id = relationshipData?.requester_id;
   const addressee_id = relationshipData?.addressee_id;
+  const isBuddy = relationshipData?.status;
   const router = useRouter();
+
   const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
     useGetProfileLazyQuery();
 
@@ -48,7 +47,7 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
 
   const closeModal = () => {
     setShowModal(false);
-    router.push(`/spark-buddies/find`, undefined, { shallow: true });
+    router.back();
   };
 
   return (
@@ -80,17 +79,9 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
             </div>
           </div>
           <div className="flex items-center h-2/5">
-            {relationshipData ? (
-              <MessageButton
-                conversation_id={conversation_id}
-                requester_id={requester_id}
-                addressee_id={addressee_id}
-              />
-            ) : (
-              <BuddyButton profile_id={id} />
-            )}
+            <BuddyButton profile_id={id} />
 
-            <Link href={`/spark-buddies/find`} as={`/profile/${id}`}>
+            <Link href={`${router.asPath}`} as={`/profile/${id}`}>
               <a>
                 <button
                   className="px-5 py-1 font-semibold border-2 border-black "
@@ -104,8 +95,29 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
         </div>
       </div>
 
-      <ReactModal isOpen={showModal} onRequestClose={closeModal}>
-        <button type="button" onClick={closeModal}>
+      <ReactModal
+        isOpen={showModal}
+        onRequestClose={closeModal}
+        style={{
+          content: {
+            padding: 0,
+            top: "2rem",
+            left: "10rem",
+            right: "10rem",
+            bottom: "2rem",
+            backgroundColor: "white",
+            fontFamily: "Lexend",
+          },
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+          },
+        }}
+      >
+        <button
+          type="button"
+          onClick={closeModal}
+          className="fixed text-2xl text-white top-8 right-8 "
+        >
           X
         </button>
         <ProfilePage data={getProfileData} loading={getProfileLoading} />

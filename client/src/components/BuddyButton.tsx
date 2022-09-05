@@ -11,7 +11,8 @@ import {
   useRemoveBuddyMutation,
   useRespondBuddyMutation,
 } from "../generated/graphql";
-import { BuddyRespondOptions } from "../utils/constants";
+import { BuddyRespondOptions } from "../utils/types";
+
 import Loading from "./Loading";
 import MessageButton from "./MessageButton";
 

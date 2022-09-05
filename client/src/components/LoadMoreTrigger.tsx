@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";
+import ProfileCardSkeleton from "./ProfileCardSkeleton";
+import SkeletonLoading from "./SkeletonLoading";
 
 interface LoadMoreTriggerProps {
   loading: boolean;
@@ -16,17 +19,19 @@ const LoadMoreTrigger = ({
 
   const observer = useRef<IntersectionObserver | null>(null);
 
+  const loader = useRef(loadMore);
   useEffect(() => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (first.isIntersecting) {
-          loadMore();
-        }
-      },
-      { threshold: 1 }
-    );
+    loader.current = loadMore;
+  }, [loadMore]);
+  useEffect(() => {
+    observer.current = new IntersectionObserver((entries) => {
+      const first = entries[0];
+      if (first.isIntersecting) {
+        loader.current();
+      }
+    });
   }, [observer]);
+
   useEffect(() => {
     const currentElement = element;
     const currentObserver = observer.current;
@@ -42,8 +47,8 @@ const LoadMoreTrigger = ({
   }, [element]);
 
   if (loading) return <Loading />;
-  if (!hasNextPage) return <div>End of list</div>;
-  return <div ref={setElement}>Load more</div>;
+  if (!hasNextPage) return null;
+  return <div ref={setElement}></div>;
 };
 
 export default LoadMoreTrigger;

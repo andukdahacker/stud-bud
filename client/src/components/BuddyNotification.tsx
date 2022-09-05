@@ -7,10 +7,8 @@ import {
   useReadBuddyNotificationsMutation,
   useRespondBuddyMutation,
 } from "../generated/graphql";
-import {
-  BuddyNotificationProps,
-  BuddyRespondOptions,
-} from "../utils/constants";
+import { BuddyNotificationProps, BuddyRespondOptions } from "../utils/types";
+
 import Avatar from "./Avatar";
 import UnreadNotiMark from "./UnReadNotiMark";
 
