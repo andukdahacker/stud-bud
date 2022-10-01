@@ -73,11 +73,7 @@ const TutorOrderPage = ({
           <div>Student:</div>
           <Link href={`/profile/${student_id}`}>
             <a>
-              <Avatar
-                img_url={student?.profile_avatar}
-                width={40}
-                height={40}
-              />
+              <Avatar img_url={student?.profile_avatar} />
               <div>
                 <b>{student?.user?.username}</b>{" "}
               </div>
@@ -97,7 +93,7 @@ const TutorOrderPage = ({
           {tutor_id ? (
             <Link href={`/profile/${tutor_id}`}>
               <a>
-                <Avatar img_url={tutor_profile_avatar} width={40} height={40} />
+                <Avatar img_url={tutor_profile_avatar} />
                 <div>
                   <b>{tutor_username}</b>
                 </div>

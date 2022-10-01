@@ -1,6 +1,5 @@
 import { useApolloClient } from "@apollo/client";
 import { Field, Form, Formik } from "formik";
-import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   GetConversationQuery,
@@ -116,12 +115,7 @@ const ChatBox = ({
                         key={index}
                         className="flex items-center justify-start mt-2"
                       >
-                        <Avatar
-                          img_url={message.author.profile_avatar}
-                          width={10}
-                          height={10}
-                          border={1}
-                        />
+                        <Avatar img_url={message.author.profile_avatar} />
                         <div className="flex justify-start px-2 py-1 ml-2 bg-white border border-black items-starts-center max-w-96 min-w-12 h-fit">
                           {message.message_content}
                         </div>

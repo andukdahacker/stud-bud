@@ -1,5 +1,5 @@
 import Avatar from "./Avatar";
-import ReactModal from "react-modal";
+
 import { Dispatch, SetStateAction, useState } from "react";
 import {
   ProfileFragment,
@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import MessageButton from "./MessageButton";
 import BuddyButton from "./BuddyButton";
+import Modal from "./Modal";
 
 interface ProfileCardProps {
   profileData: ProfileFragment | undefined | null;
@@ -54,7 +55,7 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
     <div className=" w-full h-[15rem] p-3 border-2 border-black ">
       <div className="flex h-full ">
         <div className="w-1/6 ">
-          <Avatar img_url={avatar} width="16" height="16" border={1} />
+          <Avatar img_url={avatar} />
         </div>
         <div className="flex flex-col w-5/6 h-full ml-5 font-light">
           <div className="flex items-center h-1/5">
@@ -95,33 +96,11 @@ const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
         </div>
       </div>
 
-      <ReactModal
-        isOpen={showModal}
-        onRequestClose={closeModal}
-        style={{
-          content: {
-            padding: 0,
-            top: "2rem",
-            left: "10rem",
-            right: "10rem",
-            bottom: "2rem",
-            backgroundColor: "white",
-            fontFamily: "Lexend",
-          },
-          overlay: {
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-          },
-        }}
-      >
-        <button
-          type="button"
-          onClick={closeModal}
-          className="fixed text-2xl text-white top-8 right-8 "
-        >
-          X
-        </button>
-        <ProfilePage data={getProfileData} loading={getProfileLoading} />
-      </ReactModal>
+      <Modal isOpen={showModal} onRequestClose={closeModal}>
+        <div className="w-[50rem]">
+          <ProfilePage data={getProfileData} loading={getProfileLoading} />
+        </div>
+      </Modal>
     </div>
   );
 };

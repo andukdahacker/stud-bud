@@ -35,16 +35,11 @@ const ProfilePage = (props: ProfilePageProps) => {
 
   if (user_profile_id !== profile_id) {
     return (
-      <div className="w-full ">
+      <div className="w-full">
         <div className="relative">
           <Wallpaper img_url={profile_wallpaper} />
           <div className="absolute -bottom-20 left-8">
-            <Avatar
-              img_url={profile_avatar}
-              width="32"
-              height="32"
-              border={2}
-            />
+            <Avatar img_url={profile_avatar} width={8} height={8} border={3} />
           </div>
         </div>
         <div className="flex flex-col items-center justify-center w-full p-8 ">
@@ -83,7 +78,7 @@ const ProfilePage = (props: ProfilePageProps) => {
       <div className="relative">
         <Wallpaper img_url={profile_wallpaper} />
         <div className="absolute w-32 h-32 -bottom-20 left-8">
-          <Avatar img_url={profile_avatar} width={32} height={32} border={2} />
+          <Avatar img_url={profile_avatar} width={8} height={8} border={3} />
         </div>
       </div>
       <div className="flex flex-col items-center justify-center w-full p-8 ">

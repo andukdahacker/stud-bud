@@ -16,6 +16,7 @@ import {
 import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
 import ChatNotiNavBarButton from "./ChatNotiNavBarButton";
 import Loading from "./Loading";
+import Modal from "./Modal";
 
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
@@ -201,12 +202,7 @@ const NavBar = () => {
           /> */}
 
           <div onClick={toggleButtons} className="relative cursor-pointer">
-            <Avatar
-              img_url={profile?.profile_avatar}
-              width="16"
-              height="16"
-              border={1}
-            />
+            <Avatar img_url={profile?.profile_avatar} />
             <div
               className={`${hiddenButtons} absolute -bottom-16 -left-8 z-10 bg-white border-black border w-max flex flex-col justify-around items-center p-2`}
             >
@@ -221,22 +217,7 @@ const NavBar = () => {
             </div>
           </div>
 
-          <ReactModal
-            isOpen={showModal}
-            onRequestClose={closeModal}
-            style={{
-              content: {
-                top: "15rem",
-                bottom: "15rem",
-                left: "30rem",
-                right: "30rem",
-                padding: 0,
-              },
-              overlay: {
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-              },
-            }}
-          >
+          <Modal isOpen={showModal} onRequestClose={closeModal}>
             <LogOut>
               <button
                 onClick={closeModal}
@@ -245,7 +226,7 @@ const NavBar = () => {
                 No
               </button>
             </LogOut>
-          </ReactModal>
+          </Modal>
         </div>
       ) : (
         <div className="">

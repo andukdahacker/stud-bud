@@ -43,8 +43,6 @@ const ConversationBox = ({ data, user_profile_id }: ConversationBoxProps) => {
     >
       <Avatar
         img_url={conversation_avatar ? conversation_avatar : profile_avatar}
-        width={14}
-        height={14}
       />
       <div className="flex flex-col ml-2">
         <div>{conversation_name ? conversation_name : username}</div>

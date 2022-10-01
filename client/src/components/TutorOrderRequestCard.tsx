@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import ReactModal from "react-modal";
+
 import {
   TutorOrderTutorConnectFragment,
   useGetProfileLazyQuery,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
+import Modal from "./Modal";
 import ProfilePage from "./ProfilePage";
 import TutorOrderRespondButton from "./TutorOrderRespondButton";
 
@@ -52,7 +53,7 @@ const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
   return (
     <div>
       <div className="cursor-pointer" onClick={() => openModal(tutor_id!)}>
-        <Avatar img_url={profile_avatar} width={40} height={40} />
+        <Avatar img_url={profile_avatar} />
         <div>{username}</div>
       </div>
       <TutorOrderRespondButton
@@ -62,12 +63,9 @@ const TutorOrderRequestCard = ({ data }: TutorOrderRequestCardProps) => {
         student_id={student_id}
       />
 
-      <ReactModal isOpen={showModal} onRequestClose={closeModal}>
-        <button type="button" onClick={closeModal}>
-          X
-        </button>
+      <Modal isOpen={showModal} onRequestClose={closeModal}>
         <ProfilePage data={GetProfileData} loading={GetProfileLoading} />
-      </ReactModal>
+      </Modal>
     </div>
   );
 };

@@ -82,7 +82,7 @@ const BuddyNotification = ({
             className={`flex w-full justify-start items-center`}
             onClick={readBuddyNoti}
           >
-            <Avatar img_url={profile_avatar} width={14} height={14} />
+            <Avatar img_url={profile_avatar} />
 
             <div className="ml-2">
               You and <b>{username}</b> have become buddies!
@@ -100,7 +100,7 @@ const BuddyNotification = ({
     <div className="flex items-center justify-start p-2 border-b border-black">
       <Link href={`/profile/${profile_id}`}>
         <a onClick={readBuddyNoti}>
-          <Avatar img_url={profile_avatar} width={14} height={14} />
+          <Avatar img_url={profile_avatar} />
         </a>
       </Link>
       <div className="ml-2">

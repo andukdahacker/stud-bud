@@ -29,8 +29,6 @@ const ConversationInfoBar = ({
     <div className="flex flex-col items-center justify-start w-1/4 h-full p-5">
       <Avatar
         img_url={conversation_avatar ? conversation_avatar : profile_avatar}
-        width={20}
-        height={20}
       />
 
       <div>{conversation_name ? conversation_name : username}</div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { NotificationFragment } from "../generated/graphql";
-import { NotificationType } from "../utils/constants";
+import { NotificationType } from "../utils/types";
 import Avatar from "./Avatar";
 import UnreadNotiMark from "./UnReadNotiMark";
 
@@ -21,7 +21,12 @@ const Notification = ({ data }: NotificationProps) => {
     return (
       <Link href={`/one-hour-tutor/${entity_id}`}>
         <a>
-          <Avatar img_url={notifier?.profile_avatar} width={40} height={40} />
+          <Avatar
+            img_url={notifier?.profile_avatar}
+            width={4}
+            height={4}
+            border={2}
+          />
           <div>
             <b>{notifier_username}</b> sent you a tutor order connect request
           </div>
@@ -35,7 +40,12 @@ const Notification = ({ data }: NotificationProps) => {
       <Link href={`/one-hour-tutor/${entity_id}`}>
         <a>
           <div>
-            <Avatar img_url={notifier?.profile_avatar} width={40} height={40} />
+            <Avatar
+              img_url={notifier?.profile_avatar}
+              width={4}
+              height={4}
+              border={2}
+            />
             <b>{notifier_username}</b> has accepted your tutor order connect
             request!
           </div>

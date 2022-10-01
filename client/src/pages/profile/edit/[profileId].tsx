@@ -230,9 +230,9 @@ const EditProfile = () => {
               >
                 <Avatar
                   img_url={profile_avatar}
-                  width="32"
-                  height="32"
-                  border={2}
+                  width={4}
+                  height={4}
+                  border={3}
                 />
               </button>
               {profile_avatar_public_id && (

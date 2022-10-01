@@ -39,13 +39,11 @@ const BuddyCard = ({ relationshipData }: BuddyCardProps) => {
   const avatar = profile?.profile_avatar;
   const username = profile?.user?.username;
   const interests = profile?.profile_interests;
-  const conversation_id = relationshipData?.conversation_id;
-  const requester_id = relationshipData?.requester_id;
-  const addressee_id = relationshipData?.addressee_id;
+
   return (
     <div className="">
       <div className="">
-        <Avatar img_url={avatar} width={14} height={14} />
+        <Avatar img_url={avatar} />
         <div className="">{username}</div>
       </div>
       <div className="">
