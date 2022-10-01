@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import ReactModal from "react-modal";
 import {
-  ProfileFragment,
   RelationshipFragment,
   useGetProfileLazyQuery,
 } from "../generated/graphql";
 import Avatar from "./Avatar";
+import Modal from "./Modal";
 import ProfilePage from "./ProfilePage";
-import MessageButton from "./MessageButton";
 interface BuddyCardProps {
   relationshipData: RelationshipFragment | undefined;
 }
@@ -68,12 +66,12 @@ const BuddyCard = ({ relationshipData }: BuddyCardProps) => {
         </Link>
       </div>
 
-      <ReactModal isOpen={showModal} onRequestClose={closeModal}>
+      <Modal isOpen={showModal} onRequestClose={closeModal}>
         <button type="button" onClick={closeModal}>
           X
         </button>
         <ProfilePage data={GetProfileData} loading={GetProfileLoading} />
-      </ReactModal>
+      </Modal>
     </div>
   );
 };

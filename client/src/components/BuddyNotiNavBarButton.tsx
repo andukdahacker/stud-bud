@@ -1,17 +1,14 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import merge from "deepmerge";
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   GetBuddyNotificationsSubsDocument,
-  GetRelationshipDocument,
-  GetRelationshipQuery,
   useGetBuddyNotificationsLazyQuery,
 } from "../generated/graphql";
-import merge from "deepmerge";
-import { useRouter } from "next/router";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NewNotiCount from "./NewNotiCount";
 import BuddyNotificationBox from "./BuddyNotificationBox";
+import NewNotiCount from "./NewNotiCount";
 import NotificationBar from "./NotificationBar";
-import { cache } from "../lib/apolloClient";
 
 interface BuddyNotiNavBarProps {
   user_profile_id: string | undefined;

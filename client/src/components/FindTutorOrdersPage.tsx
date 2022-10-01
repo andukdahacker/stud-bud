@@ -1,12 +1,10 @@
 import { LazyQueryExecFunction, NetworkStatus } from "@apollo/client";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import {
   Exact,
   GetManyTutorOrdersInput,
   GetManyTutorOrdersQuery,
-  useGetManyTutorOrdersQuery,
 } from "../generated/graphql";
 import { TUTOR_ORDER_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";

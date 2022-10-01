@@ -1,15 +1,10 @@
-import { useApolloClient } from "@apollo/client";
 import Link from "next/link";
-import {
-  GetProfileQuery,
-  GetUserDocument,
-  GetUserQuery,
-} from "../generated/graphql";
+import { GetProfileQuery } from "../generated/graphql";
+import { useCheckAuth } from "../utils/useCheckAuth";
 import Avatar from "./Avatar";
+import BuddyButton from "./BuddyButton";
 import Loading from "./Loading";
 import Wallpaper from "./Wallpaper";
-import BuddyButton from "./BuddyButton";
-import { useCheckAuth } from "../utils/useCheckAuth";
 
 interface ProfilePageProps {
   data: GetProfileQuery | undefined;

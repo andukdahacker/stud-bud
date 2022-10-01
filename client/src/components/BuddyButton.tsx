@@ -1,9 +1,7 @@
 import { NetworkStatus } from "@apollo/client";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  GetProfileQuery,
   RelationshipStatusCode,
   useConnectBuddyMutation,
   useGetRelationshipLazyQuery,
@@ -12,7 +10,6 @@ import {
   useRespondBuddyMutation,
 } from "../generated/graphql";
 import { BuddyRespondOptions } from "../utils/types";
-
 import Loading from "./Loading";
 import MessageButton from "./MessageButton";
 

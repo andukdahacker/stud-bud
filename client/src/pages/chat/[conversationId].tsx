@@ -52,7 +52,7 @@ const ChatWithChatBox = () => {
       },
     },
     onSubscriptionData: ({ subscriptionData }) => {},
-  });
+  }); //fix not done cache new message receive
 
   useEffect(() => {
     async function fetchData() {

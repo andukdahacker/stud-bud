@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
-
 import FindBuddyPage from "../../components/FindBuddyPage";
-
 import Layout from "../../components/Layout";
 import SearchBar from "../../components/SearchBar";
 import SparkBuddiesLayout from "../../components/SparkBuddiesLayout";

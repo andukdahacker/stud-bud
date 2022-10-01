@@ -1,18 +1,16 @@
 import Avatar from "./Avatar";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import {
   ProfileFragment,
   RelationshipFragment,
-  RelationshipStatusCode,
   useGetProfileLazyQuery,
 } from "../generated/graphql";
-import ProfilePage from "./ProfilePage";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import MessageButton from "./MessageButton";
 import BuddyButton from "./BuddyButton";
 import Modal from "./Modal";
+import ProfilePage from "./ProfilePage";
 
 interface ProfileCardProps {
   profileData: ProfileFragment | undefined | null;

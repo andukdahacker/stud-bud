@@ -1,6 +1,8 @@
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/router";
-import NavBar from "../../components/NavBar";
+import * as Yup from "yup";
+import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 import TextError from "../../components/TextError";
 import {
   ChangePasswordInput,
@@ -8,11 +10,7 @@ import {
   GetUserQuery,
   useChangePasswordMutation,
 } from "../../generated/graphql";
-import * as Yup from "yup";
 import { mapErrorField } from "../../utils/mapErrorField";
-import Head from "next/head";
-import Layout from "../../components/Layout";
-import Loading from "../../components/Loading";
 
 const ChangePassword = () => {
   const router = useRouter();

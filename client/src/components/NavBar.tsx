@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCheckAuth } from "../utils/useCheckAuth";
-import logo from "../../public/Logo.png";
 import { useState } from "react";
-import ReactModal from "react-modal";
-import LogOut from "./Logout";
-import Avatar from "./Avatar";
+import logo from "../../public/Logo.png";
 import {
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
   useViewNotificationMutation,
 } from "../generated/graphql";
+import { useCheckAuth } from "../utils/useCheckAuth";
+import Avatar from "./Avatar";
+import LogOut from "./Logout";
 
 import BuddyNotiNavBarButton from "./BuddyNotiNavBarButton";
 import ChatNotiNavBarButton from "./ChatNotiNavBarButton";

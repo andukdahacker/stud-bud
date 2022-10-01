@@ -2,10 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
-import {
-  useGetManyInterestsLazyQuery,
-  useGetUserQuery,
-} from "../generated/graphql";
+import { useGetManyInterestsLazyQuery } from "../generated/graphql";
 
 import { SearchInput } from "../utils/types";
 import useDebounce from "../utils/useDebounce";

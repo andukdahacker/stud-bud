@@ -90,6 +90,8 @@ const ChatBox = ({
       bottomChatBox.current?.scrollIntoView({
         behavior: "auto",
       });
+
+    //fix not working
   }, []);
 
   return (

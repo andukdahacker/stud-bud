@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PROFILES_TAKE_LIMIT } from "../utils/constants";
 import Loading from "./Loading";
-import ProfileCardSkeleton from "./ProfileCardSkeleton";
-import SkeletonLoading from "./SkeletonLoading";
 
 interface LoadMoreTriggerProps {
   loading: boolean;

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
-import Layout from "./Layout";
 
 interface SparkBuddiesLayoutProps {
   P?: any;

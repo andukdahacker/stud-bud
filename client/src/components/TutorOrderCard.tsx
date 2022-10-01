@@ -4,7 +4,6 @@ import { useState } from "react";
 import ReactModal from "react-modal";
 import { useGetTutorOrderLazyQuery } from "../generated/graphql";
 import Avatar from "./Avatar";
-import SuggestionCard from "./SuggestionCard";
 import TutorOrderPage from "./TutorOrderPage";
 
 interface TutorOrderCardProps {
