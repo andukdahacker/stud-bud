@@ -1,14 +1,12 @@
 import { LazyQueryExecFunction, NetworkStatus } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import {
   Exact,
   GetManyProfilesInput,
   GetManyProfilesQuery,
 } from "../generated/graphql";
 import { PROFILES_TAKE_LIMIT } from "../utils/constants";
-
 import LoadMoreTrigger from "./LoadMoreTrigger";
 import ProfileCard from "./ProfileCard";
 import ProfileCardSkeleton from "./ProfileCardSkeleton";
@@ -36,8 +34,6 @@ const FindBuddyPage = ({
   networkStatus,
 }: FindBuddyPageProps) => {
   const router = useRouter();
-
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
   useEffect(() => {
     getManyProfiles({

@@ -10,7 +10,7 @@ interface NotificationProps {
 const Notification = ({ data }: NotificationProps) => {
   const type = data?.type_id;
   const notifier = data?.notifier;
-  const notifier_id = data?.notifier_id;
+
   const notifier_username = notifier?.user?.username;
   const entity_id = data?.entity_id;
   const isRead = data?.isRead;

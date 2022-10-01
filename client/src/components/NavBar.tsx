@@ -6,7 +6,6 @@ import logo from "../../public/Logo.png";
 import {
   useViewBuddyNotificationsMutation,
   useViewMessageMutation,
-  useViewNotificationMutation,
 } from "../generated/graphql";
 import { useCheckAuth } from "../utils/useCheckAuth";
 import Avatar from "./Avatar";
@@ -20,17 +19,15 @@ import Modal from "./Modal";
 const NavBar = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
   const router = useRouter();
-  const username = authData?.getUser?.username;
   const profile = authData?.getUser?.profile;
   const user_profile_id = authData?.getUser?.profile?.id;
 
   const [viewBuddyNoti, {}] = useViewBuddyNotificationsMutation();
   const [viewChatNoti, {}] = useViewMessageMutation();
-  const [viewNoti, {}] = useViewNotificationMutation();
 
   const [newBuddyNotiCount, setNewBuddyNotiCount] = useState<number>(0);
   const [newChatNotiCount, setNewChatNotiCount] = useState<number>(0);
-  const [newNotiCount, setNewNotiCount] = useState<number>(0);
+
   const [hiddenBuddyNotification, setHiddenBuddyNotification] = useState<
     string | undefined
   >("hidden");
@@ -38,9 +35,7 @@ const NavBar = () => {
   const [hiddenChatNotification, setHiddenChatNotification] = useState<
     string | undefined
   >("hidden");
-  const [hiddenNotification, setHiddenNotification] = useState<
-    string | undefined
-  >("hidden");
+
   const [hiddenButtons, setHiddenButtons] = useState<string | undefined>(
     "hidden"
   );
@@ -66,7 +61,7 @@ const NavBar = () => {
     }
 
     setNewBuddyNotiCount(0);
-    setHiddenNotification("hidden");
+
     setHiddenChatNotification("hidden");
     setHiddenButtons("hidden");
   };
@@ -93,29 +88,8 @@ const NavBar = () => {
     }
 
     setNewChatNotiCount(0);
-    setHiddenNotification("hidden");
-    setHiddenBuddyNotification("hidden");
 
-    setHiddenButtons("hidden");
-  };
-
-  const toggleNotification = async (
-    countNotViewNotification: number | null | undefined
-  ) => {
-    if (hiddenNotification === "hidden") setHiddenNotification(undefined);
-    if (hiddenNotification === undefined) setHiddenNotification("hidden");
-    if (countNotViewNotification && countNotViewNotification > 0) {
-      await viewNoti({
-        variables: {
-          where: {
-            profile_id: user_profile_id as string,
-          },
-        },
-      });
-    }
-    setNewNotiCount(0);
     setHiddenBuddyNotification("hidden");
-    setHiddenChatNotification("hidden");
 
     setHiddenButtons("hidden");
   };

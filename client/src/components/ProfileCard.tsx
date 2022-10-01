@@ -17,15 +17,12 @@ interface ProfileCardProps {
   relationshipData?: RelationshipFragment | undefined;
 }
 
-const ProfileCard = ({ profileData, relationshipData }: ProfileCardProps) => {
+const ProfileCard = ({ profileData }: ProfileCardProps) => {
   const avatar = profileData?.profile_avatar;
   const id = profileData?.id;
   const username = profileData?.user?.username;
   const interests = profileData?.profile_interests;
-  const conversation_id = relationshipData?.conversation_id;
-  const requester_id = relationshipData?.requester_id;
-  const addressee_id = relationshipData?.addressee_id;
-  const isBuddy = relationshipData?.status;
+
   const router = useRouter();
 
   const [getProfile, { data: getProfileData, loading: getProfileLoading }] =

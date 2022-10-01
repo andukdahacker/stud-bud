@@ -61,11 +61,6 @@ const BuddyNotiNavBarButton = ({
           if (!subscriptionData.data) return prev;
           const merged = merge(prev, subscriptionData.data);
 
-          const buddy_accepts =
-            subscriptionData.data.getBuddyNotifications?.buddyAccepts;
-          const buddy_requests =
-            subscriptionData.data.getBuddyNotifications?.buddyRequests;
-
           //update relationship cache(fix)
 
           return merged;

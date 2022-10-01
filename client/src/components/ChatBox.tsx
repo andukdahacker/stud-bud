@@ -40,8 +40,7 @@ const ChatBox = ({
     setMessageContent(e.target.value);
   };
 
-  const [sendMessage, { data: sendMessageData, loading: sendMessageLoading }] =
-    useSendMessageMutation();
+  const [sendMessage, {}] = useSendMessageMutation();
 
   const messages = data?.getConversation?.Messages;
   const hasNextPage = data?.getConversation?.ConversationPageInfo?.hasNextPage;

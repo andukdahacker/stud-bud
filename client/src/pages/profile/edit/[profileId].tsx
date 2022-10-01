@@ -67,7 +67,6 @@ const EditProfile = () => {
     ? profileData.profile_wallpaper
     : undefined;
   const profile_wallpaper_public_id = profileData?.profile_wallpaper_public_id;
-  const tutor_mode = profileData?.tutor_mode;
 
   const initialValues: CreateProfileInput & ProfileWhereUniqueInput = {
     profile_bio,

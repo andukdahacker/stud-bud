@@ -10,7 +10,6 @@ import {
   GetManyConversationsSubsDocument,
   useGetConversationLazyQuery,
   useGetManyConversationsLazyQuery,
-  useGetManyConversationsSubsSubscription,
   useGetUserQuery,
 } from "../../generated/graphql";
 import Loading from "../../components/Loading";
@@ -29,7 +28,7 @@ const ChatWithChatBox = () => {
     {
       data: ManyConversationsData,
       loading: ManyConversationsLoading,
-      fetchMore: fetchMoreManyConversationsData,
+
       subscribeToMore: subsGetManyConversation,
     },
   ] = useGetManyConversationsLazyQuery();
@@ -41,18 +40,18 @@ const ChatWithChatBox = () => {
       loading: getConversationLoading,
       fetchMore: fetchMoreConversationData,
       networkStatus: fetchMoreConversationNetworkStatus,
-      subscribeToMore: subsGetConversationData,
     },
   ] = useGetConversationLazyQuery();
 
-  const { data, loading } = useGetManyConversationsSubsSubscription({
-    variables: {
-      where: {
-        profile_id: user_profile_id as string,
-      },
-    },
-    onSubscriptionData: ({ subscriptionData }) => {},
-  }); //fix not done cache new message receive
+  // const { data, loading } = useGetManyConversationsSubsSubscription({
+  //   variables: {
+  //     where: {
+  //       profile_id: user_profile_id as string,
+  //     },
+  //   },
+  //   onSubscriptionData: ({ subscriptionData }) => {},
+  // });
+  //fix not done cache new message receive
 
   useEffect(() => {
     async function fetchData() {
