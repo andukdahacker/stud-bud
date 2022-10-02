@@ -10,22 +10,20 @@ export const ProfileInterest = objectType({
     t.nonNull.field("profile", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
-        return await ctx.prisma.profile.findUnique({
+        return await ctx.prisma.profile.findUniqueOrThrow({
           where: {
             id: root.profile_id,
           },
-          rejectOnNotFound: true,
         });
       },
     });
     t.nonNull.field("interest", {
       type: Interest,
       resolve: async (root, _args, ctx) => {
-        return await ctx.prisma.interest.findUnique({
+        return await ctx.prisma.interest.findUniqueOrThrow({
           where: {
             id: root.interest_id,
           },
-          rejectOnNotFound: true,
         });
       },
     });

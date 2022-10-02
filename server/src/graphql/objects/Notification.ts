@@ -9,11 +9,10 @@ export const Notification = objectType({
     t.nullable.field("notifier", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
-        return await ctx.prisma.profile.findUnique({
+        return await ctx.prisma.profile.findUniqueOrThrow({
           where: {
             id: root.notifier_id,
           },
-          rejectOnNotFound: true,
         });
       },
     });

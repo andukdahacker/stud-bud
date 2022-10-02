@@ -9,11 +9,10 @@ export const Relationship = objectType({
     t.nonNull.field("requester", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
-        return await ctx.prisma.profile.findUnique({
+        return await ctx.prisma.profile.findUniqueOrThrow({
           where: {
             id: root.requester_id,
           },
-          rejectOnNotFound: true,
         });
       },
     });
@@ -21,11 +20,10 @@ export const Relationship = objectType({
     t.nonNull.field("addressee", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
-        return await ctx.prisma.profile.findUnique({
+        return await ctx.prisma.profile.findUniqueOrThrow({
           where: {
             id: root.addressee_id,
           },
-          rejectOnNotFound: true,
         });
       },
     });

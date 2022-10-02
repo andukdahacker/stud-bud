@@ -31,7 +31,7 @@ export const Profile = objectType({
       type: User,
       resolve: async (root, _args, ctx) => {
         return await ctx.prisma.profile
-          .findUnique({ where: { id: root.id }, rejectOnNotFound: true })
+          .findUniqueOrThrow({ where: { id: root.id } })
           .user();
       },
     });

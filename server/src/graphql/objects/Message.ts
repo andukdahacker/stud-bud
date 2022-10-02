@@ -10,11 +10,10 @@ export const Message = objectType({
     t.nonNull.field("author", {
       type: Profile,
       resolve: async (root, _args, ctx) => {
-        const author = await ctx.prisma.profile.findUnique({
+        const author = await ctx.prisma.profile.findUniqueOrThrow({
           where: {
             id: root.message_author_id,
           },
-          rejectOnNotFound: true,
         });
 
         return author;
@@ -74,11 +73,10 @@ export const ConversationGroup = objectType({
     t.nonNull.field("conversation", {
       type: Conversation,
       resolve: async (root, _args, ctx) => {
-        const conversation = await ctx.prisma.conversation.findUnique({
+        const conversation = await ctx.prisma.conversation.findUniqueOrThrow({
           where: {
             id: root.conversation_id,
           },
-          rejectOnNotFound: true,
         });
 
         return conversation;
