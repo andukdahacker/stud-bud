@@ -9,7 +9,6 @@ import {
   UNSUCCESSFUL_QUERY,
 } from "../../constants";
 import { ProfileWhereUniqueInput } from "../inputs";
-
 import { withFilter } from "graphql-subscriptions";
 import { BuddyNotificationsOutput } from "../outputs";
 import { RelationshipStatusCode } from "@prisma/client";
