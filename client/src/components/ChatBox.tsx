@@ -13,8 +13,6 @@ import LoadMoreTrigger from "./LoadMoreTrigger";
 
 interface ChatBoxProps {
   data?: GetConversationQuery;
-  conversation_id?: string;
-  user_profile_id: string | undefined;
   loading: boolean;
   fetchMore: any;
   fetchMoreLoading: boolean;
@@ -23,7 +21,7 @@ interface ChatBoxProps {
 const ChatBox = ({
   data,
   loading,
-  conversation_id,
+
   fetchMore,
   fetchMoreLoading,
 }: ChatBoxProps) => {
@@ -33,7 +31,9 @@ const ChatBox = ({
   })?.getUser?.profile;
 
   const user_profile_id = user_profile?.id;
+  const conversation_id = data?.getConversation?.Conversation?.id;
   const bottomChatBox = useRef<HTMLDivElement | null>(null);
+  const chatBox = useRef<HTMLDivElement | null>(null);
 
   const [messageContent, setMessageContent] = useState<string>("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +46,14 @@ const ChatBox = ({
   const hasNextPage = data?.getConversation?.ConversationPageInfo?.hasNextPage;
   const cursor = data?.getConversation?.ConversationPageInfo?.endCursor;
   const lastTake = data?.getConversation?.ConversationPageInfo?.lastTake;
+
+  const scrollToBot = () => {
+    bottomChatBox.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+  };
 
   const initialValues = {
     message_content: "",
@@ -67,6 +75,7 @@ const ChatBox = ({
         },
       });
       setMessageContent("");
+      scrollToBot();
     }
   };
 
@@ -85,13 +94,14 @@ const ChatBox = ({
   };
 
   useEffect(() => {
-    if (bottomChatBox.current)
+    if (bottomChatBox.current) {
       bottomChatBox.current?.scrollIntoView({
         behavior: "auto",
+        block: "end",
+        inline: "nearest",
       });
-
-    //fix not working
-  }, []);
+    }
+  }, [conversation_id]);
 
   return (
     <div className="relative flex flex-col w-3/4 h-full bg-white">
@@ -105,7 +115,7 @@ const ChatBox = ({
               loading={fetchMoreLoading}
               hasNextPage={hasNextPage}
             />
-            <div className="">
+            <div className="" ref={chatBox}>
               {messages
                 ?.slice()
                 .reverse()
@@ -131,7 +141,7 @@ const ChatBox = ({
                   );
                 })}
             </div>
-            <div ref={bottomChatBox}></div>
+            <div className="h-1" ref={bottomChatBox}></div>
           </div>
         )}
       </div>
@@ -158,6 +168,9 @@ const ChatBox = ({
               className="w-2/12 px-2 py-1 font-bold text-white border-2 border-black bg-purple"
             >
               SEND
+            </button>
+            <button type="button" onClick={scrollToBot}>
+              scroll bot
             </button>
           </Form>
         </Formik>

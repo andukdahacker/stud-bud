@@ -15,10 +15,10 @@ import {
 } from "../../generated/graphql";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
-
 import { NetworkStatus } from "@apollo/client";
 import { cache } from "../../lib/apolloClient";
 import produce from "immer";
+
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
   const user_profile_id = userData?.getUser?.profile?.id;
@@ -99,7 +99,7 @@ const ChatWithChatBox = () => {
             profile_id: user_profile_id as string,
           },
         },
-        fetchPolicy: "cache-and-network",
+        // fetchPolicy: "cache-and-network",
       });
 
       subsGetManyConversation({
@@ -160,8 +160,6 @@ const ChatWithChatBox = () => {
 
         <ChatBox
           data={getConversationData}
-          conversation_id={conversation_id}
-          user_profile_id={user_profile_id}
           loading={getConversationLoading}
           fetchMore={fetchMoreConversationData}
           fetchMoreLoading={fetchMoreConversationLoading}
