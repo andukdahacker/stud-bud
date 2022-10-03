@@ -10,13 +10,15 @@ import {
   GetManyConversationsSubsDocument,
   useGetConversationLazyQuery,
   useGetManyConversationsLazyQuery,
+  useGetManyConversationsSubsSubscription,
   useGetUserQuery,
 } from "../../generated/graphql";
 import Loading from "../../components/Loading";
 import { MESSAGES_TAKE_LIMIT } from "../../utils/constants";
-import produce from "immer";
-import { cache } from "../../lib/apolloClient";
+
 import { NetworkStatus } from "@apollo/client";
+import { cache } from "../../lib/apolloClient";
+import produce from "immer";
 const ChatWithChatBox = () => {
   const { data: userData, loading: userLoading } = useGetUserQuery();
   const user_profile_id = userData?.getUser?.profile?.id;
@@ -43,15 +45,51 @@ const ChatWithChatBox = () => {
     },
   ] = useGetConversationLazyQuery();
 
-  // const { data, loading } = useGetManyConversationsSubsSubscription({
-  //   variables: {
-  //     where: {
-  //       profile_id: user_profile_id as string,
-  //     },
-  //   },
-  //   onSubscriptionData: ({ subscriptionData }) => {},
-  // });
-  //fix not done cache new message receive
+  const {} = useGetManyConversationsSubsSubscription({
+    variables: {
+      where: {
+        profile_id: user_profile_id as string,
+      },
+    },
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.getManyConversations?.Conversations) {
+        const conversations =
+          subscriptionData.data.getManyConversations.Conversations;
+        const sorted = conversations?.slice(0).sort((a, b) => {
+          const dateA = a.conversation.conversation_latest_message?.createdAt;
+          const dateB = b.conversation.conversation_latest_message?.createdAt;
+          return dateB - dateA;
+        });
+        const newConvo = sorted[0];
+        const newConvo_id = newConvo.conversation_id;
+        const newMessage = newConvo.conversation.conversation_latest_message;
+        const exact_convo = cache.readQuery<GetConversationQuery>({
+          query: GetConversationDocument,
+          variables: {
+            where: {
+              conversation_id: newConvo_id,
+            },
+          },
+        });
+        if (exact_convo) {
+          const merged = produce(exact_convo, (draft) => {
+            if (draft.getConversation?.Messages && newMessage) {
+              draft.getConversation.Messages.unshift(newMessage);
+            }
+          });
+          cache.writeQuery<GetConversationQuery>({
+            query: GetConversationDocument,
+            variables: {
+              where: {
+                conversation_id: newConvo_id,
+              },
+            },
+            data: merged,
+          });
+        }
+      }
+    },
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -73,51 +111,6 @@ const ChatWithChatBox = () => {
         },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
-          if (subscriptionData.data.getManyConversations?.Conversations) {
-            const conversations =
-              subscriptionData.data.getManyConversations.Conversations;
-            const sorted = conversations?.slice(0).sort((a, b) => {
-              const dateA =
-                a.conversation.conversation_latest_message?.createdAt;
-              const dateB =
-                b.conversation.conversation_latest_message?.createdAt;
-
-              return dateB - dateA;
-            });
-
-            const newConvo = sorted[0];
-
-            const newConvo_id = newConvo.conversation_id;
-            const newMessage =
-              newConvo.conversation.conversation_latest_message;
-
-            const exact_convo = cache.readQuery<GetConversationQuery>({
-              query: GetConversationDocument,
-              variables: {
-                where: {
-                  conversation_id: newConvo_id,
-                },
-              },
-            });
-
-            if (exact_convo) {
-              const merged = produce(exact_convo, (draft) => {
-                if (draft.getConversation?.Messages && newMessage) {
-                  draft.getConversation.Messages.unshift(newMessage);
-                }
-              });
-
-              cache.writeQuery<GetConversationQuery>({
-                query: GetConversationDocument,
-                variables: {
-                  where: {
-                    conversation_id: newConvo_id,
-                  },
-                },
-                data: merged,
-              });
-            }
-          }
           return subscriptionData.data;
         },
       });
