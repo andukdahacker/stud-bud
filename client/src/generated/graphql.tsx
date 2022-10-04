@@ -1142,13 +1142,6 @@ export type GetManyConversationsSubsSubscriptionVariables = Exact<{
 
 export type GetManyConversationsSubsSubscription = { __typename?: 'Subscription', getManyConversations?: { __typename?: 'getManyConversationPutput', countNotViewedConversation?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, Conversations?: Array<{ __typename?: 'ConversationGroup', conversation_id: string, conversation_member_id: string, isRead: boolean, isViewed: boolean, joined_at: any, left_at?: any | null, conversation: { __typename?: 'Conversation', id: string, conversation_name?: string | null, conversation_avatar?: string | null, conversation_latest_message?: { __typename?: 'Message', id: string, conversation_id: string, message_author_id: string, message_content: string, createdAt?: any | null, author: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } } | null, conversation_member: Array<{ __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null }> } }> | null } | null };
 
-export type GetNotificationsSubSubscriptionVariables = Exact<{
-  where: ProfileWhereUniqueInput;
-}>;
-
-
-export type GetNotificationsSubSubscription = { __typename?: 'Subscription', getNotifications?: { __typename?: 'GetNotificationOutput', countNotViewedNotifications?: number | null, IOutput: { __typename?: 'IOutput', code: number, message: string, success: boolean }, notifications?: Array<{ __typename?: 'Notification', id: string, entity_id?: string | null, receiver_id: string, notifier_id: string, type_id: number, message?: string | null, isViewed: boolean, isRead: boolean, createdAt: any, notifier?: { __typename?: 'Profile', id: string, profile_bio?: string | null, profile_avatar?: string | null, profile_avatar_public_id?: string | null, profile_wallpaper?: string | null, profile_wallpaper_public_id?: string | null, tutor_mode: boolean, profile_interests?: Array<{ __typename?: 'ProfileInterest', interest_id: string, profile_id: string, interest: { __typename?: 'Interest', id: string, interest_name?: string | null } } | null> | null, user?: { __typename?: 'User', id: string, username: string, email: string, isVerified: boolean } | null } | null } | null> | null } | null };
-
 export const InterestFragmentDoc = gql`
     fragment Interest on Interest {
   id
@@ -3186,40 +3179,3 @@ export function useGetManyConversationsSubsSubscription(baseOptions: Apollo.Subs
       }
 export type GetManyConversationsSubsSubscriptionHookResult = ReturnType<typeof useGetManyConversationsSubsSubscription>;
 export type GetManyConversationsSubsSubscriptionResult = Apollo.SubscriptionResult<GetManyConversationsSubsSubscription>;
-export const GetNotificationsSubDocument = gql`
-    subscription GetNotificationsSub($where: ProfileWhereUniqueInput!) {
-  getNotifications(where: $where) {
-    IOutput {
-      ...IOutput
-    }
-    notifications {
-      ...Notification
-    }
-    countNotViewedNotifications
-  }
-}
-    ${IOutputFragmentDoc}
-${NotificationFragmentDoc}`;
-
-/**
- * __useGetNotificationsSubSubscription__
- *
- * To run a query within a React component, call `useGetNotificationsSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetNotificationsSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNotificationsSubSubscription({
- *   variables: {
- *      where: // value for 'where'
- *   },
- * });
- */
-export function useGetNotificationsSubSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetNotificationsSubSubscription, GetNotificationsSubSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetNotificationsSubSubscription, GetNotificationsSubSubscriptionVariables>(GetNotificationsSubDocument, options);
-      }
-export type GetNotificationsSubSubscriptionHookResult = ReturnType<typeof useGetNotificationsSubSubscription>;
-export type GetNotificationsSubSubscriptionResult = Apollo.SubscriptionResult<GetNotificationsSubSubscription>;

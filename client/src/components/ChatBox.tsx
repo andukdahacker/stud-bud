@@ -21,7 +21,6 @@ interface ChatBoxProps {
 const ChatBox = ({
   data,
   loading,
-
   fetchMore,
   fetchMoreLoading,
 }: ChatBoxProps) => {
@@ -47,13 +46,13 @@ const ChatBox = ({
   const cursor = data?.getConversation?.ConversationPageInfo?.endCursor;
   const lastTake = data?.getConversation?.ConversationPageInfo?.lastTake;
 
-  const scrollToBot = () => {
-    bottomChatBox.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
+  // const scrollToBot = () => {
+  //   bottomChatBox.current?.scrollIntoView({
+  //     behavior: "smooth",
+  //     block: "end",
+  //     inline: "nearest",
+  //   });
+  // };
 
   const initialValues = {
     message_content: "",
@@ -75,7 +74,6 @@ const ChatBox = ({
         },
       });
       setMessageContent("");
-      scrollToBot();
     }
   };
 
@@ -101,7 +99,7 @@ const ChatBox = ({
         inline: "nearest",
       });
     }
-  }, [conversation_id]);
+  }, [conversation_id, sendMessage]);
 
   return (
     <div className="relative flex flex-col w-3/4 h-full bg-white">
@@ -109,7 +107,7 @@ const ChatBox = ({
         {loading ? (
           <Loading />
         ) : (
-          <div>
+          <div className="relative">
             <LoadMoreTrigger
               loadMore={loadMore}
               loading={fetchMoreLoading}
@@ -168,9 +166,6 @@ const ChatBox = ({
               className="w-2/12 px-2 py-1 font-bold text-white border-2 border-black bg-purple"
             >
               SEND
-            </button>
-            <button type="button" onClick={scrollToBot}>
-              scroll bot
             </button>
           </Form>
         </Formik>

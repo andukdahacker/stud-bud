@@ -71,6 +71,7 @@ const ChatWithChatBox = () => {
             },
           },
         });
+        //merge new message to cache
         if (exact_convo) {
           const merged = produce(exact_convo, (draft) => {
             if (draft.getConversation?.Messages && newMessage) {
@@ -99,7 +100,6 @@ const ChatWithChatBox = () => {
             profile_id: user_profile_id as string,
           },
         },
-        // fetchPolicy: "cache-and-network",
       });
 
       subsGetManyConversation({
