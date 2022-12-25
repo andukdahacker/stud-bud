@@ -1,0 +1,5 @@
+fragment Purpose on Purpose {
+  id
+  purpose_name
+  purpose_description
+}

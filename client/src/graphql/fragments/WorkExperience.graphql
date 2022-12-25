@@ -1,0 +1,10 @@
+fragment WorkExperience on WorkExperience {
+  id
+  workplace_name
+  work_position
+  work_description
+  current
+  logo
+  joined_at
+  left_at
+}

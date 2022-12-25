@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import Layout from "../components/Layouts/Layout";
 
 const NotificationPage = () => {
   return <Layout></Layout>;

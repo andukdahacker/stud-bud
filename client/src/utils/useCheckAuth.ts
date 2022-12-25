@@ -25,7 +25,7 @@ export const useCheckAuth = () => {
         router.route !== "/forgot-password" &&
         router.route !== "/change-password/[token]" &&
         router.route !== "/verify-email/[token]" &&
-        router.route !== "/spark-buddies/find" &&
+        router.route !== "/spark-buddies/find-buddy" &&
         router.route !== "/"
       ) {
         router.replace("/login");

@@ -1,4 +1,3 @@
-import { FormikValues } from "formik";
 import { RelationshipStatusCode } from "../generated/graphql";
 
 export enum BuddyStatus {
@@ -29,4 +28,8 @@ export const NotificationType = {
   TUTOR_ORDER_COMPLETE_TUTOR_ORDER: 4,
 };
 
-export type SearchInput = FormikValues & { search_input: string };
+export type ProfileModalFormsType =
+  | "age_location"
+  | "introduction"
+  | "work_experience"
+  | "education";

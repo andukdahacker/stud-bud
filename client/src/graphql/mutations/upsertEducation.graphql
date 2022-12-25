@@ -1,0 +1,14 @@
+mutation UpsertEducation(
+  $where: ProfileWhereUniqueInput!
+  $input: UpsertEducationInput!
+) {
+  upsertEducation(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    education {
+      ...Education
+    }
+  }
+}

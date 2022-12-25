@@ -1,0 +1,14 @@
+mutation UpdateWallpaper(
+  $where: ProfileWhereUniqueInput!
+  $input: ChangeImageInput!
+) {
+  updateWallpaper(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    Profile {
+      ...Profile
+    }
+  }
+}

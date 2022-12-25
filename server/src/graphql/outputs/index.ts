@@ -5,3 +5,5 @@ export * from "./InterestOutput";
 export * from "./RelationshipOutput";
 export * from "./MessageOutput";
 export * from "./TutorOrderOutput";
+export * from "./PurposeOutput";
+export * from "./BuddyRequestOutput";

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/Layouts/Layout";
 import {
   GetUserDocument,
   GetUserQuery,

@@ -1,0 +1,10 @@
+query GetManyPurposeTypes($where: GetManyPurposeTypesInput!) {
+  getManyPurposeTypes(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    purpose_types {
+      ...PurposeType
+    }
+  }
+}

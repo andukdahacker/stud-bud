@@ -8,7 +8,6 @@ html {
 }
 body {
   height: 100%;
-  min-height: 100vh;
   width: 100%;
   padding: 0;
   margin: 0;
@@ -17,5 +16,19 @@ body {
 @layer base {
   html {
     @apply font-lexend scroll-smooth overscroll-none;
+  }
+}
+
+@layer components {
+  .purpleButton {
+    @apply px-2 py-1 font-semibold text-white border-2 border-black rounded-md bg-purple;
+  }
+
+  .whiteButton {
+    @apply px-2 py-1 font-semibold text-black bg-white border-2 border-black rounded-md;
+  }
+
+  .blueButton {
+    @apply px-2 py-1 font-semibold text-black border-2 border-black rounded-md bg-blue;
   }
 }

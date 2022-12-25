@@ -1,0 +1,4 @@
+fragment Location on Location {
+  id
+  location_name
+}

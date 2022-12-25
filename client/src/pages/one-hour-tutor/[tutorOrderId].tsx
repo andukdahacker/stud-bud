@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Layout from "../../components/Layout";
-import TutorOrderPage from "../../components/TutorOrderPage";
+import Layout from "../../components/Layouts/Layout";
+import TutorOrderPage from "../../components/TutorOrder/TutorOrderPage";
 import { useGetTutorOrderLazyQuery } from "../../generated/graphql";
 
 const TutorOrder = () => {

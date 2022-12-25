@@ -5,3 +5,5 @@ export * from "./RelationshipInput";
 export * from "./MessageInput";
 export * from "./TutorOrderInput";
 export * from "./NotificationInput";
+export * from "./PurposeInput";
+export * from "./BuddyRequestInput";

@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import { useGetProfileLazyQuery } from "../../generated/graphql";
-import ProfilePage from "../../components/ProfilePage";
-import Layout from "../../components/Layout";
+import ProfilePage from "../../components/Profile/ProfilePage";
+import Layout from "../../components/Layouts/Layout";
 import { useEffect } from "react";
+import Loading from "../../components/Loading/Loading";
 
 const Profile = () => {
   const router = useRouter();
   const profile_id = router.query.profileId as string;
 
-  const [getProfile, { data: getProfileData, loading: getProfileLoading }] =
+  const [getProfile, { data: GetProfileData, loading: GetProfileLoading }] =
     useGetProfileLazyQuery();
-
+  const profile = GetProfileData?.getProfile?.Profile;
   useEffect(() => {
     if (router.isReady)
       getProfile({
@@ -21,11 +22,17 @@ const Profile = () => {
         },
       });
   }, [router.isReady, router, getProfile, profile_id]);
-  const username = getProfileData?.getProfile?.Profile?.user?.username;
+  const username = GetProfileData?.getProfile?.Profile?.user?.username;
 
   return (
     <Layout username={username}>
-      <ProfilePage data={getProfileData} loading={getProfileLoading} />
+      {GetProfileLoading ? (
+        <Loading />
+      ) : !profile ? (
+        <div>Cannot fetch profile</div>
+      ) : (
+        <ProfilePage profile={profile} />
+      )}
     </Layout>
   );
 };

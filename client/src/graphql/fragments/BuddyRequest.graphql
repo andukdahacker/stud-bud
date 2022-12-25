@@ -1,0 +1,14 @@
+fragment BuddyRequest on BuddyRequest {
+  id
+  description
+  buddy_requester {
+    ...Profile
+  }
+  purpose {
+    ...Purpose
+  }
+  purpose_type {
+    ...PurposeType
+  }
+  extended_buddy_request_data
+}

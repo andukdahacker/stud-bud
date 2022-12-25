@@ -32,6 +32,7 @@ model Profile {
   profile_interests           ProfileInterests[]
   requester                   Relationship[]           @relation("requester")
   addressee                   Relationship[]           @relation("addressee")
+  buddy_requester             BuddyRequest[]
   noti_notifier               Notification[]           @relation("notifier")
   noti_receiver               Notification[]           @relation("receiver")
   message_author              Message[]
@@ -41,9 +42,54 @@ model Profile {
   tutor_order_tutor_connect   TutorOrderTutorConnect[]
   user                        User                     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id                     String                   @unique
+  location                    Location?                @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  location_id                 Int?
+  birthday                    DateTime?
+  work_experience             WorkExperience[]
+  education                   Education[]
+  gender                      Gender?
   createdAt                   DateTime                 @unique @default(now())
   updatedAt                   DateTime                 @updatedAt
+}
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+}
+
+model Location {
+  id            Int       @id @default(autoincrement())
+  location_name String    @unique
+  profile       Profile[]
+}
+
+model WorkExperience {
+  id               String    @id @default(cuid())
+  workplace_name   String
+  work_position    String?
+  work_description String?   @db.Text
+  logo             String?   @db.VarChar()
+  logo_public_id   String?   @db.VarChar()
+  current          Boolean   @default(false)
+  joined_at        DateTime?
+  left_at          DateTime?
+  profile          Profile   @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id       String
+}
+
+model Education {
+  id                    String    @id @default(cuid())
+  institution_name      String
+  field_of_study        String
+  education_description String?   @db.Text
+  current               Boolean   @default(false)
+  logo                  String?   @db.VarChar
+  logo_public_id        String?   @db.VarChar()
+  joined_at             DateTime?
+  left_at               DateTime?
+  profile               Profile   @relation(fields: [profile_id], references: [id], onDelete: Cascade)
+  profile_id            String
 }
 
 model Interest {
@@ -66,12 +112,32 @@ model ProfileInterests {
   @@id([profile_id, interest_id])
 }
 
-model Relationship {
-  requester    Profile @relation("requester", fields: [requester_id], references: [id], onDelete: Cascade)
-  requester_id String
-  addressee    Profile @relation("addressee", fields: [addressee_id], references: [id], onDelete: Cascade)
-  addressee_id String
+model Purpose {
+  id                  String         @id @default(cuid())
+  purpose_name        String         @unique @db.VarChar
+  purpose_description String         @db.Text
+  buddy_request       BuddyRequest[]
 
+  purpose_type PurposeType[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model PurposeType {
+  id                       String  @id @default(cuid())
+  purpose                  Purpose @relation(fields: [purpose_id], references: [id], onDelete: Cascade)
+  purpose_id               String
+  purpose_type_name        String  @unique @db.VarChar()
+  purpose_type_description String  @db.Text
+
+  buddy_request BuddyRequest[]
+}
+
+model Relationship {
+  requester       Profile                @relation("requester", fields: [requester_id], references: [id], onDelete: Cascade)
+  requester_id    String
+  addressee       Profile                @relation("addressee", fields: [addressee_id], references: [id], onDelete: Cascade)
+  addressee_id    String
   status          RelationshipStatusCode
   conversation    Conversation?          @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
   conversation_id String?
@@ -102,7 +168,6 @@ model Notification {
   isRead      Boolean          @default(false)
   isViewed    Boolean          @default(false)
   createdAt   DateTime         @default(now())
-
 }
 
 model NotificationType {
@@ -120,7 +185,6 @@ model Message {
   conversation_id   String
   message_content   String       @db.Text
   createdAt         DateTime     @default(now())
-
 }
 
 model Conversation {
@@ -143,6 +207,20 @@ model ConversationGroup {
   left_at                DateTime?
 
   @@id([conversation_member_id, conversation_id])
+}
+
+model BuddyRequest {
+  id                          String      @id @default(cuid())
+  buddy_requester             Profile     @relation(fields: [buddy_requester_id], references: [id], onDelete: Cascade)
+  buddy_requester_id          String
+  purpose                     Purpose     @relation(fields: [purpose_id], references: [id], onDelete: Cascade)
+  purpose_id                  String
+  purpose_type                PurposeType @relation(fields: [purpose_type_id], references: [id], onDelete: Cascade)
+  purpose_type_id             String
+  description                 String      @db.Text
+  extended_buddy_request_data Json?
+  createdAt                   DateTime    @default(now())
+  updatedAt                   DateTime    @updatedAt
 }
 
 model TutorOrder {

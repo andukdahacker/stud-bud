@@ -6,3 +6,6 @@ export * from "./Relationship";
 export * from "./dev";
 export * from "./Message";
 export * from "./TutorOrder";
+export * from "./Purpose";
+export * from "./PurposeType";
+export * from "./BuddyRequest";

@@ -1,0 +1,11 @@
+subscription GetNotificationsSub($where: ProfileWhereUniqueInput!) {
+  getNotifications(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    notifications {
+      ...Notification
+    }
+    countNotViewedNotifications
+  }
+}

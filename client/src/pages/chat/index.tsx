@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import ConversationList from "../../components/ConversationList";
-import ConversationListBar from "../../components/ConversationListBar";
-import Layout from "../../components/Layout";
-import Loading from "../../components/Loading";
+import ConversationList from "../../components/Chat/ConversationList";
+import ConversationListBar from "../../components/Chat/ConversationListBar";
+import Layout from "../../components/Layouts/Layout";
+import Loading from "../../components/Loading/Loading";
 import {
   useGetManyConversationsLazyQuery,
   useGetUserQuery,

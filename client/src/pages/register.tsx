@@ -2,15 +2,15 @@ import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { useRegisterMutation, RegisterInput } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { mapErrorField } from "../utils/mapErrorField";
-import TextError from "../components/TextError";
+import TextError from "../components/Forms/TextError";
 import * as Yup from "yup";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../../public/Logo.png";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/Layouts/Layout";
 
 const Register = () => {
   const [registerMutation, { loading }] = useRegisterMutation({});
@@ -60,78 +60,74 @@ const Register = () => {
 
   return (
     <Layout>
-      <div className="p-5">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          validationSchema={registerValidationSchema}
-        >
-          {({ isSubmitting }) => (
-            <Form className="flex flex-col items-center justify-center ">
-              <Image src={logo} />
-              <h2 className="mt-3 text-3xl font-extrabold ">
-                Create an account
-              </h2>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={registerValidationSchema}
+      >
+        {({ isSubmitting }) => (
+          <Form className="flex flex-col items-center justify-center max-w-md p-5 mx-auto">
+            <Image src={logo} />
+            <h2 className="mt-3 text-2xl font-extrabold ">Create an account</h2>
 
-              <div className="flex flex-col items-center justify-center w-full mt-2 ">
-                <div className="flex w-1/3 ">
-                  <label htmlFor="username" className="mr-2 font-bold">
-                    Username
-                  </label>
-                  <ErrorMessage name="username" component={TextError} />
-                </div>
-                <Field
-                  name="username"
-                  placeholder="Username"
-                  className="w-1/3 p-2 border border-black rounded-t-sm "
-                />
-                <div className="flex w-1/3">
-                  <label htmlFor="email" className="mr-2 font-bold">
-                    Email
-                  </label>
-                  <ErrorMessage name="email" component={TextError} />
-                </div>
-                <Field
-                  name="email"
-                  placeholder="Email"
-                  className="w-1/3 p-2 border border-black "
-                />
-                <div className="flex w-1/3">
-                  <label htmlFor="password" className="mr-2 font-bold">
-                    Password
-                  </label>
-                  <ErrorMessage name="password" component={TextError} />
-                </div>
-                <div className="relative w-1/3">
-                  <Field
-                    name="password"
-                    type={passwordVisibility ? "text" : "password"}
-                    placeholder="Password"
-                    className="w-full p-2 border border-black rounded-b-sm "
-                  />
-                  <FontAwesomeIcon
-                    icon="eye"
-                    size="lg"
-                    className="absolute top-3 right-1 hover:cursor-pointer"
-                    onClick={togglePasswordVisibility}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting ? true : false}
-                  className="px-2 py-1 my-3 font-bold text-white border-2 border-black bg-purple"
-                >
-                  {loading ? <Loading /> : <div>SIGN UP</div>}
-                </button>
-
-                <Link href="/login">
-                  <a className="text-blue-700">Already have an account?</a>
-                </Link>
+            <div className="flex flex-col items-center justify-center w-full mt-2 ">
+              <div className="flex w-full ">
+                <label htmlFor="username" className="mr-2 font-bold">
+                  Username
+                </label>
+                <ErrorMessage name="username" component={TextError} />
               </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
+              <Field
+                name="username"
+                placeholder="Username"
+                className="w-full p-2 border border-black rounded-t-sm "
+              />
+              <div className="flex w-full">
+                <label htmlFor="email" className="mr-2 font-bold">
+                  Email
+                </label>
+                <ErrorMessage name="email" component={TextError} />
+              </div>
+              <Field
+                name="email"
+                placeholder="Email"
+                className="w-full p-2 border border-black "
+              />
+              <div className="flex w-full">
+                <label htmlFor="password" className="mr-2 font-bold">
+                  Password
+                </label>
+                <ErrorMessage name="password" component={TextError} />
+              </div>
+              <div className="relative w-full">
+                <Field
+                  name="password"
+                  type={passwordVisibility ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full p-2 border border-black rounded-b-sm "
+                />
+                <FontAwesomeIcon
+                  icon="eye"
+                  size="lg"
+                  className="absolute top-3 right-1 hover:cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting ? true : false}
+                className="px-2 py-1 my-3 font-bold text-white border-2 border-black bg-purple"
+              >
+                {loading ? <Loading /> : <div>SIGN UP</div>}
+              </button>
+
+              <Link href="/login">
+                <a className="text-blue-700">Already have an account?</a>
+              </Link>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </Layout>
   );
 };

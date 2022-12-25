@@ -1,0 +1,13 @@
+mutation UpsertAgeLocation(
+  $where: ProfileWhereUniqueInput!
+  $input: UpsertAgeLocationInput!
+) {
+  upsertAgeLocation(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    Profile {
+      ...Profile
+    }
+  }
+}

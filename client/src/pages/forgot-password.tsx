@@ -5,9 +5,9 @@ import {
 } from "../generated/graphql";
 import * as Yup from "yup";
 import { mapErrorField } from "../utils/mapErrorField";
-import TextError from "../components/TextError";
-import Layout from "../components/Layout";
-import Loading from "../components/Loading";
+import TextError from "../components/Forms/TextError";
+import Layout from "../components/Layouts/Layout";
+import Loading from "../components/Loading/Loading";
 
 const ForgotPassword = () => {
   const [forgotPassword, { data, loading }] = useForgotPasswordMutation();

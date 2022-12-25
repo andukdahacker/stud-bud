@@ -6,5 +6,8 @@ mutation removeWallpaper(
     IOutput {
       ...IOutput
     }
+    Profile {
+      ...Profile
+    }
   }
 }

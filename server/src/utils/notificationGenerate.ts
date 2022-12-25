@@ -40,8 +40,8 @@ export const notificationGenerator = async ({
       },
     });
 
-    pubsub.publish(NEW_NOTIFICATION_EVENT, notification);
     if (!notification) return false;
+    pubsub.publish(NEW_NOTIFICATION_EVENT, notification);
   } else {
     for (let i = 0; i < receiver_id.length; i++) {
       const notification = await ctx.prisma.notification.create({
@@ -65,8 +65,8 @@ export const notificationGenerator = async ({
         },
       });
 
-      pubsub.publish(NEW_NOTIFICATION_EVENT, notification);
       if (!notification) return false;
+      pubsub.publish(NEW_NOTIFICATION_EVENT, notification);
     }
   }
 

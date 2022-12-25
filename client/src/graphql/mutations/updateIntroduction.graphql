@@ -1,0 +1,14 @@
+mutation UpdateIntroduction(
+  $where: ProfileWhereUniqueInput!
+  $input: updateIntroductionInput!
+) {
+  updateIntroduction(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    Profile {
+      ...Profile
+    }
+  }
+}

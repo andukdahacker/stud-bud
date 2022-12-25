@@ -1,0 +1,10 @@
+query GetUniquePurposeType($where: GetUniquePurposeTypeInput!) {
+  getUniquePurposeType(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    purpose_type {
+      ...PurposeType
+    }
+  }
+}

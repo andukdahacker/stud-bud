@@ -1,0 +1,15 @@
+query GetSuggestedBuddyRequests($where: GetSuggestedBuddyRequests!) {
+  getSuggestedBuddyRequests(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    buddy_requests {
+      ...BuddyRequest
+    }
+    BuddyRequestPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
+    }
+  }
+}

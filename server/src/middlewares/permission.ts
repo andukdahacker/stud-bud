@@ -1,5 +1,6 @@
 import { allow, rule, shield } from "graphql-shield";
 import { IRuleResult } from "graphql-shield/dist/types";
+import { __prod__ } from "src/constants";
 // import { UNAUTHORISED } from "../constants";
 import { Context } from "../context";
 
@@ -15,26 +16,26 @@ const rules = {
       }
     }
   ),
-  isProfileOwner: rule()(
-    async (_parent, args, ctx: Context): Promise<IRuleResult> => {
-      const userId = ctx.req.session.userId;
+  // isProfileOwner: rule()(
+  //   async (_parent, args, ctx: Context): Promise<IRuleResult> => {
+  //     const userId = ctx.req.session.userId;
 
-      const profile = await ctx.prisma.user
-        .findUnique({
-          where: {
-            id: userId,
-          },
-          rejectOnNotFound: true,
-        })
-        .profile();
+  //     const profile = await ctx.prisma.user
+  //       .findUnique({
+  //         where: {
+  //           id: userId,
+  //         },
+  //         rejectOnNotFound: true,
+  //       })
+  //       .profile();
 
-      if (profile?.id === args.where.profile_id) {
-        return true;
-      }
+  //     if (profile?.id === args.where.profile_id) {
+  //       return true;
+  //     }
 
-      return new Error("2");
-    }
-  ),
+  //     return new Error("2");
+  //   }
+  // ),
 };
 
 export const middleware = shield({
@@ -51,7 +52,6 @@ export const middleware = shield({
     register: allow,
     login: allow,
     logout: allow,
-    updateProfile: rules.isProfileOwner,
     forgotPassword: allow,
     changePassword: allow,
     verifyEmail: allow,

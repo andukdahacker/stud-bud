@@ -1,0 +1,13 @@
+mutation UpdateBuddyRequest(
+  $where: BuddyRequestWhereUniqueInput!
+  $input: UpdateBuddyRequestInput!
+) {
+  updateBuddyRequest(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    buddy_request {
+      ...BuddyRequest
+    }
+  }
+}

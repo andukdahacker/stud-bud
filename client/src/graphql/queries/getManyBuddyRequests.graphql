@@ -1,0 +1,15 @@
+query GetManyBuddyRequests($where: GetManyBuddyRequestsInput!) {
+  getManyBuddyRequests(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    buddy_requests {
+      ...BuddyRequest
+    }
+    BuddyRequestPageInfo {
+      endCursor
+      hasNextPage
+      lastTake
+    }
+  }
+}

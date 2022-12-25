@@ -16,6 +16,7 @@ import { createClient } from "graphql-ws";
 import fetch from "isomorphic-unfetch";
 import {
   GetConversationOutput,
+  GetManyBuddyRequestsOutput,
   GetManyProfilesOutput,
   GetMyBuddiesOutput,
 } from "../generated/graphql";
@@ -81,6 +82,30 @@ export const cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache({
                   ...incoming.relationships,
                 ];
                 draft.PageInfo = incoming.PageInfo;
+              }
+            });
+
+            console.log(merged);
+
+            return merged;
+          },
+        },
+        getManyBuddyRequests: {
+          keyArgs: [],
+          merge: (
+            prev: GetManyBuddyRequestsOutput,
+            incoming: GetManyBuddyRequestsOutput
+          ) => {
+            if (!prev) return incoming;
+            if (!incoming) return prev;
+
+            const merged = produce(prev, (draft) => {
+              if (draft.buddy_requests && incoming.buddy_requests) {
+                draft.buddy_requests = [
+                  ...draft.buddy_requests,
+                  ...incoming.buddy_requests,
+                ];
+                draft.BuddyRequestPageInfo = incoming.BuddyRequestPageInfo;
               }
             });
 

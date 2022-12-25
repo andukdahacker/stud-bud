@@ -1,0 +1,14 @@
+mutation UpdateAvatar(
+  $where: ProfileWhereUniqueInput!
+  $input: ChangeImageInput!
+) {
+  updateAvatar(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+
+    Profile {
+      ...Profile
+    }
+  }
+}

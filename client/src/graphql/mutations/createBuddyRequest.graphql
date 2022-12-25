@@ -1,0 +1,10 @@
+mutation CreateBuddyRequest($input: CreateBuddyRequestInput!) {
+  createBuddyRequest(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    buddy_request {
+      ...BuddyRequest
+    }
+  }
+}

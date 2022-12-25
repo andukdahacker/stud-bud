@@ -1,8 +1,8 @@
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import Layout from "../../../components/Layout";
-import Loading from "../../../components/Loading";
+import Layout from "../../../components/Layouts/Layout";
+import Loading from "../../../components/Loading/Loading";
 import {
   CreateTutorOrderInput,
   TutorOrderWhereUniqueInput,

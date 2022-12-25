@@ -1,0 +1,13 @@
+mutation UpsertWorkExperience(
+  $where: ProfileWhereUniqueInput!
+  $input: UpsertWorkExperienceInput!
+) {
+  upsertWorkExperience(where: $where, input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    work_experience {
+      ...WorkExperience
+    }
+  }
+}

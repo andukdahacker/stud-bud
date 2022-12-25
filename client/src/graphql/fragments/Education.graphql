@@ -1,0 +1,11 @@
+fragment Education on Education {
+  id
+  institution_name
+  field_of_study
+  education_description
+  current
+  logo
+  logo_public_id
+  joined_at
+  left_at
+}

@@ -1,0 +1,10 @@
+mutation CreatePurposeType($input: CreatePurposeTypeInput!) {
+  createPurposeType(input: $input) {
+    IOutput {
+      ...IOutput
+    }
+    purpose_type {
+      ...PurposeType
+    }
+  }
+}

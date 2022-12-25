@@ -6,16 +6,16 @@ import {
   useLoginMutation,
   LoginInput,
 } from "../generated/graphql";
-import TextError from "../components/TextError";
+import TextError from "../components/Forms/TextError";
 import { mapErrorField } from "../utils/mapErrorField";
 import * as Yup from "yup";
 import Link from "next/link";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 import Image from "next/image";
 import logo from "../../public/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/Layouts/Layout";
 
 const Login = () => {
   const [logInMutation, { loading }] = useLoginMutation();
@@ -72,73 +72,71 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className="flex items-center justify-center w-full h-full p-5 bg-red-200">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={onSubmit}
-          validationSchema={logInValidationSchema}
-        >
-          {({ isSubmitting }) => (
-            <Form className="flex flex-col items-center justify-center ">
-              <Image src={logo} />
-              <h2 className="mt-5 text-2xl font-extrabold leading-9 tracking-widest font-lexendZetta text-blue">
-                Sign in to your account
-              </h2>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={logInValidationSchema}
+      >
+        {({ isSubmitting }) => (
+          <Form className="flex flex-col items-center justify-center w-full h-full max-w-md p-5 mx-auto">
+            <Image src={logo} />
+            <h2 className="mt-5 text-2xl font-extrabold text-blue">
+              Sign in to your account
+            </h2>
 
-              <div className="flex flex-col items-center justify-center w-full mt-5 h-fit">
-                <div className="flex w-1/3">
-                  <label htmlFor="email" className="mr-2 font-bold">
-                    Email
-                  </label>
-                  <ErrorMessage name="email" component={TextError} />
-                </div>
-
-                <Field
-                  name="email"
-                  placeholder="Email"
-                  className="w-1/3 p-2 border border-black rounded-t-sm "
-                />
-
-                <div className="flex w-1/3">
-                  <label htmlFor="password" className="mr-2 font-bold">
-                    Password
-                  </label>
-                  <ErrorMessage name="password" component={TextError} />
-                </div>
-
-                <div className="relative w-1/3 ">
-                  <Field
-                    name="password"
-                    type={passwordVisibility ? "text" : "password"}
-                    placeholder="Password"
-                    className="w-full p-2 border border-black rounded-b-sm"
-                  />
-                  <div className="absolute top-2 right-1 hover:cursor-pointer">
-                    <FontAwesomeIcon
-                      icon="eye"
-                      size="lg"
-                      onClick={togglePasswordVisibility}
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting ? true : false}
-                  className="px-2 py-1 my-5 font-bold text-white border-2 border-black bg-purple"
-                >
-                  {loading ? <Loading /> : <div>SIGN IN</div>}
-                </button>
-                <Link href="/forgot-password">
-                  <a className="text-blue-700">Forgot password?</a>
-                </Link>
-                <Link href="/register">
-                  <a className="text-blue-700">Don't have an account?</a>
-                </Link>
+            <div className="flex flex-col items-center justify-center w-full mt-5 h-fit">
+              <div className="flex w-full">
+                <label htmlFor="email" className="mr-2 font-bold">
+                  Email
+                </label>
+                <ErrorMessage name="email" component={TextError} />
               </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
+
+              <Field
+                name="email"
+                placeholder="Email"
+                className="w-full p-2 border border-black rounded-t-sm "
+              />
+
+              <div className="flex w-full">
+                <label htmlFor="password" className="mr-2 font-bold">
+                  Password
+                </label>
+                <ErrorMessage name="password" component={TextError} />
+              </div>
+
+              <div className="relative w-full ">
+                <Field
+                  name="password"
+                  type={passwordVisibility ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full p-2 border border-black rounded-b-sm"
+                />
+                <div className="absolute top-2 right-1 hover:cursor-pointer">
+                  <FontAwesomeIcon
+                    icon="eye"
+                    size="lg"
+                    onClick={togglePasswordVisibility}
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting ? true : false}
+                className="w-full mt-5 purpleButton"
+              >
+                {loading ? <Loading /> : <div>SIGN IN</div>}
+              </button>
+              <Link href="/forgot-password">
+                <a className="text-blue-700">Forgot password?</a>
+              </Link>
+              <Link href="/register">
+                <a className="text-blue-700">Don't have an account?</a>
+              </Link>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </Layout>
   );
 };

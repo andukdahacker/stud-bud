@@ -5,3 +5,5 @@ export * from "./RelationshipQueries";
 export * from "./MessageQueries";
 export * from "./NotificationQueries";
 export * from "./TutorOrderQueries";
+export * from "./PurposeQueries";
+export * from "./BuddyRequestQueries";

@@ -16,6 +16,26 @@ type BuddyNotificationOutput {
   countNotViewedBuddyNotifications: Int
 }
 
+type BuddyRequest {
+  buddy_requester: Profile!
+  buddy_requester_id: String!
+  description: String!
+  extended_buddy_request_data: JSON
+  id: ID!
+  purpose: Purpose!
+  purpose_id: String!
+  purpose_type: PurposeType!
+  purpose_type_id: String!
+}
+
+input BuddyRequestWhereUniqueInput {
+  buddy_request_id: String!
+}
+
+input ChangeImageInput {
+  image_file: Upload!
+}
+
 input ChangePasswordInput {
   password: String!
   token: String!
@@ -66,6 +86,19 @@ input ConversationWhereUniqueInput {
   profile_id: String
 }
 
+input CreateBuddyRequestInput {
+  description: String!
+  extended_buddy_request_data: JSON!
+  profile_id: String!
+  purpose_name: String!
+  purpose_type_name: String!
+}
+
+type CreateBuddyRequestOutput {
+  IOutput: IOutput!
+  buddy_request: BuddyRequest
+}
+
 input CreateInterestInput {
   interest_name: String!
 }
@@ -78,10 +111,28 @@ input CreateNotificationInput {
 }
 
 input CreateProfileInput {
+  birthday: Date
+  gender: Gender
+  location_name: String
   profile_avatar: Upload
   profile_bio: String
-  profile_interest: [CreateInterestInput]!
-  profile_wallpaper: Upload
+}
+
+input CreatePurposeInput {
+  purpose_description: String!
+  purpose_name: String!
+  purpose_type: [CreatePurposeTypeInput!]!
+}
+
+input CreatePurposeTypeInput {
+  purpose_name: String!
+  purpose_type_description: String!
+  purpose_type_name: String!
+}
+
+type CreatePurposeTypeOutput {
+  IOutput: IOutput!
+  purpose_type: PurposeType
 }
 
 input CreateTutorOrderInput {
@@ -99,6 +150,31 @@ input DestroyImageInput {
   img_public_id: String!
 }
 
+type Education {
+  current: Boolean!
+  education_description: String
+  field_of_study: String!
+  id: String!
+  institution_name: String!
+  joined_at: Date
+  left_at: Date
+  logo: String
+  logo_public_id: String
+}
+
+input EducationInput {
+  current: Boolean
+  education_description: String
+  field_of_study: String!
+  institution_name: String!
+  joined_at: Date
+  left_at: Date
+}
+
+input EducationWhereUniqueInput {
+  id: String!
+}
+
 type ErrorFieldOutput {
   field: String!
   message: String!
@@ -106,6 +182,24 @@ type ErrorFieldOutput {
 
 input ForgotPasswordInput {
   email: String!
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  OTHERS
+}
+
+input GetManyBuddyRequestsInput {
+  cursor: String
+  search_query: String!
+  take: Int!
+}
+
+type GetManyBuddyRequestsOutput {
+  BuddyRequestPageInfo: PageInfoIDCursor
+  IOutput: IOutput!
+  buddy_requests: [BuddyRequest!]
 }
 
 type GetManyInterestOutput {
@@ -123,6 +217,25 @@ type GetManyProfilesOutput {
   IOutput: IOutput!
   PageInfo: PageInfoDataCursor
   Profile: [Profile]
+}
+
+input GetManyPurposeTypesInput {
+  partial: Boolean!
+  purpose_type: String!
+}
+
+type GetManyPurposeTypesOutput {
+  IOutput: IOutput!
+  purpose_types: [PurposeType!]
+}
+
+input GetManyPurposesInput {
+  purpose_name: String!
+}
+
+type GetManyPurposesOutput {
+  IOutput: IOutput!
+  purposes: [Purpose!]
 }
 
 type GetManyTutorOrderTutorConnect {
@@ -155,6 +268,12 @@ type GetMyBuddiesOutput {
   relationships: [Relationship!]
 }
 
+input GetMyBuddyRequestsInput {
+  cursor: String
+  search_query: String!
+  take: Int!
+}
+
 type GetNotificationOutput {
   IOutput: IOutput!
   countNotViewedNotifications: Int
@@ -172,9 +291,25 @@ type GetRelationshipOutput {
   relationship: Relationship
 }
 
+input GetSuggestedBuddyRequests {
+  cursor: String
+  purpose_name: [String!]!
+  purpose_type_name: [String!]!
+  take: Int!
+}
+
 type GetTutorOrderTutorConnectOutput {
   IOutput: IOutput!
   tutor_order_tutor_connect: TutorOrderTutorConnect
+}
+
+type GetUniquePurposeType {
+  IOutput: IOutput!
+  purpose_type: PurposeType
+}
+
+input GetUniquePurposeTypeInput {
+  purpose_type_name: String!
 }
 
 type IOutput {
@@ -187,6 +322,21 @@ type Interest {
   id: ID!
   interest_name: String
   profile_interests: [ProfileInterest!]!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type Location {
+  id: Int!
+  location_name: String!
 }
 
 input LoginInput {
@@ -213,11 +363,15 @@ type Mutation {
   changePassword(input: ChangePasswordInput!): AuthOutput
   connectBuddy(input: RelationshipInput!): RelationshipOutput
   connectTutorOrder(where: ConnectTutorOrderInput!): TutorOrderOutput
+  createBuddyRequest(input: CreateBuddyRequestInput!): CreateBuddyRequestOutput
   createGroupConversation(input: createGroupConversationInput!): initConversationOutput
   createProfile(input: CreateProfileInput!): ProfileMutationOutput
+  createPurposeType(input: CreatePurposeTypeInput!): CreatePurposeTypeOutput
   createTutorOrder(input: CreateTutorOrderInput!): TutorOrderOutput
+  deleteEducation(where: EducationWhereUniqueInput!): ProfileMutationOutput
   deleteTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   deleteTutorOrderConnect(where1: TutorOrderWhereUniqueInput!, where2: ProfileWhereUniqueInput!): TutorOrderOutput
+  deleteWorkExperience(where: WorkExperienceWhereUniqueInput!): ProfileMutationOutput
   forgotPassword(input: ForgotPasswordInput!): AuthOutput
   initConversation(input: initConversationInput!): initConversationOutput
   login(input: LoginInput!): AuthOutput!
@@ -233,8 +387,14 @@ type Mutation {
   respondBuddy(input: RelationshipInput!): RelationshipOutput
   respondTutorOrderConnect(where: ResondTutorOrderConnectInput!): TutorOrderOutput
   sendMessage(input: SendMessageInput!, where: ProfileWhereUniqueInput!): SendMessageOutput
-  updateProfile(input: CreateProfileInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  updateAvatar(input: ChangeImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  updateBuddyRequest(input: UpdateBuddyRequestInput!, where: BuddyRequestWhereUniqueInput!): CreateBuddyRequestOutput
+  updateIntroduction(input: updateIntroductionInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
   updateTutorOrder(input: CreateTutorOrderInput!, where: TutorOrderWhereUniqueInput!): TutorOrderOutput
+  updateWallpaper(input: ChangeImageInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  upsertAgeLocation(input: UpsertAgeLocationInput!, where: ProfileWhereUniqueInput!): ProfileMutationOutput
+  upsertEducation(input: UpsertEducationInput!, where: ProfileWhereUniqueInput!): UpsertEducationOutput
+  upsertWorkExperience(input: UpsertWorkExperienceInput!, where: ProfileWhereUniqueInput!): UpsertWorkExperienceOutput
   verifyEmail(input: VerifyEmailInput!): AuthOutput!
   viewBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   viewMessage(where: ProfileWhereUniqueInput!): IOutput
@@ -281,16 +441,21 @@ type PageInfoIDCursor {
 }
 
 type Profile {
+  birthday: Date
   createdAt: Date
+  education: [Education]
+  gender: Gender
   id: ID!
+  location: Location
+  location_id: Int
   profile_avatar: String
   profile_avatar_public_id: String
   profile_bio: String
-  profile_interests: [ProfileInterest]
   profile_wallpaper: String
   profile_wallpaper_public_id: String
   tutor_mode: Boolean!
   user: User
+  work_experience: [WorkExperience]
 }
 
 type ProfileInterest {
@@ -309,22 +474,44 @@ input ProfileWhereUniqueInput {
   profile_id: ID!
 }
 
+type Purpose {
+  id: ID!
+  purpose_description: String!
+  purpose_name: String!
+  purpose_type: [PurposeType]
+}
+
+type PurposeType {
+  extened_purpose_type_data: JSON
+  id: ID!
+  purpose: Purpose!
+  purpose_id: String!
+  purpose_type_description: String!
+  purpose_type_name: String!
+}
+
 type Query {
   getBuddyNotifications(where: ProfileWhereUniqueInput!): BuddyNotificationOutput
   getConversation(page: ConversationPageInput!, where: ConversationWhereUniqueInput!): getConversationOutput
+  getManyBuddyRequests(where: GetManyBuddyRequestsInput!): GetManyBuddyRequestsOutput
   getManyConversations(where: ProfileWhereUniqueInput!): getManyConversationPutput
   getManyInterests(where: getManyInterestsInput!): GetManyInterestOutput
   getManyProfiles(where: GetManyProfilesInput!): GetManyProfilesOutput
+  getManyPurposeTypes(where: GetManyPurposeTypesInput!): GetManyPurposeTypesOutput
+  getManyPurposes(where: GetManyPurposesInput!): GetManyPurposesOutput
   getManyTutorOrderRequests(where: TutorOrderWhereUniqueInput!): GetManyTutorOrderTutorConnect
   getManyTutorOrders(where: GetManyTutorOrdersInput!): GetManyTutorOrdersOutput
   getMyBuddies(input: GetMyBuddiesInput!, where: ProfileWhereUniqueInput!): GetMyBuddiesOutput
   getMyBuddiesRequests(input: GetMyBuddiesInput!, where: ProfileWhereUniqueInput!): GetMyBuddiesOutput
+  getMyBuddyRequests(input: GetMyBuddyRequestsInput!): GetManyBuddyRequestsOutput
   getMyTutorOrder(where: ProfileWhereUniqueInput!): GetManyTutorOrdersOutput
   getNotifications(where: ProfileWhereUniqueInput!): GetNotificationOutput
   getProfile(where: ProfileWhereUniqueInput!): ProfileMutationOutput
   getRelationship(where: GetRelationshipInput!): GetRelationshipOutput
+  getSuggestedBuddyRequests(where: GetSuggestedBuddyRequests!): GetManyBuddyRequestsOutput
   getTutorOrder(where: TutorOrderWhereUniqueInput!): TutorOrderOutput
   getTutorOrderTutorConnect(where_1: ProfileWhereUniqueInput!, where_2: TutorOrderWhereUniqueInput!): GetTutorOrderTutorConnectOutput
+  getUniquePurposeType(where: GetUniquePurposeTypeInput!): GetUniquePurposeType
   getUser: User
 }
 
@@ -438,8 +625,60 @@ input TutorOrderWhereUniqueInput {
   id: String!
 }
 
+input UpdateBuddyRequestInput {
+  description: String!
+  extended_buddy_request_data: JSON!
+  purpose_name: String!
+  purpose_type_name: String!
+}
+
+input UpdateProfilePurposesInput {
+  profile_id: String!
+}
+
+type UpdateProfilePurposesOutput {
+  IOutput: IOutput!
+}
+
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input UpsertAgeLocationInput {
+  birthday: Date!
+  location_name: String!
+}
+
+input UpsertEducationInput {
+  current: Boolean!
+  education_description: String
+  field_of_study: String!
+  id: String
+  institution_name: String!
+  joined_at: Date
+  left_at: Date
+  logo: Upload
+}
+
+type UpsertEducationOutput {
+  IOutput: IOutput!
+  education: Education
+}
+
+input UpsertWorkExperienceInput {
+  current: Boolean!
+  id: String
+  joined_at: Date
+  left_at: Date
+  logo: Upload
+  work_description: String
+  work_position: String
+  workplace_name: String!
+}
+
+type UpsertWorkExperienceOutput {
+  IOutput: IOutput!
+  work_experience: WorkExperience
+}
 
 type User {
   email: String!
@@ -453,10 +692,41 @@ input VerifyEmailInput {
   token: String!
 }
 
+type WorkExperience {
+  current: Boolean!
+  id: String!
+  joined_at: Date
+  left_at: Date
+  logo: String
+  logo_public_id: String
+  profile_id: String!
+  work_description: String
+  work_position: String
+  workplace_name: String!
+}
+
+input WorkExperienceInput {
+  current: Boolean!
+  joined_at: Date
+  left_at: Date
+  logo: Upload
+  work_description: String
+  work_position: String
+  workplace_name: String!
+}
+
+input WorkExperienceWhereUniqueInput {
+  id: String!
+}
+
 input createGroupConversationInput {
   creator_id: String!
   member_ids: [String!]!
   message_content: String
+}
+
+type createPurposeOutput {
+  IOutput: IOutput!
 }
 
 type getConversationOutput {
@@ -484,4 +754,8 @@ input initConversationInput {
 type initConversationOutput {
   IOutput: IOutput!
   conversation: Conversation
+}
+
+input updateIntroductionInput {
+  profile_bio: String!
 }

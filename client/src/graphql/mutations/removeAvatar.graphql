@@ -6,5 +6,8 @@ mutation removeAvatar(
     IOutput {
       ...IOutput
     }
+    Profile {
+      ...Profile
+    }
   }
 }

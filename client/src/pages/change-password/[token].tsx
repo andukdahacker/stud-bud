@@ -1,9 +1,9 @@
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/router";
 import * as Yup from "yup";
-import Layout from "../../components/Layout";
-import Loading from "../../components/Loading";
-import TextError from "../../components/TextError";
+import Layout from "../../components/Layouts/Layout";
+import Loading from "../../components/Loading/Loading";
+import TextError from "../../components/Forms/TextError";
 import {
   ChangePasswordInput,
   GetUserDocument,

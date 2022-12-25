@@ -1,5 +1,5 @@
 import { objectType } from "nexus";
-import { Profile } from "../objects";
+import { Education, Profile, WorkExperience } from "../objects";
 import { PageInfoDateCursor } from "../objects/dev";
 import { IOutput } from "./IOutput";
 
@@ -15,18 +15,6 @@ export const ProfileMutationOutput = objectType({
   },
 });
 
-// export const GetProfileOutput = objectType({
-//   name: "GetProfileOutput",
-//   definition(t) {
-//     t.nullable.field("IOutput", {
-//       type: IOutput,
-//     });
-//     t.nullable.field("Profile", {
-//       type: Profile,
-//     });
-//   },
-// });
-
 export const GetManyProfilesOutput = objectType({
   name: "GetManyProfilesOutput",
   definition(t) {
@@ -38,6 +26,30 @@ export const GetManyProfilesOutput = objectType({
     });
     t.nullable.field("PageInfo", {
       type: PageInfoDateCursor,
+    });
+  },
+});
+
+export const UpsertWorkExperienceOutput = objectType({
+  name: "UpsertWorkExperienceOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+    t.nullable.field("work_experience", {
+      type: WorkExperience,
+    });
+  },
+});
+
+export const UpsertEducationOutput = objectType({
+  name: "UpsertEducationOutput",
+  definition(t) {
+    t.nonNull.field("IOutput", {
+      type: IOutput,
+    });
+    t.nullable.field("education", {
+      type: Education,
     });
   },
 });

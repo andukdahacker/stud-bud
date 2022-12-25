@@ -119,8 +119,6 @@ const startServer = async () => {
       `Express server running at http://localhost:${SERVER_PORT}. Apollo server running at http://localhost:${SERVER_PORT}${apolloServer.graphqlPath}`
     );
   }
-
-  console.log("ON BRANCH PURPOSE");
 };
 
 startServer().catch((err) => console.log("Error starting server", err));

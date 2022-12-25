@@ -1,0 +1,10 @@
+mutation DeleteEducation($where: EducationWhereUniqueInput!) {
+  deleteEducation(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    Profile {
+      ...Profile
+    }
+  }
+}

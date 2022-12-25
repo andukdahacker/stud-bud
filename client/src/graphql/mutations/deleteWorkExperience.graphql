@@ -1,0 +1,10 @@
+mutation DeleteWorkExperience($where: WorkExperienceWhereUniqueInput!) {
+  deleteWorkExperience(where: $where) {
+    IOutput {
+      ...IOutput
+    }
+    Profile {
+      ...Profile
+    }
+  }
+}

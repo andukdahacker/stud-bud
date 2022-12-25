@@ -265,7 +265,10 @@ export const getMyBuddies = queryField("getMyBuddies", {
                 id_2: myCursor.addressee_id,
               },
               hasNextPage: true,
-              lastTake: secondQueryResult.length,
+              lastTake:
+                secondQueryResult.length < take
+                  ? secondQueryResult.length
+                  : take,
             },
           };
       }
@@ -439,7 +442,10 @@ export const getMyBuddiesRequests = queryField("getMyBuddiesRequests", {
                 id_2: myCursor.addressee_id,
               },
               hasNextPage: true,
-              lastTake: secondQueryResult.length,
+              lastTake:
+                secondQueryResult.length < take
+                  ? secondQueryResult.length
+                  : take,
             },
           };
         }
